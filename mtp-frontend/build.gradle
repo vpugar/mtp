@@ -1,0 +1,13 @@
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'MTP-Frontend', 'Implementation-Version': rootProject.version, 'Build-Date': buildDate
+    }
+}
+
+dependencies {
+
+    compile(
+    )
+    testCompile(
+    )
+}

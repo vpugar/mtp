@@ -1,0 +1,33 @@
+
+apply plugin: 'application'
+
+mainClassName = "com.vedri.mtp.consumption.ConsumptionApplication"
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'MTP-Consumption', 'Implementation-Version': rootProject.version, 'Build-Date': buildDate
+    }
+}
+
+dependencies {
+
+    compile(
+            ["com.google.guava:guava:${guavaVersion}"],
+            ["com.fasterxml.jackson.datatype:jackson-datatype-joda:${jacksonVersion}"],
+            ["com.typesafe.akka:akka-http-experimental_${scalaMajorVersion}:${akkaHttpVersion}"],
+            ["com.typesafe.akka:akka-http-jackson-experimental_${scalaMajorVersion}:${akkaHttpVersion}"],
+            ["com.datastax.cassandra:cassandra-driver-core:${cassandraDriverVersion}"],
+            ["joda-time:joda-time:${jodaTimeVersion}"],
+            ["org.apache.kafka:kafka-clients:${kafkaVersion}"],
+            ["org.projectlombok:lombok:${lombokVersion}"],
+            ["org.scala-lang:scala-library:${scalaVersion}"],
+            ["org.springframework.boot:spring-boot-starter:${springBootVersion}"]
+    )
+    testCompile(
+            ["org.cassandraunit:cassandra-unit:${cassandraVersion}"],
+            ["org.kubek2k:springockito-annotations:${springockitoVersion}"],
+            ["org.mockito:mockito-core:${mockitoVersion}"],
+            ["org.testng:testng:${testNgVersion}"],
+            ["org.springframework:spring-test:${springVersion}"]
+    )
+}

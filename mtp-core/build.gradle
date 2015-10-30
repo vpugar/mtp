@@ -1,0 +1,23 @@
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'MTP-Core', 'Implementation-Version': rootProject.version, 'Build-Date': buildDate
+    }
+}
+
+dependencies {
+
+    compile(
+            ["joda-time:joda-time:${jodaTimeVersion}"],
+            ["com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"],
+            ["com.fasterxml.jackson.datatype:jackson-datatype-joda:${jacksonVersion}"],
+            ["com.datastax.cassandra:cassandra-driver-core:${cassandraDriverVersion}"],
+            ["org.apache.commons:commons-lang3:${commonsLangVersion}"],
+            ["org.scala-lang:scala-library:${scalaVersion}"],
+            ["org.projectlombok:lombok:${lombokVersion}"],
+            ["org.springframework.boot:spring-boot-starter:${springBootVersion}"],
+            ["com.google.guava:guava:${guavaVersion}"],
+            ["com.typesafe.akka:akka-actor_${scalaMajorVersion}:${akkaVersion}"],
+            ["com.typesafe.akka:akka-cluster_${scalaMajorVersion}:${akkaVersion}"],
+            ["com.typesafe.akka:akka-slf4j_${scalaMajorVersion}:${akkaVersion}"]
+    )
+}

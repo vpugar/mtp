@@ -1,0 +1,5 @@
+
+mtp:
+  core:
+    cluster:
+      nodeName: nodeCore0

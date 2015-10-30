@@ -1,0 +1,85 @@
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.4'
+  distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
+
+project.ext {
+    buildDate = new Date().format('yyyyMMddHHmm')
+    deployConfig = System.getenv("spring.profiles.active")
+    if(!deployConfig)
+        deployConfig = System.getProperty("spring.profiles.active")
+    if(!deployConfig)
+        deployConfig = 'default'
+}
+
+allprojects {
+
+    apply plugin: 'java'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    version = "${bareVersion}"
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url 'http://repo1.maven.org/maven2'
+        }
+        maven {
+            url 'https://oss.sonatype.org/content/groups/public/'
+        }
+    }
+
+    configurations {
+        all*.exclude group: 'commons-logging', module: 'commons-logging'
+        all*.exclude group: "log4j", module: "log4j"
+        all*.exclude group: "log4j", module: "apache-log4j-extras"
+        all*.exclude group: "org.slf4j", module: "slf4j-log4j12"
+    }
+
+    test {
+        minHeapSize = "256m"
+        maxHeapSize = "1024m"
+        jvmArgs '-XX:MaxPermSize=512m'
+        useTestNG() {
+            useDefaultListeners = true
+            excludeGroups 'manual'
+            threadCount=1
+        }
+        testLogging.showStandardStreams = false
+        maxParallelForks 1
+        beforeSuite { descriptor ->
+            logger.lifecycle("Running test suite: " + descriptor)
+        }
+        beforeTest { descriptor ->
+            logger.lifecycle("Running test: " + descriptor)
+        }
+        afterTest { descriptor, result ->
+            logger.lifecycle("Test finished: " + descriptor + ", result: " + result)
+        }
+        afterSuite { descriptor, result ->
+            logger.lifecycle("Test suite finished: " + descriptor + ", result: " + result)
+        }
+    }
+}
+
+project(':mtp-consumption') {
+    dependencies {
+        compile project(':mtp-core')
+    }
+}
+
+project(':mtp-processor') {
+    dependencies {
+        compile project(':mtp-core')
+    }
+}
+
+project(':mtp-frontend') {
+    dependencies {
+        compile project(':mtp-core')
+    }
+}
