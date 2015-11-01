@@ -1,13 +1,11 @@
-
 mtp:
-
   core:
     cluster.nodeName: nodeClient0
     akka:
-      configurationName: MtpClient
+      akkaSystemName: MtpClient
       logConfiguration: false
       logClusterMetrics: false
     cassandra:
-      contactPoints: localhost
+      hosts: localhost
       port: 9042
       keyspace: mtp

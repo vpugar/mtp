@@ -7,12 +7,12 @@ import java.math.BigDecimal;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.datastax.driver.core.*;
 import com.vedri.mtp.core.rate.Rate;
 
-@Component
+@Repository
 @Slf4j
 public class CassandraRateDao implements RateDao {
 

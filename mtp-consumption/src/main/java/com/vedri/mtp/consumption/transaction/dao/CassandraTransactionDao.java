@@ -9,14 +9,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.datastax.driver.core.*;
 import com.vedri.mtp.core.support.cassandra.CassandraPartitionUtils;
 import com.vedri.mtp.core.support.cassandra.CassandraUtils;
 import com.vedri.mtp.core.transaction.Transaction;
 
-@Component
+@Repository
 @Slf4j
 public class CassandraTransactionDao implements TransactionDao {
 

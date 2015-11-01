@@ -1,5 +1,6 @@
 package com.vedri.mtp.consumption.http;
 
+import com.vedri.mtp.consumption.ConsumptionProperties;
 import com.vedri.mtp.core.support.akka.AkkaTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,9 +33,9 @@ public class ConsumptionRootActor extends ClusterAwareHandler {
 	@Autowired
 	public ConsumptionRootActor(final Cluster cluster, final HttpServer httpServer,
 			@Qualifier("consumptionBalancingPoolProps") final Props consumptionBalancingPoolProps,
-			final SpringExtension.SpringExt springExt) {
+			final SpringExtension.SpringExt springExt, final ConsumptionProperties consumptionProperties) {
 
-		super(cluster);
+		super(cluster, consumptionProperties.getAkka());
 		this.springExt = springExt;
 		this.httpServer = httpServer;
 

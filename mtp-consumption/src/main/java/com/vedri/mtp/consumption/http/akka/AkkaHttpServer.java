@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import akka.actor.ActorRef;
@@ -12,7 +11,7 @@ import akka.actor.ActorSystem;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vedri.mtp.consumption.MtpConsumptionConstants;
+import com.vedri.mtp.consumption.ConsumptionProperties;
 import com.vedri.mtp.consumption.http.AbstractHttpServer;
 import com.vedri.mtp.consumption.support.kafka.KafkaMessageEnvelope;
 import com.vedri.mtp.consumption.transaction.TransactionManager;
@@ -21,9 +20,7 @@ import com.vedri.mtp.core.transaction.Transaction;
 @Component
 public class AkkaHttpServer extends AbstractHttpServer {
 
-	@Value(MtpConsumptionConstants.KAFKA_TOPIC_NAME)
-	private String topicName;
-
+	private final ConsumptionProperties consumptionProperties;
 	private final ActorSystem akkaSystem;
 	private final ObjectMapper transactionObjectMapper;
 	private final ObjectMapper objectMapper;
@@ -36,7 +33,10 @@ public class AkkaHttpServer extends AbstractHttpServer {
 	public AkkaHttpServer(ActorSystem akkaSystem,
 			@Qualifier("transactionObjectMapper") final ObjectMapper transactionObjectMapper,
 			@Qualifier("objectMapper") final ObjectMapper objectMapper,
-			final TransactionManager transactionManager) {
+			final TransactionManager transactionManager,
+			final ConsumptionProperties consumptionProperties) {
+		super(consumptionProperties.getHttpServer());
+		this.consumptionProperties = consumptionProperties;
 		this.akkaSystem = akkaSystem;
 		this.transactionObjectMapper = transactionObjectMapper;
 		this.objectMapper = objectMapper;
@@ -47,7 +47,8 @@ public class AkkaHttpServer extends AbstractHttpServer {
 	protected void doStart(ActorRef consumerActorRef) throws Exception {
 		this.consumerActorRef = consumerActorRef;
 		mtpHttpApp = new MtpHttpApp(this);
-		mtpHttpApp.start(getBindHost(), getBindPort(), getPublicProtocol(), getPublicHost(), getPublicPort());
+		mtpHttpApp.start(httpServer.getBindHost(), httpServer.getBindPort(), httpServer.getPublicProtocol(),
+				httpServer.getPublicHost(), httpServer.getPublicPort());
 	}
 
 	@Override
@@ -67,7 +68,7 @@ public class AkkaHttpServer extends AbstractHttpServer {
 		Transaction added = transactionManager.addTransaction(transaction);
 
 		final KafkaMessageEnvelope<String, String> kafkaMessageEnvelope = new KafkaMessageEnvelope<>(
-				topicName, added.getTransactionId(),
+				consumptionProperties.getKafkaClient().getTopicName(), added.getTransactionId(),
 				objectMapper.writeValueAsString(added));
 		consumerActorRef.tell(kafkaMessageEnvelope, null);
 		return added;

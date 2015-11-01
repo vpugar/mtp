@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import akka.event.LoggingAdapter;
 import akka.japi.pf.ReceiveBuilder;
 
 import com.google.common.collect.Maps;
-import com.vedri.mtp.consumption.MtpConsumptionConstants;
+import com.vedri.mtp.consumption.ConsumptionProperties;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -28,23 +28,7 @@ public class KafkaProducerActor<K, V> extends AbstractActor {
 
 	protected final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
-	@Value(MtpConsumptionConstants.KAFKA_BOOTSTRAP_SERVERS)
-	private String bootstrapServers;
-
-	@Value(MtpConsumptionConstants.KAFKA_KEY_SERIALIZER)
-	private String keySerializer;
-
-	@Value(MtpConsumptionConstants.KAFKA_VALUE_SERIALIZER)
-	private String valueSerializer;
-
-	@Value(MtpConsumptionConstants.KAFKA_ACKS)
-	private String acks;
-
-	@Value(MtpConsumptionConstants.KAFKA_BATCH_SIZE)
-	private int batchSize;
-
-	@Value(MtpConsumptionConstants.KAFKA_RECONNECT_BACKOFF_MS)
-	private long reconnectBackoffMs;
+	private final ConsumptionProperties consumptionProperties;
 
 	private KafkaProducer<K, V> producer;
 
@@ -52,27 +36,31 @@ public class KafkaProducerActor<K, V> extends AbstractActor {
 			.match(KafkaMessageEnvelope.class, this::doSend)
 			.build();
 
-	public KafkaProducerActor() {
+	@Autowired
+	public KafkaProducerActor(ConsumptionProperties consumptionProperties) {
+		this.consumptionProperties = consumptionProperties;
 		receive(receive);
 	}
 
-    @Override
-    public void preStart() throws Exception {
-        super.preStart();
+	@Override
+	public void preStart() throws Exception {
+		super.preStart();
 
-        final Map<String, Object> props = Maps.newHashMap();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, keySerializer);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, valueSerializer);
-        props.put(ProducerConfig.ACKS_CONFIG, acks);
-        props.put(ProducerConfig.BATCH_SIZE_CONFIG, batchSize);
-		props.put(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, reconnectBackoffMs);
+		final ConsumptionProperties.KafkaClient kafkaClient = consumptionProperties.getKafkaClient();
+
+		final Map<String, Object> props = Maps.newHashMap();
+		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaClient.getBootstrapServers());
+		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, kafkaClient.getKeySerializer());
+		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, kafkaClient.getValueSerializer());
+		props.put(ProducerConfig.ACKS_CONFIG, kafkaClient.getAcks());
+		props.put(ProducerConfig.BATCH_SIZE_CONFIG, kafkaClient.getBatchSize());
+		props.put(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, kafkaClient.getReconnectBackoffMs());
 
 		log.info("Starting up kafka producer.");
-        producer = new KafkaProducer<>(props);
-    }
+		producer = new KafkaProducer<>(props);
+	}
 
-    @Override
+	@Override
 	public void postStop() throws Exception {
 		log.info("Shutting down kafka producer.");
 		producer.close();

@@ -21,7 +21,7 @@ import com.vedri.mtp.core.CoreConfig;
 })
 @TestPropertySource(properties = {
 		"mtp.core.cluster.nodeName=test0",
-		"mtp.core.cassandra.contactPoints=localhost",
+		"mtp.core.cassandra.hosts=localhost",
 		"mtp.core.cassandra.port=9042",
 		"mtp.core.cassandra.keyspace=mtp"
 })

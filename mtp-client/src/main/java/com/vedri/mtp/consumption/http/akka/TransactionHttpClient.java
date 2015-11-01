@@ -2,8 +2,11 @@ package com.vedri.mtp.consumption.http.akka;
 
 import java.util.concurrent.TimeUnit;
 
+import com.vedri.mtp.core.CoreProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import scala.concurrent.Await;
@@ -24,7 +27,24 @@ import com.vedri.mtp.core.support.spring.AbstractApplication;
 public class TransactionHttpClient extends AbstractApplication {
 
 	@Configuration
-	public static class ClientSenderConfiguration extends AkkaConfiguration {
+	public static class TransactionHttpClientConfiguration {
+
+		@Autowired
+		protected CoreProperties coreProperties;
+
+		@Bean
+		CoreProperties.Akka akka() {
+			return coreProperties.getAkka();
+		}
+
+		@Bean
+		CoreProperties.Cluster cluster() {
+			return coreProperties.getCluster();
+		}
+	}
+
+	@Configuration
+	public static class ClientAkkConfiguration extends AkkaConfiguration {
 	}
 
 	private AkkaHttpClient1 httpClient;
@@ -32,7 +52,7 @@ public class TransactionHttpClient extends AbstractApplication {
 	@Override
 	protected Class[] getConfigs() {
 		return new Class[] {
-				CoreConfig.class, ClientSenderConfiguration.class
+				CoreConfig.class, ClientAkkConfiguration.class, TransactionHttpClientConfiguration.class
 		};
 	}
 

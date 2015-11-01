@@ -1,5 +1,6 @@
 package com.vedri.mtp.consumption.transaction;
 
+import com.vedri.mtp.core.CoreProperties;
 import com.vedri.mtp.core.transaction.Transaction;
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vedri.mtp.consumption.transaction.dao.TransactionDao;
-import com.vedri.mtp.core.cluster.ClusterInfo;
 
 import java.util.UUID;
 
@@ -18,10 +18,10 @@ public class DefaultTransactionManager implements TransactionManager {
 
 	private final TransactionValidator transactionValidator;
 	private final TransactionDao transactionDao;
-	private final ClusterInfo clusterInfo;
+	private final CoreProperties.Cluster clusterInfo;
 
 	@Autowired
-	public DefaultTransactionManager(final ClusterInfo clusterInfo, final TransactionValidator transactionValidator,
+	public DefaultTransactionManager(final CoreProperties.Cluster clusterInfo, final TransactionValidator transactionValidator,
 			final TransactionDao transactionDao) {
 		this.clusterInfo = clusterInfo;
 		this.transactionValidator = transactionValidator;

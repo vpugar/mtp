@@ -1,6 +1,6 @@
 package com.vedri.mtp.core.support.akka;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import scala.PartialFunction;
 import scala.runtime.BoxedUnit;
@@ -13,12 +13,11 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.japi.pf.ReceiveBuilder;
 
-import com.vedri.mtp.core.MtpConstants;
+import com.vedri.mtp.core.CoreProperties;
 
 public abstract class ClusterAwareWatcher extends AbstractActor {
 
-	@Value(MtpConstants.AKKA_LOG_CLUSTER_METRICS)
-	private boolean logClusterMetrics;
+	private CoreProperties.Akka akka;
 
 	protected final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 	protected final Cluster cluster;
@@ -30,20 +29,22 @@ public abstract class ClusterAwareWatcher extends AbstractActor {
 					message -> memberRemoved(message.member(), message.previousStatus()))
 			.match(ClusterEvent.MemberEvent.class, message -> log.debug("Member event {}", message))
 			.match(ClusterEvent.ClusterMetricsChanged.class, message -> {
-				if (logClusterMetrics) {
+				if (akka.isLogClusterMetrics()) {
 					log.debug("Cluster metric changed {}", message);
 				}
 			})
 			.match(ClusterEvent.ClusterDomainEvent.class, message -> {
-				if (logClusterMetrics) {
+				if (akka.isLogClusterMetrics()) {
 					log.debug("Cluster event {}", message);
 				}
 			})
 			.matchAny(message -> log.error("Unhandled message in watcher {}", message))
 			.build();
 
-	public ClusterAwareWatcher(Cluster cluster) {
+	@Autowired
+	public ClusterAwareWatcher(Cluster cluster, CoreProperties.Akka akka) {
 		this.cluster = cluster;
+		this.akka = akka;
 	}
 
 	@Override

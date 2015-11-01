@@ -1,7 +1,6 @@
 package com.vedri.mtp.consumption.http;
 
-import com.vedri.mtp.consumption.support.kafka.KafkaProducerActor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +9,8 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.routing.BalancingPool;
 
-import com.vedri.mtp.consumption.MtpConsumptionConstants;
+import com.vedri.mtp.consumption.ConsumptionProperties;
+import com.vedri.mtp.consumption.support.kafka.KafkaProducerActor;
 import com.vedri.mtp.core.support.akka.ClusterAkkaConfiguration;
 import com.vedri.mtp.core.support.akka.SpringExtension;
 
@@ -19,12 +19,13 @@ public class ConsumptionAkkaConfiguration extends ClusterAkkaConfiguration {
 
 	public static final String CONSUMPTION_BALANCING_POOL_NAME = "consumptionBalancingPool";
 
-	@Value(MtpConsumptionConstants.BALANCING_POOL_INSTANCES)
-	private int balancingPoolInstances;
+	@Autowired
+	private ConsumptionProperties consumptionProperties;
 
 	@Bean
 	public Props consumptionBalancingPoolProps(SpringExtension.SpringExt springExt) {
-		return new BalancingPool(balancingPoolInstances).props(springExt.props(KafkaProducerActor.NAME));
+		return new BalancingPool(consumptionProperties.getBalancingPool().getInstances())
+				.props(springExt.props(KafkaProducerActor.NAME));
 	}
 
 	@Override

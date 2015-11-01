@@ -1,33 +1,27 @@
-
 mtp:
-
-  core:
+  consumption:
     cluster.nodeName: nodeConsumption0
     akka:
-      configurationName: MtpConsumption
+      akkaSystemName: MtpConsumption
       logConfiguration: false
       logClusterMetrics: false
     cassandra:
-      contactPoints: localhost
+      hosts: localhost
       port: 9042
       keyspace: mtp
-
-  consumption:
-    balancing.pool.instances: 5
-    kafka:
-      bootstrap.servers: localhost:9092
-      key.serializer: org.apache.kafka.common.serialization.StringSerializer
-      value.serializer: org.apache.kafka.common.serialization.StringSerializer
+    balancingPool.instances: 5
+    kafkaClient:
+      bootstrapServers: localhost:9092
+      keySerializer: org.apache.kafka.common.serialization.StringSerializer
+      valueSerializer: org.apache.kafka.common.serialization.StringSerializer
       acks: 1
-      batch.size: 100
-      topic.name: mtp.transaction
-      reconnect.backoff.ms: 100
-    server:
-      bind:
-        host: localhost
-        port: 9090
-      public:
-        protocol: http
-        host: localhost
-        port: 9090
+      batchSize: 100
+      topicName: mtp.transaction
+      reconnectBackoffMs: 100
+    httpServer:
+      bindHost: localhost
+      bindPort: 9090
+      publicProtocol: http
+      publicHost: localhost
+      publicPort: 9090
 

@@ -1,5 +1,6 @@
 package com.vedri.mtp.consumption.http;
 
+import com.vedri.mtp.consumption.ConsumptionProperties;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,16 +14,11 @@ import com.vedri.mtp.consumption.MtpConsumptionConstants;
 @Slf4j
 public abstract class AbstractHttpServer implements HttpServer {
 
-	@Value(MtpConsumptionConstants.SERVER_BIND_HOST)
-	private String bindHost;
-	@Value(MtpConsumptionConstants.SERVER_BIND_PORT)
-	private int bindPort;
-	@Value(MtpConsumptionConstants.SERVER_PUBLIC_PROTOCOL)
-	private String publicProtocol;
-	@Value(MtpConsumptionConstants.SERVER_PUBLIC_HOST)
-	private String publicHost;
-	@Value(MtpConsumptionConstants.SERVER_PUBLIC_PORT)
-	private int publicPort;
+	protected final ConsumptionProperties.HttpServer httpServer;
+
+	protected AbstractHttpServer(ConsumptionProperties.HttpServer httpServer) {
+		this.httpServer = httpServer;
+	}
 
 	@Override
 	public void start(ActorRef consumerActorRef) throws Exception {

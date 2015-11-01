@@ -6,7 +6,6 @@ import javax.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
@@ -15,23 +14,19 @@ import akka.actor.ExtendedActorSystem;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import com.vedri.mtp.core.MtpConstants;
-import com.vedri.mtp.core.cluster.ClusterInfo;
+import com.vedri.mtp.core.CoreProperties;
 
 @Slf4j
 public abstract class AkkaConfiguration {
 
-	@Value(MtpConstants.AKKA_LOG_CONFIGURATION)
-	private boolean logConfiguration;
-
-	@Value(MtpConstants.AKKA_CONFIGURATION_NAME)
-	private String akkaSystemName;
+	@Autowired
+	private CoreProperties.Akka akka;
 
 	@Autowired
 	private ApplicationContext applicationContext;
 
 	@Autowired
-	protected ClusterInfo clusterInfo;
+	protected CoreProperties.Cluster clusterInfo;
 
 	/**
 	 * Actor SpringExtension singleton for this application.
@@ -87,10 +82,10 @@ public abstract class AkkaConfiguration {
 		final Config defaultConfig = ConfigFactory.load();
 		final Config config = defaultConfig.getConfig(clusterInfo.getNodeName()).withFallback(defaultConfig);
 
-		ActorSystem system = ActorSystem.create(akkaSystemName, config);
+		ActorSystem system = ActorSystem.create(akka.getAkkaSystemName(), config);
 		// initialize the application context in the Akka Spring Extension
 
-		if (log.isDebugEnabled() && logConfiguration) {
+		if (log.isDebugEnabled() && akka.isLogConfiguration()) {
 			log.debug(system.settings().toString());
 		}
 

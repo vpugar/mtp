@@ -2,7 +2,6 @@ package com.vedri.mtp.processor.streaming;
 
 import org.apache.spark.streaming.StreamingContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,7 @@ import com.google.common.collect.Sets;
 import com.vedri.mtp.core.support.akka.AkkaTask;
 import com.vedri.mtp.core.support.akka.ClusterAwareHandler;
 import com.vedri.mtp.core.support.akka.SpringExtension;
-import com.vedri.mtp.processor.MtpProcessorConstants;
+import com.vedri.mtp.processor.ProcessorProperties;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -27,17 +26,15 @@ public class ProcessorRootActor extends ClusterAwareHandler {
 
 	public static final String NAME = "processorRootActor";
 
-	@Value(MtpProcessorConstants.SPARK_CHECKPOINT_DIR)
-	private String sparkCheckpointDir;
-
 	private final StreamingContext streamingContext;
+	private final ProcessorProperties processorProperties;
 
 	@Autowired
 	public ProcessorRootActor(final Cluster cluster, final StreamingContext streamingContext,
-			final SpringExtension.SpringExt springExt) {
-
-		super(cluster);
+			final SpringExtension.SpringExt springExt, final ProcessorProperties processorProperties) {
+		super(cluster, processorProperties.getAkka());
 		this.streamingContext = streamingContext;
+		this.processorProperties = processorProperties;
 
 		cluster.joinSeedNodes(JavaConversions.asScalaSet(Sets.<Address> newHashSet(cluster.selfAddress())).toVector());
 
@@ -54,7 +51,8 @@ public class ProcessorRootActor extends ClusterAwareHandler {
 
 		getContext().become(initializedReceive().orElse(receive));
 
-		// FIXME streamingContext.checkpoint(sparkCheckpointDir);
+
+		// FIXME streamingContext.checkpoint(processorProperties.getSpark().getCheckpointDir());
 		streamingContext.checkpoint(null);
 		streamingContext.start();
 	}

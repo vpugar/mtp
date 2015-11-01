@@ -20,6 +20,7 @@ import akka.japi.pf.ReceiveBuilder;
 import akka.pattern.Patterns;
 
 import com.google.common.collect.Iterables;
+import com.vedri.mtp.core.CoreProperties;
 
 public abstract class ClusterAwareHandler extends ClusterAwareWatcher {
 
@@ -39,8 +40,8 @@ public abstract class ClusterAwareHandler extends ClusterAwareWatcher {
 			.build();
 
 	@Autowired
-	public ClusterAwareHandler(Cluster cluster) {
-		super(cluster);
+	public ClusterAwareHandler(Cluster cluster, CoreProperties.Akka akka) {
+		super(cluster, akka);
 
 		receive(notInitializedReceive.orElse(initializedReceive()).<Object, BoxedUnit> orElse(super.receive));
 	}

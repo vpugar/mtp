@@ -18,9 +18,9 @@ import akka.event.LoggingAdapter;
 import akka.japi.pf.ReceiveBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vedri.mtp.core.MtpConstants;
+import com.vedri.mtp.core.CoreProperties;
 import com.vedri.mtp.core.support.akka.LifecycleMessage;
-import com.vedri.mtp.processor.MtpProcessorConstants;
+import com.vedri.mtp.processor.ProcessorProperties;
 import com.vedri.mtp.processor.streaming.handler.*;
 import com.vedri.mtp.processor.transaction.TransactionValidator;
 
@@ -34,10 +34,8 @@ public class KafkaStreamingActor extends AbstractActor {
 
 	@Value("#{kafkaParams}")
 	private Map<String, String> kafkaParams;
-	@Value(MtpProcessorConstants.KAFKA_TOPIC_NAME)
-	private String topicName;
-	@Value(MtpConstants.CASSANDRA_KEYSPACE)
-	private String keyspace;
+
+	private final ProcessorProperties processorProperties;
 
 	private final ObjectMapper objectMapper;
 	private final TransactionValidator transactionValidator;
@@ -48,10 +46,11 @@ public class KafkaStreamingActor extends AbstractActor {
 			.build();
 
 	@Autowired
-	public KafkaStreamingActor(final JavaStreamingContext streamingContext,
+	public KafkaStreamingActor(ProcessorProperties processorProperties,
+			final JavaStreamingContext streamingContext,
 			@Qualifier("objectMapper") final ObjectMapper objectMapper,
 			TransactionValidator transactionValidator) {
-
+		this.processorProperties = processorProperties;
 		this.objectMapper = objectMapper;
 		this.transactionValidator = transactionValidator;
 		this.streamingContext = streamingContext;
@@ -72,26 +71,37 @@ public class KafkaStreamingActor extends AbstractActor {
 	}
 
 	public void streamInit() {
+
+		final ProcessorProperties.KafkaServer kafkaServer = processorProperties.getKafkaServer();
+		final CoreProperties.Cassandra cassandra = processorProperties.getCassandra();
+
 		final CreateTransactionBuilder createTransactionBuilder = new CreateTransactionBuilder(
-				new CreateStreamBuilder(topicName, streamingContext, kafkaParams),
+				new CreateStreamBuilder(kafkaServer.getTopic().getName(), streamingContext, kafkaParams),
 				objectMapper);
 		final ValidateTransactionBuilder validateTransactionBuilder = new ValidateTransactionBuilder(
 				createTransactionBuilder, transactionValidator);
 
-		new StoreTransactionStatusBuilder(validateTransactionBuilder, keyspace).build();
+		new StoreTransactionStatusBuilder(validateTransactionBuilder, cassandra.getKeyspace()).build();
 
-		FilterOkTransactionStatusBuilder filterOkTransactionStatusBuilder =
-				new FilterOkTransactionStatusBuilder(validateTransactionBuilder);
+		FilterOkTransactionStatusBuilder filterOkTransactionStatusBuilder = new FilterOkTransactionStatusBuilder(
+				validateTransactionBuilder);
 
-		new ReceivedTimeTransactionAggregationByStatusBuilder(filterOkTransactionStatusBuilder, keyspace).build();
+		new ReceivedTimeTransactionAggregationByStatusBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
+				.build();
 
-		new ReceivedTimeTransactionAggregationByCountryBuilder(filterOkTransactionStatusBuilder, keyspace).build();
-		new ReceivedTimeTransactionAggregationByCurrencyBuilder(filterOkTransactionStatusBuilder, keyspace).build();
-		new ReceivedTimeTransactionAggregationByUserBuilder(filterOkTransactionStatusBuilder, keyspace).build();
+		new ReceivedTimeTransactionAggregationByCountryBuilder(filterOkTransactionStatusBuilder,
+				cassandra.getKeyspace()).build();
+		new ReceivedTimeTransactionAggregationByCurrencyBuilder(filterOkTransactionStatusBuilder,
+				cassandra.getKeyspace()).build();
+		new ReceivedTimeTransactionAggregationByUserBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
+				.build();
 
-		new PlacedTimeTransactionAggregationByCountryBuilder(filterOkTransactionStatusBuilder, keyspace).build();
-		new PlacedTimeTransactionAggregationByCurrencyBuilder(filterOkTransactionStatusBuilder, keyspace).build();
-		new PlacedTimeTransactionAggregationByUserBuilder(filterOkTransactionStatusBuilder, keyspace).build();
+		new PlacedTimeTransactionAggregationByCountryBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
+				.build();
+		new PlacedTimeTransactionAggregationByCurrencyBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
+				.build();
+		new PlacedTimeTransactionAggregationByUserBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
+				.build();
 	}
 
 }

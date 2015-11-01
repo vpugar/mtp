@@ -43,7 +43,7 @@ import com.vedri.mtp.core.transaction.Transaction;
 })
 @TestPropertySource(properties = {
 		"mtp.core.cluster.nodeName=node0",
-		"mtp.core.akka.configurationName=MtpConsumption",
+		"mtp.core.akka.akkaSystemName=MtpConsumption",
 		"mtp.core.akka.logConfiguration=false",
 		"mtp.consumption.server.bind.host=localhost",
 		"mtp.consumption.server.bind.port=9090",

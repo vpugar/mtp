@@ -4,24 +4,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.vedri.mtp.core.CoreConfig;
-import com.vedri.mtp.core.support.cassandra.CassandraConfiguration;
-import com.vedri.mtp.core.support.json.TransactionJacksonConfiguration;
+import com.vedri.mtp.core.CoreProperties;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
+import com.vedri.mtp.core.CoreConfig;
 import com.vedri.mtp.core.country.Country;
 import com.vedri.mtp.core.country.CountryManager;
 import com.vedri.mtp.core.rate.Rate;
 import com.vedri.mtp.core.rate.RateCalculator;
+import com.vedri.mtp.core.support.cassandra.CassandraConfiguration;
 import com.vedri.mtp.core.support.http.AkkaHttpClient1;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import com.vedri.mtp.core.support.json.TransactionJacksonConfiguration;
 
 public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 
@@ -30,7 +32,12 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 			"com.vedri.mtp.core.rate"
 	})
 	@Configuration
-	public static class ConfigurableTransactionHttpClientConfiguration {
+	public static class ConfigurableTransactionHttpClientConfiguration extends TransactionHttpClientConfiguration {
+
+		@Bean
+		CoreProperties.Cassandra cassandra() {
+			return coreProperties.getCassandra();
+		}
 	}
 
 	static class Args {
@@ -52,8 +59,9 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 	@Override
 	protected Class[] getConfigs() {
 		return new Class[] {
-				CoreConfig.class, ClientSenderConfiguration.class, TransactionJacksonConfiguration.class,
-				ConfigurableTransactionHttpClientConfiguration.class, CassandraConfiguration.class
+				CoreConfig.class, ClientAkkConfiguration.class, TransactionHttpClientConfiguration.class,
+				TransactionJacksonConfiguration.class, ConfigurableTransactionHttpClientConfiguration.class,
+				CassandraConfiguration.class
 		};
 	}
 

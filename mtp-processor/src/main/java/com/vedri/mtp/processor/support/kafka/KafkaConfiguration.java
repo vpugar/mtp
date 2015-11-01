@@ -8,45 +8,29 @@ import javax.annotation.PreDestroy;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.google.common.collect.Maps;
-import com.vedri.mtp.processor.MtpProcessorConstants;
+import com.vedri.mtp.processor.ProcessorProperties;
 
 @Configuration
 @Slf4j
 public class KafkaConfiguration {
 
-	@Value(MtpProcessorConstants.KAFKA_HOST_NAME)
-	private String hostName;
+	@Autowired
+	private ProcessorProperties processorProperties;
 
-	@Value(MtpProcessorConstants.KAFKA_PORT)
-	private String port;
-
-	@Value(MtpProcessorConstants.KAFKA_GROUP_ID)
-	private String groupId;
-
-	@Value(MtpProcessorConstants.ZOOKEEPER_CONNECT)
-	private String zookeeperConnect;
-
-	@Value(MtpProcessorConstants.KAFKA_TOPIC_NAME)
-	private String topicName;
-
-	@Value(MtpProcessorConstants.KAFKA_TOPIC_NUM_PARTITIONS)
-	private int topicNumPartitions;
-
-	@Value(MtpProcessorConstants.KAFKA_TOPIC_REPLICATION_FACTOR)
-	private int topicReplicationFactor;
-
-	@Bean(name="kafkaParams")
+	@Bean(name = "kafkaParams")
 	Map<String, String> kafkaParams() {
+		final ProcessorProperties.KafkaServer kafkaServer = processorProperties.getKafkaServer();
+
 		Map<String, String> map = Maps.newHashMap();
-		map.put("host.name", hostName);
-		map.put("port", port);
-		map.put("group.id", groupId);
-		map.put("zookeeper.connect", zookeeperConnect);
+		map.put("host.name", kafkaServer.getHost());
+		map.put("port", String.valueOf(kafkaServer.getPort()));
+		map.put("group.id", kafkaServer.getGroupId());
+		map.put("zookeeper.connect", processorProperties.getZookeeper().getConnect());
 		map.put("spark.streaming.receiver.writeAheadLog.enable", Boolean.FALSE.toString());
 		return map;
 	}
@@ -71,7 +55,9 @@ public class KafkaConfiguration {
 	}
 
 	protected void doCreateTopics(EmbeddedKafka embeddedKafka) {
-		embeddedKafka.createTopic(topicName, topicNumPartitions, topicReplicationFactor, new Properties());
+		final ProcessorProperties.KafkaServer.Topic topic = processorProperties.getKafkaServer().getTopic();
+		embeddedKafka.createTopic(topic.getName(), topic.getNumPartitions(), topic.getReplicationFactor(),
+				new Properties());
 	}
 
 }

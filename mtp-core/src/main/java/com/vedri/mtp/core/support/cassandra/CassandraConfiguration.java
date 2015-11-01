@@ -8,24 +8,20 @@ import javax.annotation.PreDestroy;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
-import com.vedri.mtp.core.MtpConstants;
+import com.vedri.mtp.core.CoreProperties;
 
 @Configuration
 @Slf4j
 public class CassandraConfiguration {
 
-	@Value(MtpConstants.CASSANDRA_CONTACT_POINTS)
-	private String[] splitContactPoints;
-	@Value(MtpConstants.CASSANDRA_PORT)
-	private int port;
-	@Value(MtpConstants.CASSANDRA_KEYSPACE)
-	private String keyspace;
+	@Autowired
+	private CoreProperties.Cassandra cassandra;
 
 	private Cluster cluster;
 
@@ -38,14 +34,14 @@ public class CassandraConfiguration {
 	public Session session() {
 		List<InetSocketAddress> addresses = new ArrayList<>();
 
-		for (String contactPoint : splitContactPoints) {
-			InetSocketAddress address = new InetSocketAddress(contactPoint, port);
+		for (String contactPoint : cassandra.getHosts()) {
+			InetSocketAddress address = new InetSocketAddress(contactPoint, cassandra.getPort());
 			addresses.add(address);
 		}
 
 		this.cluster = Cluster.builder().addContactPointsWithPorts(addresses).build();
 
-		return cluster.connect(keyspace);
+		return cluster.connect(cassandra.getKeyspace());
 	}
 
 }

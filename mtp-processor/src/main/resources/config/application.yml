@@ -1,32 +1,24 @@
-
 mtp:
-
-  core:
+  processor:
     cluster:
       nodeName: nodeProcessor0
     akka:
-      configurationName: MtpProcessor
+      akkaSystemName: MtpProcessor
       logConfiguration: false
       logClusterMetrics: false
     cassandra:
-      contactPoints: localhost
+      hosts: localhost
       port: 9042
       keyspace: mtp
-
-  processor:
     spark:
       master: local[10]
-      cassandra:
-        hosts: localhost
-      cleaner:
-        ttl: 7200
-      batch:
-        interval: 10000
-      checkpoint:
-        dir: /tmp
-    kafka:
-      group.id: mtp.group
-      host.name: localhost
+      cassandraHosts: localhost
+      cleanerTtl: 7200
+      batchInterval: 10000
+      checkpointDir: /tmp
+    kafkaServer:
+      groupId: mtp.group
+      host: localhost
       port: 9092
       topic:
         name: mtp.transaction
