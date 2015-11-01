@@ -8,6 +8,7 @@ import static org.testng.Assert.assertNotNull;
 import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
+import com.vedri.mtp.core.support.http.AkkaHttpClient1;
 import com.vedri.mtp.core.transaction.TransactionValidationStatus;
 import com.vedri.mtp.core.support.json.JacksonConfiguration;
 import org.joda.time.DateTime;
@@ -31,7 +32,7 @@ import akka.http.javadsl.model.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vedri.mtp.consumption.http.ConsumptionAkkaConfiguration;
-import com.vedri.mtp.consumption.support.json.TransactionJacksonConfiguration;
+import com.vedri.mtp.core.support.json.TransactionJacksonConfiguration;
 import com.vedri.mtp.consumption.transaction.TransactionManager;
 import com.vedri.mtp.core.CoreConfig;
 import com.vedri.mtp.core.transaction.Transaction;
@@ -67,11 +68,11 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 	@Qualifier("transactionObjectMapper")
 	private ObjectMapper objectMapper;
 
-	private HttpClient1 httpClient;
+	private AkkaHttpClient1 httpClient;
 
 	@BeforeMethod
 	public void init() {
-		httpClient = new HttpClient1(actorSystem);
+		httpClient = new AkkaHttpClient1(actorSystem);
 		httpClient.init();
 	}
 

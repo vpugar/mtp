@@ -1,0 +1,23 @@
+
+apply plugin: 'application'
+
+mainClassName = "com.vedri.mtp.consumption.http.akka.TransactionHttpClient"
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'MTP-Client', 'Implementation-Version': rootProject.version, 'Build-Date': buildDate
+    }
+}
+
+dependencies {
+
+    compile(
+            ["com.google.guava:guava:${guavaVersion}"],
+            ["com.fasterxml.jackson.datatype:jackson-datatype-joda:${jacksonVersion}"],
+            ["com.typesafe.akka:akka-http-experimental_${scalaMajorVersion}:${akkaHttpVersion}"],
+            ["com.typesafe.akka:akka-http-jackson-experimental_${scalaMajorVersion}:${akkaHttpVersion}"],
+            ["org.scala-lang:scala-library:${scalaVersion}"],
+            ["org.springframework.boot:spring-boot-starter:${springBootVersion}"],
+            ["com.beust:jcommander:${jcommanderVersion}"]
+    )
+}

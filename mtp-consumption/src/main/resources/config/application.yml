@@ -31,11 +31,3 @@ mtp:
         host: localhost
         port: 9090
 
----
-
-spring:
-  profiles: nodeClient0
-mtp:
-
-  core:
-    cluster.nodeName: nodeClient0

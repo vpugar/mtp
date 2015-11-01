@@ -9,6 +9,15 @@ CREATE TABLE IF NOT EXISTS country (
   PRIMARY KEY (cca2)
 );
 
+CREATE TABLE IF NOT EXISTS rate (
+  currency_from text,
+  currency_to text,
+  rate_date timestamp,
+  cf_rate text,
+  bank_rate text,
+  PRIMARY KEY ((currency_from, currency_to), rate_date)
+) WITH CLUSTERING ORDER BY (rate_date DESC);
+
 CREATE TABLE IF NOT EXISTS transaction (
   partition text,
   transaction_id timeuuid,

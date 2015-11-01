@@ -3,13 +3,13 @@ package com.vedri.mtp.processor.transaction;
 import java.math.BigDecimal;
 import java.util.Set;
 
-import com.vedri.mtp.core.transaction.TransactionValidationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.vedri.mtp.core.country.Country;
+import com.vedri.mtp.core.country.CountryManager;
 import com.vedri.mtp.core.transaction.Transaction;
-import com.vedri.mtp.processor.country.Country;
-import com.vedri.mtp.processor.country.CountryManager;
+import com.vedri.mtp.core.transaction.TransactionValidationStatus;
 
 @Component
 public class TransactionValidator {
@@ -39,7 +39,11 @@ public class TransactionValidator {
 	}
 
 	private boolean checkAmountSanity(Transaction transaction) {
-		return transaction.getAmountBuy().divide(transaction.getAmountSell()).equals(transaction.getRate());
+		final double amountBuy = transaction.getAmountBuy().doubleValue();
+		final double amountSell = transaction.getAmountSell().doubleValue();
+		transaction.getAmountBuy().multiply(transaction.getRate());
+		final double amountBuy2 = amountSell * transaction.getRate().doubleValue();
+		return amountBuy2 + 0.00001 >= amountBuy && amountBuy2 - 0.00001 <= amountBuy;
 	}
 
 	private TransactionValidationStatus checkOriginatingCountry(Transaction transaction) {
@@ -56,9 +60,9 @@ public class TransactionValidator {
 				return TransactionValidationStatus.InvalidFromCurrency;
 			}
 			// TODO check if this is valid check
-			if (!fromCurrency.contains(country)) {
-				return TransactionValidationStatus.InvalidFromCurrency;
-			}
+//			if (!fromCurrency.contains(country)) {
+//				return TransactionValidationStatus.InvalidFromCurrency;
+//			}
 
 			final Set<Country> toCurrency = countryManager.getCountriesFromCurrency(transaction.getCurrencyTo());
 

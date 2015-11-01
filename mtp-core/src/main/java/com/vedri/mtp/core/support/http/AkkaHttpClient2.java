@@ -1,4 +1,4 @@
-package com.vedri.mtp.consumption.http.akka;
+package com.vedri.mtp.core.support.http;
 
 import java.util.Arrays;
 
@@ -19,14 +19,14 @@ import akka.stream.javadsl.Flow;
 import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.Source;
 
-public class HttpClient2 {
+public class AkkaHttpClient2 {
 
 	private final ActorSystem actorSystem;
 	private ActorMaterializer materializer;
 	private Flow<Tuple2<HttpRequest, Integer>, Tuple2<Try<HttpResponse>, Integer>, BoxedUnit> flow;
 
 	@Autowired
-	public HttpClient2(ActorSystem actorSystem) {
+	public AkkaHttpClient2(ActorSystem actorSystem) {
 		this.actorSystem = actorSystem;
 	}
 

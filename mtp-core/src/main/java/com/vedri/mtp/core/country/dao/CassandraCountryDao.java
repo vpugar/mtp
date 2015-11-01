@@ -1,9 +1,8 @@
-package com.vedri.mtp.processor.country.dao;
+package com.vedri.mtp.core.country.dao;
 
-import static com.vedri.mtp.processor.country.Country.Fields.*;
+import static com.vedri.mtp.core.country.Country.Fields.*;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.datastax.driver.core.*;
-import com.vedri.mtp.processor.country.Country;
+import com.vedri.mtp.core.country.Country;
 
 @Component
 @Slf4j
@@ -32,7 +31,7 @@ public class CassandraCountryDao implements CountryDao {
 	}
 
 	@Override
-	public Set<Country> loadAll() {
+	public List<Country> loadAll() {
 
 		if (log.isDebugEnabled()) {
 			log.debug("Loading countries");
@@ -46,7 +45,7 @@ public class CassandraCountryDao implements CountryDao {
 		return rows
 				.stream()
 				.map(this::mapRowToCountry)
-				.collect(Collectors.toSet());
+				.collect(Collectors.toList());
 	}
 
 	private void initStatements() {

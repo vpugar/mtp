@@ -66,9 +66,16 @@ allprojects {
     }
 }
 
+project(':mtp-client') {
+    dependencies {
+        compile project(':mtp-core')
+    }
+}
+
 project(':mtp-consumption') {
     dependencies {
         compile project(':mtp-core')
+        testCompile project(':mtp-client')
     }
 }
 

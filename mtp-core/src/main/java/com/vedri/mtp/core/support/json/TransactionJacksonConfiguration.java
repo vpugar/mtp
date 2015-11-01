@@ -1,4 +1,4 @@
-package com.vedri.mtp.consumption.support.json;
+package com.vedri.mtp.core.support.json;
 
 import org.joda.time.DateTime;
 import org.springframework.context.annotation.Bean;
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.vedri.mtp.consumption.MtpConsumptionConstants;
+import com.vedri.mtp.core.MtpConstants;
 
 @Configuration
 public class TransactionJacksonConfiguration {
@@ -16,7 +16,7 @@ public class TransactionJacksonConfiguration {
 	public JodaModule transactionJodaModule() {
 		final JodaModule jodaModule = new JodaModule();
 		jodaModule.addDeserializer(DateTime.class,
-				new CustomDateDateTimeDeserializer(MtpConsumptionConstants.TRANSACTION_DATE_FORMAT));
+				new CustomDateDateTimeDeserializer(MtpConstants.TRANSACTION_DATE_FORMAT));
 		return jodaModule;
 	}
 

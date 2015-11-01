@@ -2,8 +2,6 @@ package com.vedri.mtp.consumption;
 
 public interface MtpConsumptionConstants {
 
-    String TRANSACTION_DATE_FORMAT = "ddMMMyy HH:mm:ss";
-
     // configs
     String CONFIG_PREFIX = "mtp.consumption";
 

@@ -1,1 +1,1 @@
-include 'mtp-core', 'mtp-consumption', 'mtp-processor', 'mtp-frontend'
+include 'mtp-core', 'mtp-client', 'mtp-consumption', 'mtp-processor', 'mtp-frontend'

@@ -1,28 +1,27 @@
-package com.vedri.mtp.consumption.http.akka;
+package com.vedri.mtp.core.support.http;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import akka.http.javadsl.model.ContentType;
+import akka.http.impl.model.JavaUri;
+import akka.http.javadsl.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import scala.concurrent.Future;
 import akka.actor.ActorSystem;
 import akka.http.javadsl.Http;
-import akka.http.javadsl.model.HttpHeader;
-import akka.http.javadsl.model.HttpRequest;
-import akka.http.javadsl.model.HttpResponse;
 import akka.stream.ActorMaterializer;
 
-public class HttpClient1 {
+public class AkkaHttpClient1 {
 
 	private final ActorSystem actorSystem;
 	private ActorMaterializer materializer;
 
 	@Autowired
-	public HttpClient1(ActorSystem actorSystem) {
+	public AkkaHttpClient1(ActorSystem actorSystem) {
 		this.actorSystem = actorSystem;
 	}
 
@@ -38,9 +37,14 @@ public class HttpClient1 {
 		}
 	}
 
-	public Future<HttpResponse> get(String url, HttpHeader... httpHeader) {
+	public Future<HttpResponse> get(String url, Map<String, String> params, HttpHeader... httpHeader) {
+
+		final Uri uri = Uri.create(url);
+		for (Map.Entry<String, String> entry : params.entrySet()) {
+			uri.addParameter(entry.getKey(), entry.getValue());
+		}
 		return Http.get(actorSystem)
-				.singleRequest(HttpRequest.GET(url)
+				.singleRequest(HttpRequest.create(uri.toString()).withMethod(HttpMethods.GET)
 						.addHeaders(Arrays.asList(httpHeader)), materializer);
 	}
 

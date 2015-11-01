@@ -1,4 +1,4 @@
-package com.vedri.mtp.consumption.support.json;
+package com.vedri.mtp.core.support.json;
 
 import java.io.IOException;
 import java.util.TimeZone;
