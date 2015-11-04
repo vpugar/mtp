@@ -1,7 +1,32 @@
+import org.apache.tools.ant.taskdefs.condition.Os
 
+apply plugin: 'war'
 apply plugin: 'application'
+defaultTasks 'bootRun'
+apply plugin: 'spring-boot'
+apply plugin: 'com.moowork.node'
+
+// bower
+
+task bower(type: Exec) {
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd', '/c', 'bower', 'install'
+    }else{
+        commandLine 'bower', 'install'
+    }
+}
+
+bower.onlyIf { !project.hasProperty('skipBower') }
+processResources.dependsOn 'bower'
+
+
+// build
 
 mainClassName = "com.vedri.mtp.frontend.FrontendApplication"
+
+bootRun {
+    args = ["--spring.profiles.active=prod"]
+}
 
 jar {
     manifest {
@@ -9,10 +34,76 @@ jar {
     }
 }
 
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven {
+            url 'http://repo.spring.io/plugins-release'
+        }
+        maven {
+            url 'http://repo.spring.io/milestone'
+        }
+    }
+    dependencies {
+        classpath group: 'org.springframework.boot', name: 'spring-boot-gradle-plugin', version: springBootVersion
+        classpath('com.moowork.gradle:gradle-node-plugin:0.10')
+    }
+}
+
 dependencies {
 
     compile(
+            ["io.dropwizard.metrics:metrics-core"],
+            ["io.dropwizard.metrics:metrics-graphite:${dropwizardMetricsVersion}"],
+            ["io.dropwizard.metrics:metrics-healthchecks:${dropwizardMetricsVersion}"],
+            ["io.dropwizard.metrics:metrics-jvm:${dropwizardMetricsVersion}"],
+            ["io.dropwizard.metrics:metrics-servlet:${dropwizardMetricsVersion}"],
+            ["io.dropwizard.metrics:metrics-json:${dropwizardMetricsVersion}"],
+            ["com.fasterxml.jackson.datatype:jackson-datatype-json-org:${jacksonVersionWithJSR310}"],
+            ["com.fasterxml.jackson.datatype:jackson-datatype-hppc:${jacksonVersionWithJSR310}"],
+            ["com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersionWithJSR310}"],
+            ["com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:${jacksonVersionWithJSR310}"],
+            ["com.fasterxml.jackson.core:jackson-annotations:${jacksonVersionWithJSR310}"],
+            ["com.fasterxml.jackson.core:jackson-databind:${jacksonVersionWithJSR310}"],
+            ["org.apache.commons:commons-lang3:${commonsLangVersion}"],
+            ["commons-io:commons-io:${commonsIoVersion}"],
+            ["org.apache.geronimo.javamail:geronimo-javamail_1.4_mail:${geronimoJavamailMailVersion}"],
+            ["org.hibernate:hibernate-core"],
+            ["org.springframework.boot:spring-boot-actuator"],
+            ["org.springframework.boot:spring-boot-autoconfigure"],
+            ["org.springframework.boot:spring-boot-loader-tools"],
+            ["org.springframework.boot:spring-boot-devtools"],
+            ["org.springframework.boot:spring-boot-starter-logging"],
+            ["org.springframework.boot:spring-boot-starter-aop"],
+            ["org.springframework.boot:spring-boot-starter-security"],
+            ["org.springframework.boot:spring-boot-starter-websocket"],
+            ["org.springframework.data:spring-data-cassandra"],
+            ["com.datastax.cassandra:cassandra-driver-mapping:${cassandraDriverVersion}"],
+            ["org.springframework.security:spring-security-config:${springSecurityVersion}"],
+            ["org.springframework.security:spring-security-data:${springSecurityVersion}"],
+            ["org.springframework.security:spring-security-web:${springSecurityVersion}"],
+            ["org.springframework.security:spring-security-messaging:${springSecurityVersion}"],
+            ["org.springframework.security.oauth:spring-security-oauth2:${springSecurityOauth2Version}"],
+            ["fr.ippon.spark.metrics:metrics-spark-reporter:${metricsSparkReporterVersion}"]
     )
+    compile("io.dropwizard.metrics:metrics-servlets:${dropwizardMetricsVersion}") {
+        exclude(module: 'metrics-healthchecks')
+    }
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    compile("com.datastax.cassandra:cassandra-driver-core:${cassandraDriverVersion}") {
+        exclude module: 'com.codahale.metrics'
+    }
+    compile("com.ryantenney.metrics:metrics-spring:${metricsSpringVersion}") {
+        exclude(module: 'metrics-core')
+        exclude(module: 'metrics-healthchecks')
+    }
+    compile("io.springfox:springfox-swagger2:${springfoxVersion}") {
+        exclude module: 'mapstruct'
+    }
     testCompile(
     )
 }

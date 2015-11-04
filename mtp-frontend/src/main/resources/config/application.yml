@@ -1,0 +1,37 @@
+spring:
+    messages:
+        basename: classpath:/i18n/messages
+    mvc:
+        favicon:
+            enabled: false
+security:
+    basic:
+        enabled: false
+server:
+  port: 8080
+mtp:
+  frontend:
+    cluster:
+      nodeName: nodeFrontend0
+    cassandra:
+      hosts: localhost
+      port: 9042
+      keyspace: mtp
+    security:
+        authentication:
+            oauth:
+                clientid: mtpapp
+                secret: mySecretOAuthSecret
+                # Token is valid 30 minutes
+                tokenValidityInSeconds: 1800
+        rememberme:
+            # security key (this key should be unique for your application, and kept secret)
+            key: 5b802eb2cabc806b60315220f1aac2948a834541
+    swagger:
+        title: MTP API
+        description: MTP API documentation
+        version: 0.0.1
+        termsOfServiceUrl:
+        contact:
+        license:
+        licenseUrl:

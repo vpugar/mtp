@@ -1,0 +1,10 @@
+{
+    "main": {
+        "title": "Welcome, MTP User!",
+        "subtitle": "This is your homepage",
+        "logged": {
+            "message": "You are logged in as user \"{{username}}\"."
+        },
+        "github": "Github"
+    }
+}
