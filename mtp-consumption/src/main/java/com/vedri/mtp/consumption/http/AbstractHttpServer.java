@@ -21,9 +21,9 @@ public abstract class AbstractHttpServer implements HttpServer {
 	}
 
 	@Override
-	public void start(ActorRef consumerActorRef) throws Exception {
+	public void start() throws Exception {
 		log.info("Starting http server");
-		doStart(consumerActorRef);
+		doStart();
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public abstract class AbstractHttpServer implements HttpServer {
 		doStop();
 	}
 
-	protected abstract void doStart(ActorRef consumerActorRef) throws Exception;
+	protected abstract void doStart() throws Exception;
 
 	protected abstract void doStop() throws Exception;
 

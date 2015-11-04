@@ -2,6 +2,8 @@ package com.vedri.mtp.processor.streaming;
 
 import java.util.Map;
 
+import kafka.serializer.Decoder;
+
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,9 +19,9 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.japi.pf.ReceiveBuilder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vedri.mtp.core.CoreProperties;
 import com.vedri.mtp.core.support.akka.LifecycleMessage;
+import com.vedri.mtp.core.transaction.Transaction;
 import com.vedri.mtp.processor.ProcessorProperties;
 import com.vedri.mtp.processor.streaming.handler.*;
 import com.vedri.mtp.processor.transaction.TransactionValidator;
@@ -37,7 +39,7 @@ public class KafkaStreamingActor extends AbstractActor {
 
 	private final ProcessorProperties processorProperties;
 
-	private final ObjectMapper objectMapper;
+	private final Decoder<Transaction> decoder;
 	private final TransactionValidator transactionValidator;
 	private final JavaStreamingContext streamingContext;
 
@@ -46,21 +48,18 @@ public class KafkaStreamingActor extends AbstractActor {
 			.build();
 
 	@Autowired
-	public KafkaStreamingActor(ProcessorProperties processorProperties,
+	public KafkaStreamingActor(final ProcessorProperties processorProperties,
 			final JavaStreamingContext streamingContext,
-			@Qualifier("objectMapper") final ObjectMapper objectMapper,
-			TransactionValidator transactionValidator) {
+			@Qualifier("transactionKryoDecoder") final Decoder<Transaction> decoder,
+			final TransactionValidator transactionValidator) {
+
 		this.processorProperties = processorProperties;
-		this.objectMapper = objectMapper;
+		this.decoder = decoder;
 		this.transactionValidator = transactionValidator;
 		this.streamingContext = streamingContext;
 
 		receive(receive);
 		// TODO final ActorRef listener
-	}
-
-	public ObjectMapper getObjectMapper() {
-		return objectMapper;
 	}
 
 	@Override
@@ -77,13 +76,13 @@ public class KafkaStreamingActor extends AbstractActor {
 
 		final CreateTransactionBuilder createTransactionBuilder = new CreateTransactionBuilder(
 				new CreateStreamBuilder(kafkaServer.getTopic().getName(), streamingContext, kafkaParams),
-				objectMapper);
+				decoder);
 		final ValidateTransactionBuilder validateTransactionBuilder = new ValidateTransactionBuilder(
 				createTransactionBuilder, transactionValidator);
 
 		new StoreTransactionStatusBuilder(validateTransactionBuilder, cassandra.getKeyspace()).build();
 
-		FilterOkTransactionStatusBuilder filterOkTransactionStatusBuilder = new FilterOkTransactionStatusBuilder(
+		final FilterOkTransactionStatusBuilder filterOkTransactionStatusBuilder = new FilterOkTransactionStatusBuilder(
 				validateTransactionBuilder);
 
 		new ReceivedTimeTransactionAggregationByStatusBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())

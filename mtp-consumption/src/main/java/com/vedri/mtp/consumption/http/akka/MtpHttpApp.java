@@ -1,20 +1,20 @@
 package com.vedri.mtp.consumption.http.akka;
 
 import static akka.http.javadsl.model.HttpResponse.create;
-import static akka.http.javadsl.model.StatusCodes.CREATED;
-import static akka.http.javadsl.model.StatusCodes.INTERNAL_SERVER_ERROR;
+import static akka.http.javadsl.model.StatusCodes.*;
 import static akka.http.javadsl.server.RequestVals.entityAs;
 import static akka.http.javadsl.server.values.PathMatchers.uuid;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import lombok.extern.slf4j.Slf4j;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 import scala.runtime.BoxedUnit;
 import akka.actor.ActorSystem;
-import akka.http.javadsl.marshallers.jackson.Jackson;
+import akka.http.javadsl.marshallers.jackson.CustomJackson;
 import akka.http.javadsl.model.HttpResponse;
 import akka.http.javadsl.model.Uri;
 import akka.http.javadsl.model.headers.Location;
@@ -25,8 +25,10 @@ import akka.http.javadsl.server.values.PathMatcher;
 import akka.http.scaladsl.Http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vedri.mtp.consumption.transaction.ValidationFailedException;
 import com.vedri.mtp.core.transaction.Transaction;
 
+@Slf4j
 class MtpHttpApp extends HttpApp {
 
 	private final AkkaHttpServer akkaHttpServer;
@@ -62,30 +64,46 @@ class MtpHttpApp extends HttpApp {
 		}
 	}
 
+	// TODO Unsupported Media Type
 	@Override
 	public Route createRoute() {
 
 		PathMatcher<UUID> uuidExtractor = uuid();
 
-		Route getRoute = get(path(uuidExtractor)
+		final Route getRoute = get(path(uuidExtractor)
 				.route(handleWith1(uuidExtractor,
-						(ctx, uuid) -> ctx.completeAs(Jackson.json(objectMapper),
+						(ctx, uuid) -> ctx.completeAs(CustomJackson.json(objectMapper),
 								akkaHttpServer.doGetTransaction(uuid)))));
 
-		Route postRoute = post(handleWith1(entityAs(Jackson.jsonAs(objectMapper, Transaction.class)),
+		final Route postRoute = post(handleWith1(entityAs(CustomJackson.jsonAs(objectMapper, Transaction.class)),
 				(ctx, transaction) -> {
-					Transaction added = akkaHttpServer.doAddTransaction(transaction);
-					return ctx.complete(HttpResponse.create()
-							.withStatus(CREATED)
-							.addHeader(
-									Location.create(
-											Uri.create(defaultPublicUri + "transactions/"
-													+ added.getTransactionId()))));
+					try {
+						Transaction added = akkaHttpServer.doAddTransaction(transaction);
+						return ctx.complete(HttpResponse
+								.create()
+								.withStatus(CREATED)
+								.addHeader(
+										Location.create(
+												Uri.create(defaultPublicUri + "transactions/"
+														+ added.getTransactionId()))));
+					}
+					catch (Exception e) {
+						throw new IllegalArgumentException(e.getMessage(), e);
+					}
 				}));
 
 		final ExceptionHandler exceptionHandler = e -> {
-			e.printStackTrace();
-			return complete(create().withStatus(INTERNAL_SERVER_ERROR));
+			if (e instanceof IllegalArgumentException || e instanceof ValidationFailedException) {
+				log.info("Parsing failed {}", e.getMessage());
+				return complete(HttpResponse
+						.create()
+						.withStatus(BAD_REQUEST)
+						.withEntity(e.getMessage()));
+			}
+			else {
+				log.error("Request failed" + e.getMessage(), e);
+				return complete(create().withStatus(INTERNAL_SERVER_ERROR));
+			}
 		};
 
 		return handleExceptions(exceptionHandler, pathPrefix("transactions").route(getRoute, postRoute));

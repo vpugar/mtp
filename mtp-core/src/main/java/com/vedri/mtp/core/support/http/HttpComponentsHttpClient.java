@@ -1,7 +1,5 @@
 package com.vedri.mtp.core.support.http;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -9,7 +7,6 @@ import javax.annotation.PreDestroy;
 import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;

@@ -14,7 +14,7 @@ import org.joda.time.DateTime;
 @Setter
 @Getter
 @ToString
-public class Transaction implements Serializable {
+public class Transaction implements Serializable, Cloneable {
 
 	// storage extra
 	private String partition;

@@ -1,12 +1,15 @@
 package com.vedri.mtp.consumption.transaction;
 
+import akka.actor.ActorRef;
 import com.vedri.mtp.core.transaction.Transaction;
 
 import java.util.UUID;
 
 public interface TransactionManager {
 
-    Transaction addTransaction(final Transaction transaction);
+    void start(final ActorRef consumerActorRef);
+
+    Transaction addTransaction(final Transaction transaction) throws ValidationFailedException, Exception;
 
     Transaction getTransaction(final String transactionId);
 

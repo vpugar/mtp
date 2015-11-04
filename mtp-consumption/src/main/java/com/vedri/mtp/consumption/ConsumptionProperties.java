@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = MtpConsumptionConstants.CONFIG_PREFIX, ignoreUnknownFields = false)
+@ConfigurationProperties(prefix = MtpConsumptionConstants.CONFIG_PREFIX, ignoreUnknownFields = true)
 @Getter
 public class ConsumptionProperties {
 
@@ -31,8 +31,6 @@ public class ConsumptionProperties {
     @Setter
     public static class KafkaClient {
         private String bootstrapServers;
-        private String keySerializer;
-        private String valueSerializer;
         private String acks;
         private String batchSize;
         private String topicName;

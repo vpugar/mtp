@@ -2,6 +2,7 @@ package com.vedri.mtp.processor;
 
 import com.vedri.mtp.core.support.cassandra.CassandraConfiguration;
 import com.vedri.mtp.core.support.json.JacksonConfiguration;
+import com.vedri.mtp.core.support.kyro.KryoConfiguration;
 import com.vedri.mtp.processor.support.kafka.KafkaConfiguration;
 import com.vedri.mtp.processor.support.spark.SparkConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -15,7 +16,7 @@ public class ProcessorApplication extends AbstractApplication {
 	protected Class[] getConfigs() {
 		return new Class[] {
 				CoreConfig.class, ProcessorConfig.class, JacksonConfiguration.class, CassandraConfiguration.class,
-				KafkaConfiguration.class, SparkConfiguration.class
+				KafkaConfiguration.class, SparkConfiguration.class, KryoConfiguration.class
 		};
 	}
 

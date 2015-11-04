@@ -10,9 +10,10 @@ import com.vedri.mtp.core.CoreProperties;
 
 @ComponentScan(basePackages = {
 		"com.vedri.mtp.consumption.http",
-		"com.vedri.mtp.core.support.json",
 		"com.vedri.mtp.consumption.support.kafka",
-		"com.vedri.mtp.consumption.transaction"
+		"com.vedri.mtp.consumption.transaction",
+		"com.vedri.mtp.core.transaction",
+		"com.vedri.mtp.core.support.json"
 })
 @Configuration
 @EnableConfigurationProperties({ ConsumptionProperties.class })

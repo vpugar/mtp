@@ -1,5 +1,6 @@
 
 apply plugin: 'application'
+apply plugin: 'scala'
 
 mainClassName = "com.vedri.mtp.consumption.ConsumptionApplication"
 

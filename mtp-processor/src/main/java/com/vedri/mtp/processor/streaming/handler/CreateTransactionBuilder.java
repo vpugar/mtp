@@ -1,27 +1,28 @@
 package com.vedri.mtp.processor.streaming.handler;
 
+import kafka.serializer.Decoder;
+
 import org.apache.spark.streaming.api.java.JavaPairDStream;
 import org.apache.spark.streaming.api.java.JavaPairInputDStream;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vedri.mtp.core.transaction.Transaction;
 
 public class CreateTransactionBuilder
-		extends StreamBuilder<JavaPairInputDStream<String, String>, JavaPairDStream<String, Transaction>> {
+		extends StreamBuilder<JavaPairInputDStream<String, byte[]>, JavaPairDStream<String, Transaction>> {
 
-	private static ObjectMapper objectMapper;
+	private static Decoder<Transaction> decoder;
 
-	public CreateTransactionBuilder(StreamBuilder<?, JavaPairInputDStream<String, String>> prevBuilder,
-									ObjectMapper objectMapper) {
+	public CreateTransactionBuilder(StreamBuilder<?, JavaPairInputDStream<String, byte[]>> prevBuilder,
+			final Decoder<Transaction> decoder) {
 		super(prevBuilder);
-		this.objectMapper = objectMapper;
+		this.decoder = decoder;
 	}
 
 	@Override
-	protected JavaPairDStream<String, Transaction> doBuild(JavaPairInputDStream<String, String> stream) {
+	protected JavaPairDStream<String, Transaction> doBuild(JavaPairInputDStream<String, byte[]> stream) {
 
 		// create transaction
-		return stream.mapValues(json -> objectMapper.readValue(json, Transaction.class));
+		return stream.mapValues(data -> decoder.fromBytes(data));
 	}
 
 }

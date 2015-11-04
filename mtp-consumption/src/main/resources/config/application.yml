@@ -12,8 +12,6 @@ mtp:
     balancingPool.instances: 5
     kafkaClient:
       bootstrapServers: localhost:9092
-      keySerializer: org.apache.kafka.common.serialization.StringSerializer
-      valueSerializer: org.apache.kafka.common.serialization.StringSerializer
       acks: 1
       batchSize: 100
       topicName: mtp.transaction

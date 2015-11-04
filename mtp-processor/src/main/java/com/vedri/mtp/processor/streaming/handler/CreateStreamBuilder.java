@@ -2,6 +2,7 @@ package com.vedri.mtp.processor.streaming.handler;
 
 import java.util.Map;
 
+import kafka.serializer.DefaultDecoder;
 import kafka.serializer.StringDecoder;
 
 import org.apache.spark.storage.StorageLevel;
@@ -11,7 +12,7 @@ import org.apache.spark.streaming.kafka.KafkaUtils;
 
 import com.google.common.collect.Maps;
 
-public class CreateStreamBuilder extends StreamBuilder<NoIO, JavaPairInputDStream<String, String>> {
+public class CreateStreamBuilder extends StreamBuilder<NoIO, JavaPairInputDStream<String, byte[]>> {
 
 	private static JavaStreamingContext streamingContext;
 	private String topicName;
@@ -26,14 +27,14 @@ public class CreateStreamBuilder extends StreamBuilder<NoIO, JavaPairInputDStrea
 	}
 
 	@Override
-	protected JavaPairInputDStream<String, String> doBuild(NoIO input) {
+	protected JavaPairInputDStream<String, byte[]> doBuild(NoIO input) {
 
 		final Map<String, Integer> topics = Maps.newHashMap();
 		topics.put(topicName, 1);
 
 		// String, String, StringDecoder, StringDecoder
 		return KafkaUtils.createStream(streamingContext,
-				String.class, String.class, StringDecoder.class, StringDecoder.class,
+				String.class, byte[].class, StringDecoder.class, DefaultDecoder.class,
 				kafkaParams, topics, StorageLevel.MEMORY_AND_DISK());
 	}
 }

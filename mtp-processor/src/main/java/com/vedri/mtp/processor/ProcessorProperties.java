@@ -30,6 +30,13 @@ public class ProcessorProperties {
         private String cleanerTtl;
         private long batchInterval;
         private String checkpointDir;
+        private Kryoserializer kryoserializer = new Kryoserializer();
+
+        @Getter
+        @Setter
+        public static class Kryoserializer {
+            private int bufferMb = 24;
+        }
     }
 
     @Getter

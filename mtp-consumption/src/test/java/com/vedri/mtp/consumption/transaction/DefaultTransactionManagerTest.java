@@ -16,7 +16,7 @@ import com.vedri.mtp.consumption.transaction.dao.CassandraTransactionDao;
 import com.vedri.mtp.core.CoreConfig;
 
 @ContextConfiguration(classes = {
-		EmbeddedCassandraConfiguration.class, CoreConfig.class, DefaultTransactionManager.class,
+		EmbeddedCassandraConfiguration.class, CoreConfig.class, KafkaTransactionManager.class,
 		TransactionValidator.class, CassandraTransactionDao.class
 })
 @TestPropertySource(properties = {
@@ -31,7 +31,7 @@ public class DefaultTransactionManagerTest extends AbstractTestNGSpringContextTe
 	private TransactionManager transactionManager;
 
 	@Test
-	public void transactionLifecycle() {
+	public void transactionLifecycle() throws ValidationFailedException, Exception {
 
 		Transaction transaction = new Transaction("vp", "EUR", "HRK", new BigDecimal(100),
 				new BigDecimal(750), new BigDecimal(7.5), new DateTime(), "HR");

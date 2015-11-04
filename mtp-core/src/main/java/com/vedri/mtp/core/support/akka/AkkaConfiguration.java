@@ -15,9 +15,11 @@ import akka.actor.ExtendedActorSystem;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.vedri.mtp.core.CoreProperties;
+import org.springframework.context.annotation.Configuration;
 
 @Slf4j
-public abstract class AkkaConfiguration {
+@Configuration
+public class AkkaConfiguration {
 
 	@Autowired
 	private CoreProperties.Akka akka;
