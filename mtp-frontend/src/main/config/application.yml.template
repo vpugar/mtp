@@ -1,0 +1,4 @@
+mtp:
+  frontend:
+    cassandra:
+      hosts: localhost

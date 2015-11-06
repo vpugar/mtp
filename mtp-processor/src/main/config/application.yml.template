@@ -1,0 +1,13 @@
+mtp:
+  processor:
+    cassandra:
+      hosts: localhost
+    spark:
+      master: local[10]
+      cassandraHosts: localhost
+      batchInterval: 10000
+      checkpointDir: /tmp
+    kafkaServer:
+      host: localhost
+    zookeeper:
+      connect: localhost:2181

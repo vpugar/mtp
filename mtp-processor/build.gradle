@@ -9,6 +9,10 @@ jar {
     }
 }
 
+applicationDistribution.from("src/main/config/") {
+    into "config"
+}
+
 dependencies {
 
     compile(
