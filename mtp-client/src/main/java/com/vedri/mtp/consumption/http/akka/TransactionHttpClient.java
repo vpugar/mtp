@@ -2,8 +2,8 @@ package com.vedri.mtp.consumption.http.akka;
 
 import java.util.concurrent.TimeUnit;
 
-import com.vedri.mtp.core.CoreProperties;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +19,7 @@ import akka.http.javadsl.model.HttpResponse;
 import akka.http.javadsl.model.MediaTypes;
 
 import com.vedri.mtp.core.CoreConfig;
+import com.vedri.mtp.core.CoreProperties;
 import com.vedri.mtp.core.support.akka.AkkaConfiguration;
 import com.vedri.mtp.core.support.http.AkkaHttpClient1;
 import com.vedri.mtp.core.support.spring.AbstractApplication;
@@ -47,6 +48,7 @@ public class TransactionHttpClient extends AbstractApplication {
 	public static class ClientAkkConfiguration extends AkkaConfiguration {
 	}
 
+	private String url = "http://localhost:9090/transactions";
 	private AkkaHttpClient1 httpClient;
 
 	@Override
@@ -54,6 +56,10 @@ public class TransactionHttpClient extends AbstractApplication {
 		return new Class[] {
 				CoreConfig.class, ClientAkkConfiguration.class, TransactionHttpClientConfiguration.class
 		};
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	@Override
@@ -93,8 +99,7 @@ public class TransactionHttpClient extends AbstractApplication {
 
 		final String request = doCreateRequest();
 		final ContentType contentType = ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8);
-		final Future<HttpResponse> post = httpClient.post("http://localhost:9090/transactions",
-				contentType, request);
+		final Future<HttpResponse> post = httpClient.post(url, contentType, request);
 
 		final HttpResponse result = Await.result(post, Duration.apply(10, TimeUnit.SECONDS));
 		System.out.println("Response: " + result);

@@ -47,6 +47,9 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 
 		@Parameter(required = false, names = "pauseMs")
 		private int pauseMs = 60000;
+
+		@Parameter(required = false, names = "url")
+		private String url = "http://localhost:9090/transactions";
 	}
 
 	private Args argsConf;
@@ -102,6 +105,8 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 	public ApplicationContext startApplication(String[] args, String... customProfile) throws Exception {
 		argsConf = new Args();
 		new JCommander(argsConf, args);
+
+		setUrl(argsConf.url);
 
 		return super.startApplication(args, customProfile);
 	}

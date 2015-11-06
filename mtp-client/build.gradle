@@ -1,7 +1,7 @@
 
 apply plugin: 'application'
 
-mainClassName = "com.vedri.mtp.consumption.http.akka.TransactionHttpClient"
+mainClassName = "com.vedri.mtp.consumption.http.akka.ConfigurableTransactionHttpClient"
 
 jar {
     manifest {
