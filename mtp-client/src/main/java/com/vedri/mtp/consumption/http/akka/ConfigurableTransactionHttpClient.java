@@ -42,13 +42,13 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 
 	static class Args {
 
-		@Parameter(required = false, names = "repeatCount")
+		@Parameter(required = false, names = {"-r", "--repeatCount"})
 		private int repeatCount = 10;
 
-		@Parameter(required = false, names = "pauseMs")
+		@Parameter(required = false, names = {"-p", "--pauseMs"})
 		private int pauseMs = 60000;
 
-		@Parameter(required = false, names = "url")
+		@Parameter(required = false, names = {"-u", "--url"})
 		private String url = "http://localhost:9090/transactions";
 	}
 
