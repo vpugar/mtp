@@ -22,8 +22,6 @@ processResources.dependsOn 'bower'
 
 // build
 
-mainClassName = "com.vedri.mtp.frontend.FrontendApplication"
-
 bootRun {
     args = ["--spring.profiles.active=prod"]
 }
@@ -38,9 +36,13 @@ applicationDistribution.from("src/main/conf/") {
     into "conf"
 }
 
+applicationDefaultJvmArgs = ["--spring.config.location=classpath:/application-custom.yml"]
+
 startScripts {
-//    classpath  = files('$APP_HOME/lib/*')
-    classpath = files('$APP_HOME/conf') + classpath
+    doLast {
+        unixScript.text = unixScript.text.replace('CLASSPATH=$APP_HOME', 'CLASSPATH=$APP_HOME/conf:$APP_HOME')
+        windowsScript.text = windowsScript.text.replace('CLASSPATH=%APP_HOME%', 'CLASSPATH=%APP_HOME%\\cond;%APP_HOME%')
+    }
 }
 
 buildscript {
