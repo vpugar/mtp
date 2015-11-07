@@ -64,7 +64,7 @@ public class KafkaProducerActor<D, K> extends AbstractActor {
 		props.put(ProducerConfig.BATCH_SIZE_CONFIG, kafkaClient.getBatchSize());
 		props.put(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, kafkaClient.getReconnectBackoffMs());
 
-		log.info("Starting up kafka producer.");
+		log.info("Starting up kafka producer for {}.", kafkaClient.getBootstrapServers());
 		producer = new KafkaProducer<>(props);
 	}
 
@@ -76,6 +76,7 @@ public class KafkaProducerActor<D, K> extends AbstractActor {
 	}
 
 	private void doSend(KafkaMessageEnvelope<K, D> kafkaMessageEnvelope) {
+		log.debug("Sending {}", kafkaMessageEnvelope);
 		final byte[] bytes = encoder.toBytes(kafkaMessageEnvelope.getMessage());
 		producer.send(new ProducerRecord<>(
 				kafkaMessageEnvelope.getTopic(), kafkaMessageEnvelope.getKey(), bytes));
