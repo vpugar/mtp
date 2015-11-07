@@ -14,8 +14,13 @@ jar {
     }
 }
 
-applicationDistribution.from("src/main/config/") {
-    into "config"
+applicationDistribution.from("src/main/conf/") {
+    into "conf"
+}
+
+startScripts {
+//    classpath  = files('$APP_HOME/lib/*')
+    classpath = files('$APP_HOME/conf') + classpath
 }
 
 dependencies {
