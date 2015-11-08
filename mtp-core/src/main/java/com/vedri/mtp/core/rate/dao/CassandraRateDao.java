@@ -91,7 +91,7 @@ public class CassandraRateDao implements RateDao {
 	private Rate mapRowToRate(final Row row) {
 		return new Rate(
 				new Rate.Key(row.getString(currencyFrom.F.underscore()), row.getString(currencyTo.F.underscore()),
-						new org.joda.time.LocalDate(row.getDate(rateDate.F.underscore()).getMillisSinceEpoch())),
+						new org.joda.time.LocalDate(row.getTimestamp(rateDate.F.underscore()).getTime())),
 				new BigDecimal(row.getString(cfRate.F.underscore())),
 				new BigDecimal(row.getString(bankRate.F.underscore())));
 	}
