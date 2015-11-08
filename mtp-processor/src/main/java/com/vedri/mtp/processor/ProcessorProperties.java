@@ -43,7 +43,9 @@ public class ProcessorProperties {
     @Setter
     public static class KafkaServer {
         private String host;
-        private int port;
+        private Integer port;
+        private String advertisedHost;
+        private Integer advertisedPort;
         private String groupId;
         private Topic topic = new Topic();
 

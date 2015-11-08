@@ -20,6 +20,8 @@ mtp:
       groupId: mtp.group
       host: localhost
       port: 9092
+      advertisedHost: localhost
+      advertisedPort: 9092
       topic:
         name: mtp.transaction
         numPartitions: 1

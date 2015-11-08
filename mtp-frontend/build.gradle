@@ -36,7 +36,7 @@ applicationDistribution.from("src/main/conf/") {
     into "conf"
 }
 
-applicationDefaultJvmArgs = ["--spring.config.location=classpath:/application-custom.yml"]
+applicationDefaultJvmArgs = ["-Dspring.config.location=classpath:spring-application.yml"]
 
 startScripts {
     doLast {

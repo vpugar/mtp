@@ -27,10 +27,24 @@ public class KafkaConfiguration {
 		final ProcessorProperties.KafkaServer kafkaServer = processorProperties.getKafkaServer();
 
 		Map<String, String> map = Maps.newHashMap();
-		map.put("host.name", kafkaServer.getHost());
-		map.put("port", String.valueOf(kafkaServer.getPort()));
-		map.put("group.id", kafkaServer.getGroupId());
-		map.put("zookeeper.connect", processorProperties.getZookeeper().getConnect());
+		if (kafkaServer.getHost() != null) {
+			map.put("host.name", kafkaServer.getHost());
+		}
+		if (kafkaServer.getPort() != null) {
+			map.put("port", String.valueOf(kafkaServer.getPort()));
+		}
+		if (kafkaServer.getAdvertisedHost() != null) {
+			map.put("advertised.host.name", kafkaServer.getAdvertisedHost());
+		}
+		if (kafkaServer.getAdvertisedPort() != null) {
+			map.put("advertised.port", String.valueOf(kafkaServer.getAdvertisedPort()));
+		}
+		if (kafkaServer.getGroupId() != null) {
+			map.put("group.id", kafkaServer.getGroupId());
+		}
+		if (processorProperties.getZookeeper().getConnect() != null) {
+			map.put("zookeeper.connect", processorProperties.getZookeeper().getConnect());
+		}
 		map.put("spark.streaming.receiver.writeAheadLog.enable", Boolean.FALSE.toString());
 		return map;
 	}
