@@ -45,7 +45,6 @@ public class CassandraRateDao implements RateDao {
 		}
 
 		final Rate.Key key = rate.getKey();
-		final org.joda.time.LocalDate rateDate = key.getRateDate();
 
 		final BoundStatement bs = insertStatement.bind();
 
@@ -85,13 +84,11 @@ public class CassandraRateDao implements RateDao {
 			return null;
 		}
 
-		return mapRowToRate(row);
+		return mapRowToRate(key, row);
 	}
 
-	private Rate mapRowToRate(final Row row) {
-		return new Rate(
-				new Rate.Key(row.getString(currencyFrom.F.underscore()), row.getString(currencyTo.F.underscore()),
-						new org.joda.time.LocalDate(row.getTimestamp(rateDate.F.underscore()).getTime())),
+	private Rate mapRowToRate(final Rate.Key key, final Row row) {
+		return new Rate(key,
 				new BigDecimal(row.getString(cfRate.F.underscore())),
 				new BigDecimal(row.getString(bankRate.F.underscore())));
 	}
