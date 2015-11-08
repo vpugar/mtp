@@ -2,8 +2,8 @@ package com.vedri.mtp.consumption.support.kafka;
 
 import java.util.Map;
 
-import com.vedri.mtp.core.transaction.serialize.TransactionKryoEncoder;
 import kafka.serializer.Encoder;
+
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -44,7 +44,7 @@ public class KafkaProducerActor<D, K> extends AbstractActor {
 
 	@Autowired
 	public KafkaProducerActor(ConsumptionProperties consumptionProperties,
-							  @Qualifier("transactionKryoEncoder") kafka.serializer.Encoder<D> encoder) {
+			@Qualifier("transactionKryoEncoder") kafka.serializer.Encoder<D> encoder) {
 		this.consumptionProperties = consumptionProperties;
 		this.encoder = encoder;
 		receive(receive);

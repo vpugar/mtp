@@ -8,6 +8,7 @@ mtp:
       batchInterval: 10000
       checkpointDir: /tmp
     kafkaServer:
-      host: localhost
+      host: localhost    
+      advertisedHost: localhost
     zookeeper:
       connect: localhost:2181

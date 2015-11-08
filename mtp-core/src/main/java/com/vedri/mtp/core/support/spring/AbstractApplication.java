@@ -6,6 +6,7 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -17,8 +18,6 @@ import com.vedri.mtp.core.MtpConstants;
 public abstract class AbstractApplication {
 
 	static boolean showInfo = false;
-
-	private SpringApplication springApplication;
 
 	/**
 	 * If no profile has been configured, set by default the "dev" profile.
@@ -48,9 +47,9 @@ public abstract class AbstractApplication {
 	public ApplicationContext startApplication(String[] args, String... customProfile) throws Exception {
 
 		final SimpleCommandLinePropertySource source = new SimpleCommandLinePropertySource(args);
-		springApplication = new SpringApplication(getConfigs());
+		SpringApplication springApplication = new SpringApplication((Object[]) getConfigs());
 
-		springApplication.setShowBanner(false);
+		springApplication.setBannerMode(Banner.Mode.OFF);
 		addDefaultProfile(springApplication, source, customProfile);
 
 		final ConfigurableApplicationContext applicationContext = springApplication.run(args);
