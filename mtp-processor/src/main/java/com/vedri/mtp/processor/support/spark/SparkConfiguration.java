@@ -34,7 +34,7 @@ public class SparkConfiguration {
 				.set("spark.cassandra.connection.host", spark.getCassandraHosts())
 				.set("spark.cleaner.ttl", String.valueOf(spark.getCleanerTtl()))
 				.set("spark.serializer", org.apache.spark.serializer.KryoSerializer.class.getName())
-				.set("spark.kryoserializer.buffer.mb", String.valueOf(spark.getKryoserializer().getBufferMb()))
+				.set("spark.kryoserializer.buffer", String.valueOf(spark.getKryoserializer().getBuffer()))
 				.set("spark.kryo.classesToRegister", Transaction.class.getName())
 				.set("spark.kryo.registrator", SparkKryoRegistrator.class.getName());
 

@@ -50,8 +50,6 @@
     </appender>
 -->
 
-    <logger name="com.inovatrend" level="${logback.loglevel}"/>
-
     <logger name="javax.activation" level="WARN"/>
     <logger name="javax.mail" level="WARN"/>
     <logger name="javax.xml.bind" level="WARN"/>

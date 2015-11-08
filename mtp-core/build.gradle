@@ -12,6 +12,7 @@ dependencies {
             ["com.google.guava:guava:${guavaVersion}"],
             ["com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.3"],
             ["com.esotericsoftware:kryo:${kryoVersion}"],
+            ["com.esotericsoftware:kryo-shaded:${kryoVersion}"],
             ["com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"],
             ["com.fasterxml.jackson.datatype:jackson-datatype-joda:${jacksonVersion}"],
             ["com.datastax.cassandra:cassandra-driver-core:${cassandraDriverVersion}"],

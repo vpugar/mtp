@@ -4,6 +4,7 @@ apply plugin: 'scala'
 
 // compiles java and scala together with scala compiler (workaround because of dependencies from java to scala)
 sourceSets.main.scala.srcDir "src/main/java"
+sourceSets.main.scala.srcDir "src/main/resources"
 sourceSets.main.java.srcDirs = []
 
 mainClassName = "com.vedri.mtp.consumption.ConsumptionApplication"

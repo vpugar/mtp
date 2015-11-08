@@ -35,7 +35,7 @@ public class ProcessorProperties {
         @Getter
         @Setter
         public static class Kryoserializer {
-            private int bufferMb = 24;
+            private int buffer = 24;
         }
     }
 
