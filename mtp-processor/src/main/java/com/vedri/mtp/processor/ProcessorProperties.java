@@ -1,6 +1,7 @@
 package com.vedri.mtp.processor;
 
 import com.vedri.mtp.core.CoreProperties;
+import com.vedri.mtp.processor.support.spark.CoreSparkProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,8 +11,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ProcessorProperties {
 
     private final Zookeeper zookeeper = new Zookeeper();
-    private final Spark spark = new Spark();
     private final KafkaServer kafkaServer = new KafkaServer();
+    private final CoreSparkProperties.Spark spark = new CoreSparkProperties.Spark();
     private final CoreProperties.Cluster cluster = new CoreProperties.Cluster();
     private final CoreProperties.Akka akka = new CoreProperties.Akka();
     private final CoreProperties.Cassandra cassandra = new CoreProperties.Cassandra();
@@ -20,23 +21,6 @@ public class ProcessorProperties {
     @Setter
     public static class Zookeeper {
         private String connect;
-    }
-
-    @Getter
-    @Setter
-    public static class Spark {
-        private String master;
-        private String cassandraHosts;
-        private String cleanerTtl;
-        private long batchInterval;
-        private String checkpointDir;
-        private Kryoserializer kryoserializer = new Kryoserializer();
-
-        @Getter
-        @Setter
-        public static class Kryoserializer {
-            private int buffer = 24;
-        }
     }
 
     @Getter

@@ -4,6 +4,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
 
 import java.util.Date;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -27,12 +28,11 @@ import com.vedri.mtp.frontend.FrontendProperties;
  * case, you can use a specific Spring profile for this class, so that only front-end developers
  * have access to the Swagger view.
  */
+@Slf4j
 @Configuration
 @EnableSwagger2
 @Profile("!" + MtpConstants.SPRING_PROFILE_PRODUCTION)
 public class SwaggerConfiguration {
-
-	private final Logger log = LoggerFactory.getLogger(SwaggerConfiguration.class);
 
 	public static final String DEFAULT_INCLUDE_PATTERN = "/api/.*";
 

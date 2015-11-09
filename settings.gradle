@@ -1,1 +1,1 @@
-include 'mtp-core', 'mtp-client', 'mtp-consumption', 'mtp-processor', 'mtp-frontend'
+include 'mtp-core', 'mtp-core-kafka', 'mtp-core-spark', 'mtp-model', 'mtp-client', 'mtp-consumption', 'mtp-processor', 'mtp-frontend'

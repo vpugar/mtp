@@ -1,5 +1,7 @@
 package com.vedri.mtp.frontend.user.dao;
 
+import static com.vedri.mtp.core.user.User.Fields.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -12,13 +14,13 @@ import org.springframework.util.StringUtils;
 import com.datastax.driver.core.*;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
-import com.vedri.mtp.frontend.user.User;
+import com.vedri.mtp.core.user.User;
 
 /**
  * Cassandra repository for the User entity.
  */
 @Repository
-public class CassandraUserDao {
+public class CassandraUserDao implements UserDao {
 
 	private final Session session;
 
@@ -114,89 +116,99 @@ public class CassandraUserDao {
 						"WHERE email = :email");
 	}
 
+	@Override
 	public Optional<User> findOne(String id) {
 		return Optional.of(mapper.get(id));
 	}
 
-	public Optional<User> findOneByActivationKey(String activationKey) {
+	@Override
+	public Optional<User> findOneByActivationKey(String activationKeyVal) {
 		BoundStatement stmt = findOneByActivationKeyStmt.bind();
-		stmt.setString("activation_key", activationKey);
+		stmt.setString(activationKey.F.underscore(), activationKeyVal);
 		return findOneFromIndex(stmt);
 	}
 
-	public Optional<User> findOneByResetKey(String resetKey) {
+	@Override
+	public Optional<User> findOneByResetKey(String resetKeyVal) {
 		BoundStatement stmt = findOneByResetKeyStmt.bind();
-		stmt.setString("reset_key", resetKey);
+		stmt.setString(resetKey.F.underscore(), resetKeyVal);
 		return findOneFromIndex(stmt);
 	}
 
-	public Optional<User> findOneByEmail(String email) {
+	@Override
+	public Optional<User> findOneByEmail(String emailVal) {
 		BoundStatement stmt = findOneByEmailStmt.bind();
-		stmt.setString("email", email);
+		stmt.setString(email.F.underscore(), emailVal);
 		return findOneFromIndex(stmt);
 	}
 
-	public Optional<User> findOneByLogin(String login) {
+	@Override
+	public Optional<User> findOneByLogin(String loginVal) {
 		BoundStatement stmt = findOneByLoginStmt.bind();
-		stmt.setString("login", login);
+		stmt.setString(login.F.underscore(), loginVal);
 		return findOneFromIndex(stmt);
 	}
 
+	@Override
 	public List<User> findAll() {
 		return mapper.map(session.execute(findAllStmt.bind())).all();
 	}
 
+	@Override
 	public User save(User user) {
 		User oldUser = mapper.get(user.getId());
 		if (oldUser != null) {
 			if (!StringUtils.isEmpty(oldUser.getActivationKey())
 					&& !oldUser.getActivationKey().equals(user.getActivationKey())) {
 				session.execute(
-						deleteByActivationKeyStmt.bind().setString("activation_key", oldUser.getActivationKey()));
+						deleteByActivationKeyStmt.bind().setString(activationKey.F.underscore(),
+								oldUser.getActivationKey()));
 			}
 			if (!StringUtils.isEmpty(oldUser.getResetKey()) && !oldUser.getResetKey().equals(user.getResetKey())) {
-				session.execute(deleteByResetKeyStmt.bind().setString("reset_key", oldUser.getResetKey()));
+				session.execute(deleteByResetKeyStmt.bind().setString(resetKey.F.underscore(), oldUser.getResetKey()));
 			}
 			if (!StringUtils.isEmpty(oldUser.getLogin()) && !oldUser.getLogin().equals(user.getLogin())) {
-				session.execute(deleteByLoginStmt.bind().setString("login", oldUser.getLogin()));
+				session.execute(deleteByLoginStmt.bind().setString(login.F.underscore(), oldUser.getLogin()));
 			}
 			if (!StringUtils.isEmpty(oldUser.getEmail()) && !oldUser.getEmail().equals(user.getEmail())) {
-				session.execute(deleteByEmailStmt.bind().setString("email", oldUser.getEmail()));
+				session.execute(deleteByEmailStmt.bind().setString(email.F.underscore(), oldUser.getEmail()));
 			}
 		}
 		BatchStatement batch = new BatchStatement();
 		batch.add(mapper.saveQuery(user));
 		if (!StringUtils.isEmpty(user.getActivationKey())) {
 			batch.add(insertByActivationKeyStmt.bind()
-					.setString("activation_key", user.getActivationKey())
-					.setString("id", user.getId()));
+					.setString(activationKey.F.underscore(), user.getActivationKey())
+					.setString(id.F.underscore(), user.getId()));
 		}
 		if (!StringUtils.isEmpty(user.getResetKey())) {
 			batch.add(insertByResetKeyStmt.bind()
-					.setString("reset_key", user.getResetKey())
-					.setString("id", user.getId()));
+					.setString(resetKey.F.underscore(), user.getResetKey())
+					.setString(id.F.underscore(), user.getId()));
 		}
 		batch.add(insertByLoginStmt.bind()
-				.setString("login", user.getLogin())
-				.setString("id", user.getId()));
+				.setString(login.F.underscore(), user.getLogin())
+				.setString(id.F.underscore(), user.getId()));
 		batch.add(insertByEmailStmt.bind()
-				.setString("email", user.getEmail())
-				.setString("id", user.getId()));
+				.setString(email.F.underscore(), user.getEmail())
+				.setString(id.F.underscore(), user.getId()));
 		session.execute(batch);
 		return user;
 	}
 
+	@Override
 	public void delete(User user) {
 		BatchStatement batch = new BatchStatement();
 		batch.add(mapper.deleteQuery(user));
 		if (!StringUtils.isEmpty(user.getActivationKey())) {
-			batch.add(deleteByActivationKeyStmt.bind().setString("activation_key", user.getActivationKey()));
+			batch.add(
+					deleteByActivationKeyStmt.bind().setString(activationKey.F.underscore(), user.getActivationKey()));
 		}
 		if (!StringUtils.isEmpty(user.getResetKey())) {
-			batch.add(deleteByResetKeyStmt.bind().setString("reset_key", user.getResetKey()));
+			batch.add(deleteByResetKeyStmt.bind().setString(resetKey.F.underscore(), user.getResetKey()));
 		}
-		batch.add(deleteByLoginStmt.bind().setString("login", user.getLogin()));
-		batch.add(deleteByEmailStmt.bind().setString("email", user.getEmail()));
+		batch.add(deleteByLoginStmt.bind().setString(login.F.underscore(), user.getLogin()));
+		batch.add(deleteByEmailStmt.bind().setString(email.F.underscore(), user.getEmail()));
 		session.execute(batch);
 	}
 
@@ -205,7 +217,7 @@ public class CassandraUserDao {
 		if (rs.isExhausted()) {
 			return Optional.empty();
 		}
-		return Optional.ofNullable(rs.one().getString("id"))
+		return Optional.ofNullable(rs.one().getString(id.F.underscore()))
 				.map(id -> Optional.ofNullable(mapper.get(id)))
 				.get();
 	}

@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
@@ -15,10 +16,9 @@ import org.springframework.stereotype.Component;
 /**
  * Returns a 401 error code (Unauthorized) to the client.
  */
+@Slf4j
 @Component
 public class Http401UnauthorizedEntryPoint implements AuthenticationEntryPoint {
-
-    private final Logger log = LoggerFactory.getLogger(Http401UnauthorizedEntryPoint.class);
 
     /**
      * Always returns a 401 error code to the client.

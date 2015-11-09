@@ -1,12 +1,12 @@
 package com.vedri.mtp.processor.streaming.handler;
 
-import com.vedri.mtp.processor.transaction.TableName;
+import com.vedri.mtp.core.transaction.TableName;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.joda.time.DateTime;
 
 import com.vedri.mtp.core.transaction.Transaction;
-import com.vedri.mtp.processor.transaction.TransactionAggregationByUser;
+import com.vedri.mtp.core.transaction.TransactionAggregationByUser;
 
 public class ReceivedTimeTransactionAggregationByUserBuilder extends TimeTransactionAggregationByUserBuilderTemplate {
 

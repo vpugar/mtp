@@ -2,3 +2,7 @@ mtp:
   frontend:
     cassandra:
       hosts: localhost
+    spark:
+      master: local[10]
+      cassandraHosts: localhost
+      checkpointDir: /tmp/spark-processor

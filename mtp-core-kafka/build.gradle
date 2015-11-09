@@ -1,0 +1,18 @@
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'MTP-Core-Kafka', 'Implementation-Version': rootProject.version, 'Build-Date': buildDate
+    }
+}
+
+dependencies {
+
+    compile(
+            ["joda-time:joda-time:${jodaTimeVersion}"],
+            ["com.esotericsoftware:kryo:${kryoVersion}"],
+            ["com.esotericsoftware:kryo-shaded:${kryoVersion}"],
+            ["de.javakaffee:kryo-serializers:0.37"],
+            ["org.apache.kafka:kafka_${scalaMajorVersion}:${kafkaVersion}"],
+            ["org.scala-lang:scala-library:${scalaVersion}"],
+            ["org.springframework.boot:spring-boot-starter:${springBootVersion}"]
+    )
+}

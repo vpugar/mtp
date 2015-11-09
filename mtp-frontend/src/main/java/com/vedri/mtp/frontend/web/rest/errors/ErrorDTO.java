@@ -1,5 +1,7 @@
 package com.vedri.mtp.frontend.web.rest.errors;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.List;
 /**
  * DTO for transfering error message with a list of field errors.
  */
+@Getter
 public class ErrorDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,14 +39,6 @@ public class ErrorDTO implements Serializable {
             fieldErrors = new ArrayList<>();
         }
         fieldErrors.add(new FieldErrorDTO(objectName, field, message));
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public List<FieldErrorDTO> getFieldErrors() {

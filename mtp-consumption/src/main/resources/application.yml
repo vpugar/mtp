@@ -1,6 +1,8 @@
 mtp:
   consumption:
-    cluster.nodeName: nodeConsumption0
+    cluster:
+      appName: MtpConsumption
+      nodeName: nodeConsumption0
     akka:
       akkaSystemName: MtpConsumption
       logConfiguration: false

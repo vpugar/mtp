@@ -1,0 +1,22 @@
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'MTP-Model', 'Implementation-Version': rootProject.version, 'Build-Date': buildDate
+    }
+}
+
+dependencies {
+
+    compile(
+            ["javax.validation:validation-api:${validationApiVersion}"],
+            ["joda-time:joda-time:${jodaTimeVersion}"],
+            ["com.datastax.cassandra:cassandra-driver-mapping:${cassandraDriverVersion}"],
+            ["com.google.guava:guava:${guavaVersion}"],
+            ["com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.3"],
+            ["com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"],
+            ["com.fasterxml.jackson.datatype:jackson-datatype-joda:${jacksonVersion}"],
+            ["org.hibernate:hibernate-validator:${hibernateValidatorVersion}"],
+            ["org.apache.commons:commons-lang3:${commonsLangVersion}"],
+            ["org.scala-lang:scala-library:${scalaVersion}"],
+            ["org.projectlombok:lombok:${lombokVersion}"]
+    )
+}

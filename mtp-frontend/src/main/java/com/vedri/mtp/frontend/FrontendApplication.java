@@ -1,5 +1,6 @@
 package com.vedri.mtp.frontend;
 
+import com.vedri.mtp.processor.support.spark.SparkConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
@@ -16,7 +17,7 @@ public class FrontendApplication extends AbstractApplication {
 	@Override
 	protected Class[] getConfigs() {
 		return new Class[] {
-				CoreConfig.class, FrontendConfig.class, CassandraConfiguration.class
+				CoreConfig.class, FrontendConfig.class, CassandraConfiguration.class, SparkConfiguration.class
 		};
 	}
 

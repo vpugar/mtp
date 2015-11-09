@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -24,11 +25,10 @@ import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import com.vedri.mtp.frontend.web.security.AuthoritiesConstants;
 
+@Slf4j
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebsocketConfiguration extends AbstractWebSocketMessageBrokerConfigurer {
-
-	private final Logger log = LoggerFactory.getLogger(WebsocketConfiguration.class);
 
 	public static final String IP_ADDRESS = "IP_ADDRESS";
 

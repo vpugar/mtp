@@ -16,6 +16,7 @@ public class CoreProperties {
 	@Getter
 	@Setter
 	public static class Cluster {
+		private String appName;
 		private String nodeName;
 	}
 

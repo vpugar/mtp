@@ -1,6 +1,7 @@
 package com.vedri.mtp.processor;
 
 import com.vedri.mtp.core.CoreProperties;
+import com.vedri.mtp.processor.support.spark.CoreSparkProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = {
 		"com.vedri.mtp.core.country",
 		"com.vedri.mtp.core.transaction",
+		"com.vedri.mtp.core.support.serializer",
 		"com.vedri.mtp.processor.streaming",
 		"com.vedri.mtp.processor.transaction"
 })
@@ -33,5 +35,10 @@ public class ProcessorConfig {
 	@Bean
 	public CoreProperties.Cassandra cassandraProperties() {
 		return processorProperties.getCassandra();
+	}
+
+	@Bean
+	public CoreSparkProperties.Spark spark() {
+		return processorProperties.getSpark();
 	}
 }

@@ -11,7 +11,7 @@ import org.apache.spark.streaming.api.java.JavaDStream;
 import com.datastax.spark.connector.japi.CassandraJavaUtil;
 import com.datastax.spark.connector.japi.CassandraStreamingJavaUtil;
 import com.vedri.mtp.core.transaction.Transaction;
-import com.vedri.mtp.processor.transaction.TableName;
+import com.vedri.mtp.core.transaction.TableName;
 
 @AllArgsConstructor
 @NoArgsConstructor

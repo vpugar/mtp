@@ -1,6 +1,7 @@
 mtp:
   processor:
     cluster:
+      appName: MtpProcessor
       nodeName: nodeProcessor0
     akka:
       akkaSystemName: MtpProcessor
@@ -15,7 +16,7 @@ mtp:
       cassandraHosts: localhost
       cleanerTtl: 7200
       batchInterval: 10000
-      checkpointDir: /tmp
+      checkpointDir: /tmp/spark-processor
     kafkaServer:
       groupId: mtp.group
       host: localhost

@@ -1,20 +1,16 @@
 package com.vedri.mtp.processor.streaming.handler;
 
-import static com.vedri.mtp.processor.transaction.TimeAggregation.TimeFields.*;
-import static com.vedri.mtp.processor.transaction.TransactionAggregationByCurrency.Fields.*;
+import static com.vedri.mtp.core.transaction.TimeAggregation.TimeFields.*;
+import static com.vedri.mtp.core.transaction.TransactionAggregationByCurrency.Fields.*;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.spark.api.java.function.FlatMapFunction;
-import org.apache.spark.api.java.function.Function;
 import org.apache.spark.streaming.api.java.JavaDStream;
-import org.joda.time.DateTime;
 
 import com.datastax.spark.connector.japi.CassandraJavaUtil;
 import com.datastax.spark.connector.japi.CassandraStreamingJavaUtil;
-import com.google.common.collect.Sets;
 import com.vedri.mtp.core.transaction.Transaction;
-import com.vedri.mtp.processor.transaction.TableName;
-import com.vedri.mtp.processor.transaction.TransactionAggregationByCurrency;
+import com.vedri.mtp.core.transaction.TransactionAggregationByCurrency;
 
 public abstract class TimeTransactionAggregationByCurrencyBuilderTemplate
 		extends StreamBuilder<JavaDStream<Transaction>, JavaDStream<TransactionAggregationByCurrency>> {

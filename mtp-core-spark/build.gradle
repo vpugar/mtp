@@ -1,0 +1,21 @@
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'MTP-Core-Spark', 'Implementation-Version': rootProject.version, 'Build-Date': buildDate
+    }
+}
+
+dependencies {
+    compile(
+            ["com.esotericsoftware:kryo:${kryoVersion}"],
+            ["com.esotericsoftware:kryo-shaded:${kryoVersion}"],
+            ["de.javakaffee:kryo-serializers:0.37"],
+            ["joda-time:joda-time:${jodaTimeVersion}"],
+            ["org.apache.spark:spark-catalyst_${scalaMajorVersion}:${sparkVersion}"],
+            ["org.apache.spark:spark-core_${scalaMajorVersion}:${sparkVersion}"],
+            ["org.apache.spark:spark-hive_${scalaMajorVersion}:${sparkVersion}"],
+            ["org.apache.spark:spark-sql_${scalaMajorVersion}:${sparkVersion}"],
+            ["org.apache.spark:spark-streaming_${scalaMajorVersion}:${sparkVersion}"],
+            ["org.projectlombok:lombok:${lombokVersion}"],
+            ["org.springframework.boot:spring-boot-starter:${springBootVersion}"]
+    )
+}

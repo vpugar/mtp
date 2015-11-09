@@ -1,6 +1,7 @@
 package com.vedri.mtp.frontend;
 
 import com.vedri.mtp.core.CoreProperties;
+import com.vedri.mtp.processor.support.spark.CoreSparkProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
@@ -20,6 +21,16 @@ public class FrontendConfig {
 
     @Autowired
     private FrontendProperties frontendProperties;
+
+    @Bean
+    public CoreProperties.Cluster clusterProperties() {
+        return frontendProperties.getCluster();
+    }
+
+    @Bean
+    public CoreSparkProperties.Spark spark() {
+        return frontendProperties.getSpark();
+    }
 
     @Bean
     public CoreProperties.Cassandra cassandraProperties() {

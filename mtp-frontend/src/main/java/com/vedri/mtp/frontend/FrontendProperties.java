@@ -3,6 +3,7 @@ package com.vedri.mtp.frontend;
 import javax.validation.constraints.NotNull;
 
 import com.vedri.mtp.core.CoreProperties;
+import com.vedri.mtp.processor.support.spark.CoreSparkProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,8 @@ public class FrontendProperties {
 	private final Security security = new Security();
 	private final Swagger swagger = new Swagger();
 	private final Metrics metrics = new Metrics();
+	private final CoreProperties.Cluster cluster = new CoreProperties.Cluster();
+	private final CoreSparkProperties.Spark spark = new CoreSparkProperties.Spark();
 	private final CoreProperties.Cassandra cassandra = new CoreProperties.Cassandra();
 
 	@Getter

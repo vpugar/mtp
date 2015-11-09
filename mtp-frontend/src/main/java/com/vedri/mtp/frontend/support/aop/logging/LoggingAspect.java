@@ -2,6 +2,7 @@ package com.vedri.mtp.frontend.support.aop.logging;
 
 import java.util.Arrays;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -18,10 +19,9 @@ import com.vedri.mtp.core.MtpConstants;
 /**
  * Aspect for logging execution of service and repository Spring components.
  */
+@Slf4j
 @Aspect
 public class LoggingAspect {
-
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private final Environment env;
 

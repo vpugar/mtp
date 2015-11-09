@@ -72,6 +72,24 @@ allprojects {
     }
 }
 
+project(':mtp-core') {
+    dependencies {
+        compile project(':mtp-model')
+    }
+}
+
+project(':mtp-core-kafka') {
+    dependencies {
+        compile project(':mtp-model')
+    }
+}
+
+project(':mtp-core-spark') {
+    dependencies {
+        compile project(':mtp-core')
+    }
+}
+
 project(':mtp-client') {
     dependencies {
         compile project(':mtp-core')
@@ -81,6 +99,7 @@ project(':mtp-client') {
 project(':mtp-consumption') {
     dependencies {
         compile project(':mtp-core')
+        compile project(':mtp-core-kafka')
         testCompile project(':mtp-client')
     }
 }
@@ -88,11 +107,14 @@ project(':mtp-consumption') {
 project(':mtp-processor') {
     dependencies {
         compile project(':mtp-core')
+        compile project(':mtp-core-kafka')
+        compile project(':mtp-core-spark')
     }
 }
 
 project(':mtp-frontend') {
     dependencies {
         compile project(':mtp-core')
+        compile project(':mtp-core-spark')
     }
 }

@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
 import com.vedri.mtp.frontend.FrontendProperties;
 import fr.ippon.spark.metrics.SparkReporter;
 
+@Slf4j
 @Configuration
 @EnableMetrics(proxyTargetClass = true)
 public class MetricsConfiguration extends MetricsConfigurerAdapter {
@@ -33,8 +35,6 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
 	private static final String PROP_METRIC_REG_JVM_THREADS = "jvm.threads";
 	private static final String PROP_METRIC_REG_JVM_FILES = "jvm.files";
 	private static final String PROP_METRIC_REG_JVM_BUFFERS = "jvm.buffers";
-
-	private final Logger log = LoggerFactory.getLogger(MetricsConfiguration.class);
 
 	private MetricRegistry metricRegistry = new MetricRegistry();
 
@@ -72,11 +72,10 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
 		}
 	}
 
+	@Slf4j
 	@Configuration
 	@ConditionalOnClass(Graphite.class)
 	public static class GraphiteRegistry {
-
-		private final Logger log = LoggerFactory.getLogger(GraphiteRegistry.class);
 
 		@Autowired
 		private MetricRegistry metricRegistry;
@@ -102,11 +101,10 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
 		}
 	}
 
+	@Slf4j
 	@Configuration
 	@ConditionalOnClass(SparkReporter.class)
 	public static class SparkRegistry {
-
-		private final Logger log = LoggerFactory.getLogger(SparkRegistry.class);
 
 		@Autowired
 		private MetricRegistry metricRegistry;

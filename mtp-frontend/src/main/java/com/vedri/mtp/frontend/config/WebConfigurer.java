@@ -5,6 +5,7 @@ import java.util.EnumSet;
 
 import javax.servlet.*;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,9 @@ import com.vedri.mtp.frontend.web.filter.StaticResourcesProductionFilter;
 /**
  * Configuration of web application with Servlet 3.0 APIs.
  */
+@Slf4j
 @Configuration
 public class WebConfigurer implements ServletContextInitializer, EmbeddedServletContainerCustomizer {
-
-	private final Logger log = LoggerFactory.getLogger(WebConfigurer.class);
 
 	@Autowired
 	private Environment env;
