@@ -16,7 +16,8 @@ task bower(type: Exec) {
     }
 }
 
-bower.onlyIf { !project.hasProperty('skipBower') }
+// use flag --useBower during build to test bower, currently bower task does not work
+bower.onlyIf { project.hasProperty('useBower') }
 processResources.dependsOn 'bower'
 
 
