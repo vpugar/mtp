@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import com.datastax.driver.core.*;
 import com.vedri.mtp.core.support.cassandra.CassandraPartitionFetcher;
-import com.vedri.mtp.core.support.cassandra.CassandraPartitionUtils;
+import com.vedri.mtp.core.support.cassandra.CassandraPartitionForHourUtils;
 import com.vedri.mtp.core.support.cassandra.CassandraUtils;
 import com.vedri.mtp.core.transaction.Transaction;
 
@@ -85,7 +85,7 @@ public class CassandraTransactionDao implements TransactionDao {
 
 		final long currentTimeMillis = transaction.getReceivedTime().getMillis();
 		final UUID timeUUID = CassandraUtils.createUUIDFromMillis(currentTimeMillis);
-		final String partitionForMinute = CassandraPartitionUtils.getPartitionIdFromMillisForMinute(currentTimeMillis);
+		final String partitionForMinute = CassandraPartitionForHourUtils.getPartitionIdFromMillis(currentTimeMillis);
 		transaction.setTransactionId(timeUUID.toString());
 		transaction.setPartition(partitionForMinute);
 
@@ -130,7 +130,7 @@ public class CassandraTransactionDao implements TransactionDao {
 			log.debug("Loading transaction for transactionId: {}", timeUUID);
 		}
 
-		final String partitionForMinute = CassandraPartitionUtils.getPartitionIdFromTimeUUIDForMinute(timeUUID);
+		final String partitionForMinute = CassandraPartitionForHourUtils.getPartitionIdFromTimeUUID(timeUUID);
 
 		final BoundStatement bs = loadStatement.bind();
 		bs.bind(partitionForMinute, timeUUID);

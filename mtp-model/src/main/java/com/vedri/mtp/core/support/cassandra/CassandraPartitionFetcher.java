@@ -24,7 +24,7 @@ public class CassandraPartitionFetcher {
     private String terminalPartition;
     private float okPartitionDiff;
 
-    private static final int MAX_PARTITION_MOVE_COUNT = 9000;
+    private static final int MAX_PARTITION_MOVE_COUNT = 8800;
 
     public CassandraPartitionFetcher(Session session, String indexByValue,
                                      PreparedStatement loadAllStatement,
@@ -46,8 +46,8 @@ public class CassandraPartitionFetcher {
         this.from = from;
         this.to = to;
 
-        this.currentPartition = CassandraPartitionUtils.dateToMinutePartition(from);
-        this.terminalPartition = CassandraPartitionUtils.dateToMinutePartition(to);
+        this.currentPartition = CassandraPartitionForHourUtils.datePartition(from);
+        this.terminalPartition = CassandraPartitionForHourUtils.datePartition(to);
 
         this.lastToken = null;
 
@@ -142,7 +142,7 @@ public class CassandraPartitionFetcher {
         partitionMoveCount++;
 
         currentPartition =
-                CassandraPartitionUtils.offsetMinutePartitionIntoHistoryBy(currentPartition, from.isBefore(to) ? -1 : 1);
+                CassandraPartitionForHourUtils.offsetPartitionIntoHistoryBy(currentPartition, from.isBefore(to) ? -1 : 1);
     }
 }
 
