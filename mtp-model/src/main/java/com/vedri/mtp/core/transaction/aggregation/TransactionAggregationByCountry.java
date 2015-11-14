@@ -1,4 +1,4 @@
-package com.vedri.mtp.core.transaction;
+package com.vedri.mtp.core.transaction.aggregation;
 
 import java.io.Serializable;
 
@@ -21,7 +21,13 @@ public class TransactionAggregationByCountry extends TimeAggregation implements 
 	public TransactionAggregationByCountry(String originatingCountry,
 			int year, int month, int day, int hour,
 			long transactionCount) {
-		super(year, month, day, hour);
+		this(originatingCountry, new YearToHourTime(year, month, day, hour), transactionCount);
+	}
+
+	public TransactionAggregationByCountry(String originatingCountry,
+			YearToHourTime yearToHourTime,
+			long transactionCount) {
+		super(yearToHourTime);
 		this.originatingCountry = originatingCountry;
 		this.transactionCount = transactionCount;
 	}

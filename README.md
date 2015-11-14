@@ -7,7 +7,7 @@
 * mtp-frontend (in progress) - AngularJS, Bootstrap and WebSocket 
 * mtp-core - utility components
 
-## Version Highlights
+## Library Highlights
 ### Java VM
 * Java 8
 * Scala 2.11         

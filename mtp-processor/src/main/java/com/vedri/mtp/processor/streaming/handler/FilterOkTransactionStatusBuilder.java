@@ -3,7 +3,7 @@ package com.vedri.mtp.processor.streaming.handler;
 import org.apache.spark.streaming.api.java.JavaDStream;
 
 import com.vedri.mtp.core.transaction.Transaction;
-import com.vedri.mtp.core.transaction.TransactionValidationStatus;
+import com.vedri.mtp.core.transaction.aggregation.TransactionValidationStatus;
 
 public class FilterOkTransactionStatusBuilder
 		extends StreamBuilder<JavaDStream<Transaction>, JavaDStream<Transaction>> {

@@ -12,7 +12,7 @@ import akka.actor.ActorRef;
 
 import com.vedri.mtp.consumption.ConsumptionProperties;
 import com.vedri.mtp.consumption.support.kafka.KafkaMessageEnvelope;
-import com.vedri.mtp.consumption.transaction.dao.TransactionDao;
+import com.vedri.mtp.core.transaction.dao.TransactionDao;
 import com.vedri.mtp.core.CoreProperties;
 import com.vedri.mtp.core.transaction.Transaction;
 

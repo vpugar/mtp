@@ -1,4 +1,4 @@
-package com.vedri.mtp.core.transaction;
+package com.vedri.mtp.core.transaction.aggregation;
 
 import java.io.Serializable;
 
@@ -17,7 +17,7 @@ public class TransactionAggregationByStatus extends TimeAggregation implements S
 	public TransactionAggregationByStatus(TransactionValidationStatus validationStatus,
 										  int year, int month, int day, int hour,
 										  long transactionCount) {
-		super(year, month, day, hour);
+		super(new YearToHourTime(year, month, day, hour));
 		this.validationStatus = validationStatus;
 		this.transactionCount = transactionCount;
 	}

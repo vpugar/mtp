@@ -1,4 +1,4 @@
-package com.vedri.mtp.frontend.web.websocket;
+package com.vedri.mtp.frontend.web.websocket.admin;
 
 import com.google.common.base.Objects;
 import lombok.Getter;

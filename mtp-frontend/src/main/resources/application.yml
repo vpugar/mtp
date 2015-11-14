@@ -14,6 +14,10 @@ mtp:
     cluster:
       appName: MtpFrontend
       nodeName: nodeFrontend0
+    akka:
+      akkaSystemName: MtpFrontend
+      logConfiguration: false
+      logClusterMetrics: false
     cassandra:
       hosts: localhost
       port: 9042

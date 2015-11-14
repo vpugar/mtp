@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.vedri.mtp.core.country.Country;
 import com.vedri.mtp.core.country.CountryManager;
 import com.vedri.mtp.core.transaction.Transaction;
-import com.vedri.mtp.core.transaction.TransactionValidationStatus;
+import com.vedri.mtp.core.transaction.aggregation.TransactionValidationStatus;
 
 @Component
 public class TransactionValidator {

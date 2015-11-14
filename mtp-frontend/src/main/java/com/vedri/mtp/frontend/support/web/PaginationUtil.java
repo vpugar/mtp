@@ -16,6 +16,14 @@ import org.springframework.http.HttpHeaders;
  */
 public class PaginationUtil {
 
+    public static final int DEFAULT_OFFSET = 1;
+
+    public static final int MIN_OFFSET = 1;
+
+    public static final int DEFAULT_LIMIT = 20;
+
+    public static final int MAX_LIMIT = 100;
+
     public static HttpHeaders generatePaginationHttpHeaders(Page<?> page, String baseUrl)
         throws URISyntaxException {
 
@@ -34,5 +42,63 @@ public class PaginationUtil {
         link += "<" + (new URI(baseUrl +"?page=" + 0 + "&size=" + page.getSize())).toString() + ">; rel=\"first\"";
         headers.add(HttpHeaders.LINK, link);
         return headers;
+    }
+
+    public static HttpHeaders generatePaginationHttpHeaders(String baseUrl, Integer offset, Integer limit)
+            throws URISyntaxException {
+
+        if (offset == null || offset < MIN_OFFSET) {
+            offset = DEFAULT_OFFSET;
+        }
+        if (limit == null || limit > MAX_LIMIT) {
+            limit = DEFAULT_LIMIT;
+        }
+        HttpHeaders headers = new HttpHeaders();
+        String link = "<" + (new URI(urlQueryStart(baseUrl) + "page=" + (offset + 1) + "&per_page=" + limit)).toString()
+                + ">; rel=\"next\",";
+        if (offset > 1) {
+            link += "<" + (new URI(urlQueryStart(baseUrl) + "page=" + (offset - 1) + "&per_page=" + limit)).toString()
+                    + ">; rel=\"prev\",";
+        }
+        link += "<" + (new URI(urlQueryStart(baseUrl) + "page=" + 1 + "&per_page=" + limit)).toString()
+                + ">; rel=\"first\"";
+        headers.add(HttpHeaders.LINK, link);
+        return headers;
+    }
+
+    public static HttpHeaders generatePaginationHttpHeaders(Page<?> page, String baseUrl, Integer offset, Integer limit)
+            throws URISyntaxException {
+
+        if (offset == null || offset < MIN_OFFSET) {
+            offset = DEFAULT_OFFSET;
+        }
+        if (limit == null || limit > MAX_LIMIT) {
+            limit = DEFAULT_LIMIT;
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Total-Count", "" + page.getTotalElements());
+        String link = "";
+        if (offset < page.getTotalPages()) {
+            link = "<" + (new URI(urlQueryStart(baseUrl) + "page=" + (offset + 1) + "&per_page=" + limit)).toString()
+                    + ">; rel=\"next\",";
+        }
+        if (offset > 1) {
+            link += "<" + (new URI(urlQueryStart(baseUrl) + "page=" + (offset - 1) + "&per_page=" + limit)).toString()
+                    + ">; rel=\"prev\",";
+        }
+        link += "<" + (new URI(urlQueryStart(baseUrl) + "page=" + page.getTotalPages() + "&per_page=" + limit)).toString()
+                + ">; rel=\"last\"," +
+                "<" + (new URI(urlQueryStart(baseUrl) + "page=" + 1 + "&per_page=" + limit)).toString()
+                + ">; rel=\"first\"";
+        headers.add(HttpHeaders.LINK, link);
+        return headers;
+    }
+
+    private static String urlQueryStart(String baseUrl) {
+        if (baseUrl.contains("?")) {
+            return baseUrl + "&";
+        } else {
+            return baseUrl + "?";
+        }
     }
 }

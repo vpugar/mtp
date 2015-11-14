@@ -40,7 +40,7 @@ import com.vedri.mtp.core.support.http.AkkaHttpClient1;
 import com.vedri.mtp.core.support.json.JacksonConfiguration;
 import com.vedri.mtp.core.support.json.TransactionJacksonConfiguration;
 import com.vedri.mtp.core.transaction.Transaction;
-import com.vedri.mtp.core.transaction.TransactionValidationStatus;
+import com.vedri.mtp.core.transaction.aggregation.TransactionValidationStatus;
 
 @ContextConfiguration(loader = SpringockitoAnnotatedContextLoader.class, classes = {
 		ConsumptionTestConfig.class, AkkaHttpServerTest.class, JacksonConfiguration.class, CoreConfig.class,

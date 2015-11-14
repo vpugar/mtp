@@ -7,7 +7,7 @@ import org.joda.time.DateTime;
 
 import com.google.common.collect.Sets;
 import com.vedri.mtp.core.transaction.Transaction;
-import com.vedri.mtp.core.transaction.TransactionAggregationByCurrency;
+import com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByCurrency;
 
 public class PlacedTimeTransactionAggregationByCurrencyBuilder
 		extends TimeTransactionAggregationByCurrencyBuilderTemplate {

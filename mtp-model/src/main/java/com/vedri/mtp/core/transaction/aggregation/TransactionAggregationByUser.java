@@ -1,4 +1,4 @@
-package com.vedri.mtp.core.transaction;
+package com.vedri.mtp.core.transaction.aggregation;
 
 import java.io.Serializable;
 
@@ -19,7 +19,7 @@ public class TransactionAggregationByUser extends TimeAggregation implements Ser
 	private long transactionCount;
 
 	public TransactionAggregationByUser(String userId, int year, int month, int day, int hour, long transactionCount) {
-		super(year, month, day, hour);
+		super(new YearToHourTime(year, month, day, hour));
 		this.userId = userId;
 		this.transactionCount = transactionCount;
 	}

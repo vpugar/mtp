@@ -13,7 +13,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan(basePackages = {"com.vedri.mtp.frontend.config", "com.vedri.mtp.frontend.support",
-        "com.vedri.mtp.frontend.user", "com.vedri.mtp.frontend.web"})
+        "com.vedri.mtp.frontend.user", "com.vedri.mtp.frontend.web", "com.vedri.mtp.core.transaction",
+        "com.vedri.mtp.core.country"
+})
 @EnableAutoConfiguration(exclude = { MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class,
         CassandraDataAutoConfiguration.class, CassandraRepositoriesAutoConfiguration.class})
 @EnableConfigurationProperties({ FrontendProperties.class })
@@ -21,6 +23,11 @@ public class FrontendConfig {
 
     @Autowired
     private FrontendProperties frontendProperties;
+
+    @Bean
+    public CoreProperties.Akka akka() {
+        return frontendProperties.getAkka();
+    }
 
     @Bean
     public CoreProperties.Cluster clusterProperties() {

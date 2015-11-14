@@ -1,0 +1,35 @@
+{
+  "mtpApp": {
+    "transaction": {
+      "home": {
+        "title": "Transactions"
+      },
+      "detail": {
+        "title": "Transaction"
+      },
+      "partition": "Partition",
+      "id": "ID",
+      "receivedTime": "Received time",
+      "timePlaced": "Time placed",
+      "validationStatus": "Validation status",
+      "validationStatusMap": {
+        "OK": "OK",
+        "InvalidAmount": "Invalid amount",
+        "InvalidRate": "Invalid rate",
+        "InvalidCountry": "Invalid country",
+        "InvalidFromCurrency": "Invalid 'from' currency",
+        "InvalidToCurrency": "Invalid 'to' currency"
+      },
+      "userId": "User ID",
+      "currencyFrom": "Currency from",
+      "currencyTo": "Currency to",
+      "amountSell": "Amount sell",
+      "amountBuy": "Amount buy",
+      "rate": "Rate",
+      "originatingCountry": "Originating country",
+      "nodeName": "Node name",
+      "timeReceivedFrom": "Received time from",
+      "timeReceivedTo": "Received time to"
+    }
+  }
+}

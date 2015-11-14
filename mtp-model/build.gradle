@@ -17,6 +17,8 @@ dependencies {
             ["org.hibernate:hibernate-validator:${hibernateValidatorVersion}"],
             ["org.apache.commons:commons-lang3:${commonsLangVersion}"],
             ["org.scala-lang:scala-library:${scalaVersion}"],
+            ["org.springframework:spring-beans:${springVersion}"],
+            ["org.springframework:spring-context:${springVersion}"],
             ["org.projectlombok:lombok:${lombokVersion}"]
     )
 }

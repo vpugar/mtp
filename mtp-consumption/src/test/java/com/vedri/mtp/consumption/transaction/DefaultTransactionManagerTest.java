@@ -12,7 +12,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.vedri.mtp.consumption.support.cassandra.EmbeddedCassandraConfiguration;
-import com.vedri.mtp.consumption.transaction.dao.CassandraTransactionDao;
+import com.vedri.mtp.core.transaction.dao.CassandraTransactionDao;
 import com.vedri.mtp.core.CoreConfig;
 
 @ContextConfiguration(classes = {

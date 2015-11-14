@@ -1,0 +1,133 @@
+<div>
+
+    <h2><span translate="mtpApp.transaction.home.title">Transactions</span></h2>
+
+    <form name="searchForm" role="form" novalidate show-validation>
+        <div class="row">
+            <div class="col-md-4">
+                <label translate="mtpApp.transaction.timeReceivedFrom" for="field_from_date">Received From</label>
+
+                <div class="input-group">
+                    <input type="text" class="form-control" name="timeReceivedFrom" id="field_from_date"
+                           ng-model="query.timeReceivedFrom" required datepicker-popup max-date="maxDate"
+                           datepicker-options="dateOptions" is-open="fromStatus.opened"/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="fromOpen($event)"><i
+                                class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label for="field_from_time">&nbsp;</label>
+                <timepicker id="field_from_time" ng-model="query.timeReceivedFrom" hour-step="1" minute-step="10"
+                            show-meridian="false" show-spinners="false"></timepicker>
+            </div>
+            <div class="col-md-4">
+                <label translate="mtpApp.transaction.timeReceivedTo" for="field_to_date">Received To</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" name="to" id="field_to_date"
+                           ng-model="query.timeReceivedTo" required datepicker-popup max-date="maxDate"
+                           datepicker-options="dateOptions" is-open="toStatus.opened"/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="toOpen($event)"><i
+                                class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label for="field_to_time">&nbsp;</label>
+                <timepicker id="field_to_time" ng-model="query.timeReceivedTo" hour-step="1" minute-step="10"
+                            show-meridian="false" show-spinners="false"></timepicker>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label translate="mtpApp.transaction.userId" for="field_userId">User Id</label>
+                    <input type="text" class="form-control" name="field_userId" id="field_userId"
+                           ng-model="query.userId" ng-maxlength="100"/>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label translate="mtpApp.transaction.originatingCountry" for="field_originatingCountry">Originating Country</label>
+                    <input type="text" class="form-control" name="field_originatingCountry" id="field_originatingCountry"
+                           ng-model="query.originatingCountry" ng-maxlength="100"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label translate="mtpApp.transaction.currencyFrom" for="field_currencyFrom">Currency From</label>
+                    <input type="text" class="form-control" name="field_currencyFrom" id="field_currencyFrom"
+                           ng-model="query.currencyFrom" ng-maxlength="100"/>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label translate="mtpApp.transaction.currencyTo" for="field_currencyTo">Currency To</label>
+                    <input type="text" class="form-control" name="field_currencyTo" id="field_currencyTo"
+                           ng-model="query.currencyTo" ng-maxlength="100"/>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-default" ng-click="search(query, 1)">
+            <span class="glyphicon glyphicon-search"></span>&nbsp;<span
+                translate="entity.action.search">Search</span>
+        </button>
+
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped auto">
+            <thead>
+            <tr>
+                <th translate="mtpApp.transaction.id">Transaction ID</th>
+                <th translate="mtpApp.transaction.receivedTime">Received Time</th>
+                <th translate="mtpApp.transaction.timePlaced">Time Placed</th>
+                <th translate="mtpApp.transaction.validationStatus">Validation Status</th>
+                <th translate="mtpApp.transaction.userId">User ID</th>
+                <th translate="mtpApp.transaction.currencyFrom">Currency From</th>
+                <th translate="mtpApp.transaction.currencyTo">Currency To</th>
+                <th translate="mtpApp.transaction.amountSell">Amount Sell</th>
+                <th translate="mtpApp.transaction.rate">Rate</th>
+                <th translate="mtpApp.transaction.originatingCountry">Originating Country</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="transaction in transactions">
+                <td>
+                    <a ui-sref="transaction.detail({transactionId: transaction.transactionId})">{{transaction.transactionId}}</a>
+                </td>
+                <td>{{transaction.receivedTime | datetime}}</td>
+                <td>{{transaction.timePlaced | datetime}}</td>
+                <td>{{transaction.validationStatus}}</td>
+                <td>{{transaction.userId}}</td>
+                <td>{{transaction.currencyFrom}}</td>
+                <td>{{transaction.currencyTo}}</td>
+                <td>{{transaction.amountSell}}</td>
+                <td>{{transaction.rate}}</td>
+                <td>{{transaction.originatingCountry}}</td>
+                <td class="text-right">
+                    <button type="submit"
+                            ui-sref="transaction.detail({transactionId: transaction.transactionId})"
+                            class="btn btn-info btn-sm">
+                        <span class="glyphicon glyphicon-eye-open"></span>&nbsp;<span translate="entity.action.view"> View</span>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <nav>
+            <ul class="pagination">
+                <li ng-show="links['prev']" ng-click="search(query, links['prev'])"><a>&lt;</a></li>
+                <li ng-show="query.page > 2" ng-click="search(query, query.page - 2)"><a>{{query.page - 2}}</a></li>
+                <li ng-show="query.page > 1" ng-click="search(query, query.page - 1)"><a>{{query.page - 1}}</a></li>
+                <li class="active"><a>{{query.page}}</a></li>
+                <li ng-show="links['next'] && (transactions.length == query.per_page)" ng-click="search(query, links['next'])"><a>
+                    &gt;</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>

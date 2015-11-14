@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vedri.mtp.core.support.cassandra.ColumnUtils;
+import com.vedri.mtp.core.transaction.aggregation.TransactionValidationStatus;
 import lombok.*;
 
 import org.joda.time.DateTime;

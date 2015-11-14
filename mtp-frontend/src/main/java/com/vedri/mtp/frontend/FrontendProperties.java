@@ -18,6 +18,7 @@ public class FrontendProperties {
 	private final Security security = new Security();
 	private final Swagger swagger = new Swagger();
 	private final Metrics metrics = new Metrics();
+	private final CoreProperties.Akka akka = new CoreProperties.Akka();
 	private final CoreProperties.Cluster cluster = new CoreProperties.Cluster();
 	private final CoreSparkProperties.Spark spark = new CoreSparkProperties.Spark();
 	private final CoreProperties.Cassandra cassandra = new CoreProperties.Cassandra();

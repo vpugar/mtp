@@ -1,4 +1,4 @@
-package com.vedri.mtp.frontend.web.websocket;
+package com.vedri.mtp.frontend.web.websocket.admin;
 
 import java.security.Principal;
 import java.time.Instant;
@@ -8,8 +8,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.handler.annotation.Payload;

@@ -6,7 +6,7 @@ import org.apache.spark.streaming.api.java.JavaDStream;
 import org.joda.time.DateTime;
 
 import com.vedri.mtp.core.transaction.Transaction;
-import com.vedri.mtp.core.transaction.TransactionAggregationByUser;
+import com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByUser;
 
 public class PlacedTimeTransactionAggregationByUserBuilder extends TimeTransactionAggregationByUserBuilderTemplate {
 

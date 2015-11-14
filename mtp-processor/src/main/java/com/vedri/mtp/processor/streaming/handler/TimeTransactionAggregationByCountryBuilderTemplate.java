@@ -1,8 +1,8 @@
 package com.vedri.mtp.processor.streaming.handler;
 
-import static com.vedri.mtp.core.transaction.TimeAggregation.TimeFields.*;
-import static com.vedri.mtp.core.transaction.TransactionAggregationByCountry.Fields.originatingCountry;
-import static com.vedri.mtp.core.transaction.TransactionAggregationByCountry.Fields.transactionCount;
+import static com.vedri.mtp.core.transaction.aggregation.TimeAggregation.TimeFields.*;
+import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByCountry.Fields.originatingCountry;
+import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByCountry.Fields.transactionCount;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.spark.api.java.function.Function;
@@ -11,7 +11,7 @@ import org.apache.spark.streaming.api.java.JavaDStream;
 import com.datastax.spark.connector.japi.CassandraJavaUtil;
 import com.datastax.spark.connector.japi.CassandraStreamingJavaUtil;
 import com.vedri.mtp.core.transaction.Transaction;
-import com.vedri.mtp.core.transaction.TransactionAggregationByCountry;
+import com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByCountry;
 
 
 public abstract class TimeTransactionAggregationByCountryBuilderTemplate

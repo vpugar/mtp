@@ -6,7 +6,7 @@
             "home": "Home",
             "entities": {
                 "main": "Entities",
-                "additionalEntity": "MTP will add additional entities here (do not translate!)"
+                "transactions": "Transactions"
             },
             "account": {
                 "main": "Account",
@@ -82,7 +82,8 @@
             "delete": "Delete",
             "edit": "Edit",
             "save": "Save",
-            "view": "View"
+            "view": "View",
+            "search": "Search"
         },
         "detail": {
             "field": "Field",
@@ -108,5 +109,5 @@
         "serverNotReachable": "Server not reachable",
         "NotNull": "Field {{fieldName}} cannot be empty!"
     },
-    "footer": "This is your footer"
+    "footer": "MTP Application footer"
 }

@@ -76,4 +76,5 @@ public class CachingCountryManager implements CountryManager {
 	public List<String> getCurrencies() {
 		return currencies;
 	}
+
 }

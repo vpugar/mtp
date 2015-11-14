@@ -28,7 +28,8 @@
                         </span>
                     </a>
                     <ul class="dropdown-menu">
-                        <!-- TODO add entities to the menu here -->
+                        <li ui-sref-active="transaction"><a ui-sref="transaction" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-wrench"></span>
+                            &#xA0;<span translate="global.menu.entities.transactions">Transactions</span></a></li>
                     </ul>
                 </li>
                 <li ng-class="{active: $state.includes('account')}" class="dropdown pointer">

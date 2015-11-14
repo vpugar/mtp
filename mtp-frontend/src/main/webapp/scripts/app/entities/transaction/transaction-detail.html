@@ -1,0 +1,130 @@
+<div>
+
+    <h2><span translate="mtpApp.transaction.detail.title" translate-values="{transactionId: '{{transactionId}}'}">Transaction</span></h2>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th translate="entity.detail.field">Field</th>
+                <th translate="entity.detail.value">Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.partition">Partition</span>
+                </td>
+                <td>
+                    {{transaction.partition}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.id">Transaction ID</span>
+                </td>
+                <td>
+                    {{transaction.transactionId}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.receivedTime">Received Time</span>
+                </td>
+                <td>
+                    {{transaction.receivedTime | datetime}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.timePlaced">Time Placed</span>
+                </td>
+                <td>
+                    {{transaction.timePlaced | datetime}}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.validationStatus">Validation Status</span>
+                </td>
+                <td>
+                    {{('mtpApp.transaction.validationStatusMap.' + transaction.validationStatus) | translate}}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.userId">User ID</span>
+                </td>
+                <td>
+                    {{transaction.userId}}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.currencyFrom">Currency From</span>
+                </td>
+                <td>
+                    {{transaction.currencyFrom}}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.currencyTo">Currency To</span>
+                </td>
+                <td>
+                    {{transaction.currencyTo}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.amountSell">Amount Sell</span>
+                </td>
+                <td>
+                    {{transaction.amountSell}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.amountBuy">Amount Buy</span>
+                </td>
+                <td>
+                    {{transaction.amountBuy}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.rate">Rate</span>
+                </td>
+                <td>
+                    {{transaction.rate}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.originatingCountry">Originating Country</span>
+                </td>
+                <td>
+                    {{transaction.originatingCountry}} ({{country.officialName}})
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span translate="mtpApp.transaction.nodeName">Node Name</span>
+                </td>
+                <td>
+                    {{transaction.nodeName}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <button type="submit"
+            ui-sref="transaction()"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
+    </button>
+</div>

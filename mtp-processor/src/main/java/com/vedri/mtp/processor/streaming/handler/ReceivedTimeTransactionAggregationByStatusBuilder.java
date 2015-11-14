@@ -1,8 +1,8 @@
 package com.vedri.mtp.processor.streaming.handler;
 
-import static com.vedri.mtp.core.transaction.TimeAggregation.TimeFields.*;
-import static com.vedri.mtp.core.transaction.TransactionAggregationByStatus.Fields.transactionCount;
-import static com.vedri.mtp.core.transaction.TransactionAggregationByStatus.Fields.validationStatus;
+import static com.vedri.mtp.core.transaction.aggregation.TimeAggregation.TimeFields.*;
+import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByStatus.Fields.transactionCount;
+import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByStatus.Fields.validationStatus;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.spark.streaming.api.java.JavaDStream;
@@ -12,7 +12,7 @@ import com.datastax.spark.connector.japi.CassandraJavaUtil;
 import com.datastax.spark.connector.japi.CassandraStreamingJavaUtil;
 import com.vedri.mtp.core.transaction.Transaction;
 import com.vedri.mtp.core.transaction.TableName;
-import com.vedri.mtp.core.transaction.TransactionAggregationByStatus;
+import com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByStatus;
 
 public class ReceivedTimeTransactionAggregationByStatusBuilder
 		extends StreamBuilder<JavaDStream<Transaction>, JavaDStream<TransactionAggregationByStatus>> {
