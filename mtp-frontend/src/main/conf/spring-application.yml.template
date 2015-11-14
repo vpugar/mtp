@@ -5,4 +5,4 @@ mtp:
     spark:
       master: local[10]
       cassandraHosts: localhost
-      checkpointDir: /tmp/spark-processor
+      checkpointDir: /tmp/spark-frontend
