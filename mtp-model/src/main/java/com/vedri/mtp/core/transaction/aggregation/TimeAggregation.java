@@ -1,5 +1,6 @@
 package com.vedri.mtp.core.transaction.aggregation;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import com.vedri.mtp.core.support.cassandra.ColumnUtils;
@@ -11,6 +12,7 @@ import com.vedri.mtp.core.support.cassandra.ColumnUtils;
 @ToString
 public abstract class TimeAggregation {
 
+    @JsonIgnore
     private YearToHourTime yearToHourTime;
 
     public enum TimeFields {

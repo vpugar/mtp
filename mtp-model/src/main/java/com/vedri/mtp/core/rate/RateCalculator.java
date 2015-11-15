@@ -2,6 +2,9 @@ package com.vedri.mtp.core.rate;
 
 import org.joda.time.LocalDate;
 
+/**
+ * Gives rate for input currencyFrom. currencyTo for specific date.
+ */
 public interface RateCalculator {
 
 	default Rate sellRate(String currencyFrom, String currencyTo, LocalDate date) throws NoRateException {

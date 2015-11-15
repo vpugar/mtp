@@ -21,7 +21,7 @@ public class ReceivedTimeTransactionAggregationByUserBuilder extends TimeTransac
 			final DateTime time = transaction.getReceivedTime();
 			return new TransactionAggregationByUser(transaction.getUserId(),
 					time.getYear(), time.getMonthOfYear(),
-					time.getDayOfMonth(), time.getHourOfDay(), 1);
+					time.getDayOfMonth(), time.getHourOfDay(), 1, transaction.getAmountPoints());
 		};
 	}
 }

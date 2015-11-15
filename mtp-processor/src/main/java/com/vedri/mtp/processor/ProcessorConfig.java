@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = {
 		"com.vedri.mtp.core.country",
 		"com.vedri.mtp.core.transaction",
+		"com.vedri.mtp.core.rate",
 		"com.vedri.mtp.core.support.serializer",
 		"com.vedri.mtp.processor.streaming",
 		"com.vedri.mtp.processor.transaction"

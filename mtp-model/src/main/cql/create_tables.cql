@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS transaction (
   currency_to text,
   amount_sell text,
   amount_buy text,
+  amount_points text,
   rate text,
   placed_time timestamp,
   originating_country text,
@@ -42,6 +43,7 @@ CREATE TABLE IF NOT EXISTS rt_aggregation_by_validation_status (
    day int,
    hour int,
    transaction_count counter,
+  amount_points_unscaled counter,
    PRIMARY KEY ((validation_status), year, month, day, hour)
 ) WITH CLUSTERING ORDER BY (year DESC, month DESC, day DESC, hour DESC);
 
@@ -52,6 +54,7 @@ CREATE TABLE IF NOT EXISTS rt_aggregation_by_originating_country (
    day int,
    hour int,
    transaction_count counter,
+  amount_points_unscaled counter,
    PRIMARY KEY ((originating_country), year, month, day, hour)
 ) WITH CLUSTERING ORDER BY (year DESC, month DESC, day DESC, hour DESC);
 
@@ -62,6 +65,7 @@ CREATE TABLE IF NOT EXISTS rt_aggregation_by_user (
    day int,
    hour int,
    transaction_count counter,
+  amount_points_unscaled counter,
    PRIMARY KEY ((user_id), year, month, day, hour)
 ) WITH CLUSTERING ORDER BY (year DESC, month DESC, day DESC, hour DESC);
 
@@ -72,7 +76,9 @@ CREATE TABLE IF NOT EXISTS rt_aggregation_by_currency (
    day int,
    hour int,
    transaction_count_from counter,
+   amount_from_unscaled counter,
    transaction_count_to counter,
+   amount_to_unscaled counter,
    PRIMARY KEY ((currency), year, month, day, hour)
 ) WITH CLUSTERING ORDER BY (year DESC, month DESC, day DESC, hour DESC);
 
@@ -83,6 +89,7 @@ CREATE TABLE IF NOT EXISTS pt_aggregation_by_originating_country (
    day int,
    hour int,
    transaction_count counter,
+  amount_points_unscaled counter,
    PRIMARY KEY ((originating_country), year, month, day, hour)
 ) WITH CLUSTERING ORDER BY (year DESC, month DESC, day DESC, hour DESC);
 
@@ -93,6 +100,7 @@ CREATE TABLE IF NOT EXISTS pt_aggregation_by_user (
    day int,
    hour int,
    transaction_count counter,
+  amount_points_unscaled counter,
    PRIMARY KEY ((user_id), year, month, day, hour)
 ) WITH CLUSTERING ORDER BY (year DESC, month DESC, day DESC, hour DESC);
 
@@ -103,11 +111,15 @@ CREATE TABLE IF NOT EXISTS pt_aggregation_by_currency (
    day int,
    hour int,
    transaction_count_from counter,
+   amount_from_unscaled counter,
    transaction_count_to counter,
+   amount_to_unscaled counter,
    PRIMARY KEY ((currency), year, month, day, hour)
 ) WITH CLUSTERING ORDER BY (year DESC, month DESC, day DESC, hour DESC);
 
+
 -- user
+
 CREATE TABLE IF NOT EXISTS user (
     id text,
     login text,
@@ -153,6 +165,8 @@ CREATE TABLE IF NOT EXISTS activation_key_by_creation_date (
     activation_key text,
     PRIMARY KEY(creation_date, activation_key)
 );
+
+-- TODO token
 
 CREATE TABLE IF NOT EXISTS persistent_token (
     series text,

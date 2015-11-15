@@ -1,6 +1,7 @@
 package com.vedri.mtp.processor.streaming.handler;
 
 import static com.vedri.mtp.core.transaction.aggregation.TimeAggregation.TimeFields.*;
+import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByCountry.Fields.amountPointsUnscaled;
 import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByCountry.Fields.originatingCountry;
 import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByCountry.Fields.transactionCount;
 
@@ -45,7 +46,8 @@ public abstract class TimeTransactionAggregationByCountryBuilderTemplate
 								Pair.of(month.F.cammelCase(), month.F.underscore()),
 								Pair.of(day.F.cammelCase(), day.F.underscore()),
 								Pair.of(hour.F.cammelCase(), hour.F.underscore()),
-								Pair.of(transactionCount.F.cammelCase(), transactionCount.F.underscore())))
+								Pair.of(transactionCount.F.cammelCase(), transactionCount.F.underscore()),
+								Pair.of(amountPointsUnscaled.F.cammelCase(), amountPointsUnscaled.F.underscore())))
 				.saveToCassandra();
 		stream.print(1);
 

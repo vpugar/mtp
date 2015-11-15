@@ -32,29 +32,29 @@ public class CassandraTransactionDao implements TransactionDao {
 			"received_time, node_name) " +
 			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String LOAD_STATEMENT = "SELECT user_id, currency_from, currency_to, amount_sell, " +
-			"amount_buy, rate, placed_time, originating_country, received_time, validation_status, node_name " +
+			"amount_buy, amount_points, rate, placed_time, originating_country, received_time, validation_status, node_name " +
 			"FROM transaction " +
 			"WHERE partition = ? AND transaction_id = ?";
 	private static final String LOAD_ALL_STATEMENT = "SELECT partition, transaction_id, user_id, currency_from, currency_to, amount_sell, " +
-			"amount_buy, rate, placed_time, originating_country, received_time, validation_status, node_name " +
+			"amount_buy, amount_points, rate, placed_time, originating_country, received_time, validation_status, node_name " +
 			"FROM transaction " +
 			"WHERE partition = ? " +
 			"ORDER BY transaction_id ASC LIMIT " + RAW_FETCH_SIZE;
 	private static final String LOAD_ALL_STATEMENT_BOUNDARY = "SELECT partition, transaction_id, user_id, currency_from, currency_to, amount_sell, "
 			+
-			"amount_buy, rate, placed_time, originating_country, received_time, validation_status, node_name " +
+			"amount_buy, amount_points, rate, placed_time, originating_country, received_time, validation_status, node_name " +
 			"FROM transaction " +
 			"WHERE partition = ? AND transaction_id > ? " +
 			"ORDER BY transaction_id ASC LIMIT " + RAW_FETCH_SIZE;
 	private static final String LOAD_ALL_STATEMENT_INVERT = "SELECT partition, transaction_id, user_id, currency_from, currency_to, amount_sell, "
 			+
-			"amount_buy, rate, placed_time, originating_country, received_time, validation_status, node_name " +
+			"amount_buy, amount_points, rate, placed_time, originating_country, received_time, validation_status, node_name " +
 			"FROM transaction " +
 			"WHERE partition = ? " +
 			"ORDER BY transaction_id DESC LIMIT " + RAW_FETCH_SIZE;
 	private static final String LOAD_ALL_STATEMENT_BOUNDARY_INVERT = "SELECT partition, transaction_id, user_id, currency_from, currency_to, amount_sell, "
 			+
-			"amount_buy, rate, placed_time, originating_country, received_time, validation_status, node_name " +
+			"amount_buy, amount_points, rate, placed_time, originating_country, received_time, validation_status, node_name " +
 			"FROM transaction " +
 			"WHERE partition = ? AND transaction_id < ? " +
 			"ORDER BY transaction_id DESC LIMIT " + RAW_FETCH_SIZE;
@@ -228,6 +228,7 @@ public class CassandraTransactionDao implements TransactionDao {
 		transaction.setCurrencyTo(row.getString(currencyTo.F.underscore()));
 		transaction.setAmountSell(new BigDecimal(row.getString(amountSell.F.underscore())));
 		transaction.setAmountBuy(new BigDecimal(row.getString(amountBuy.F.underscore())));
+		transaction.setAmountPoints(new BigDecimal(row.getString(amountPoints.F.underscore())));
 		transaction.setRate(new BigDecimal(row.getString(rate.F.underscore())));
 		transaction.setPlacedTime(new DateTime(row.getTimestamp(placedTime.F.underscore())));
 		transaction.setOriginatingCountry(row.getString(originatingCountry.F.underscore()));

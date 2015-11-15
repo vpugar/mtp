@@ -1,10 +1,15 @@
 package com.vedri.mtp.consumption.http.akka;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
-import com.vedri.mtp.core.CoreProperties;
+import com.vedri.mtp.core.MtpConstants;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.springframework.context.ApplicationContext;
@@ -17,6 +22,7 @@ import com.beust.jcommander.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import com.vedri.mtp.core.CoreConfig;
+import com.vedri.mtp.core.CoreProperties;
 import com.vedri.mtp.core.country.Country;
 import com.vedri.mtp.core.country.CountryManager;
 import com.vedri.mtp.core.rate.Rate;
@@ -25,6 +31,28 @@ import com.vedri.mtp.core.support.cassandra.CassandraConfiguration;
 import com.vedri.mtp.core.support.http.AkkaHttpClient1;
 import com.vedri.mtp.core.support.json.TransactionJacksonConfiguration;
 
+/**
+ * Configurable HTTP client that sends data to the mtp-consumption application.
+ * <p>
+ *    Application parameters:
+ *    <ul>
+ *        <li>--repeatCount - number of requests, default 10</li>
+ *        <li>--pauseMs - pause between each request in ms, default 60000 ms</li>
+ *        <li>--url - URL of mtp-consumption, default http://localhost:9090/transactions</li>
+ *    </ul>
+ *    Client application generates:
+ *    <ul>
+ *        <li>userId - number from 0 to 1000</li>
+ *        <li>currencyFrom - </li>
+ *        <li>currencyTo - </li>
+ *        <li>amountSell - </li>
+ *        <li>amountBuy - </li>
+ *        <li>rate - rate for currencyFrom, currencyTo. If there is no real rate, it is generated randomly.</li>
+ *        <li>timePlaced - current timestamp minus maximally 30s</li>
+ *        <li>originatingCountry - random country from list of countries</li>
+ *    </ul>
+ * </p>
+ */
 public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 
 	@ComponentScan(basePackages = {
@@ -42,13 +70,13 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 
 	static class Args {
 
-		@Parameter(required = false, names = {"-r", "--repeatCount"})
+		@Parameter(required = false, names = { "-r", "--repeatCount" })
 		private int repeatCount = 10;
 
-		@Parameter(required = false, names = {"-p", "--pauseMs"})
+		@Parameter(required = false, names = { "-p", "--pauseMs" })
 		private int pauseMs = 60000;
 
-		@Parameter(required = false, names = {"-u", "--url"})
+		@Parameter(required = false, names = { "-u", "--url" })
 		private String url = "http://localhost:9090/transactions";
 	}
 
@@ -58,6 +86,12 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 	private CountryManager countryManager;
 	private ObjectMapper transactionObjectMapper;
 	private RateCalculator rateCalculator;
+	private final DecimalFormat decimalFormat2;
+
+	public ConfigurableTransactionHttpClient() {
+		decimalFormat2 = new DecimalFormat(MtpConstants.CURRENCY_FORMAT, MtpConstants.DEFAULT_FORMAT_SYMBOLS);
+		decimalFormat2.setRoundingMode(RoundingMode.HALF_UP);
+	}
 
 	@Override
 	protected Class[] getConfigs() {
@@ -77,7 +111,7 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 		final String currencyFrom = currencies.get(random.nextInt(currencies.size()));
 		final String currencyTo = currencies.get(random.nextInt(currencies.size()));
 		final Rate rate = rateCalculator.sellRate(currencyFrom, currencyTo, new LocalDate());
-		final double amountSell = random.nextDouble() * 10000;
+		final BigDecimal amountSell = new BigDecimal(decimalFormat2.format(random.nextDouble() * 10000));
 		final Country country = countries.get(random.nextInt(countries.size()));
 
 		Map<String, Object> data = Maps.newHashMap();
@@ -85,7 +119,7 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 		data.put("currencyFrom", currencyFrom);
 		data.put("currencyTo", currencyTo);
 		data.put("amountSell", amountSell);
-		data.put("amountBuy", amountSell * rate.getCfRate().doubleValue());
+		data.put("amountBuy", new BigDecimal(decimalFormat2.format(rate.getCfRate().multiply(amountSell))));
 		data.put("rate", rate.getCfRate());
 		data.put("timePlaced", new DateTime().minus(random.nextInt(30000)));
 		data.put("originatingCountry", country.getCca2());

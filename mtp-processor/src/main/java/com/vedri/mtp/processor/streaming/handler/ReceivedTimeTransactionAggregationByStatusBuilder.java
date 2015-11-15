@@ -1,6 +1,7 @@
 package com.vedri.mtp.processor.streaming.handler;
 
 import static com.vedri.mtp.core.transaction.aggregation.TimeAggregation.TimeFields.*;
+import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByStatus.Fields.amountPointsUnscaled;
 import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByStatus.Fields.transactionCount;
 import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByStatus.Fields.validationStatus;
 
@@ -33,7 +34,8 @@ public class ReceivedTimeTransactionAggregationByStatusBuilder
 					final DateTime receivedTime = transaction.getReceivedTime();
 					return new TransactionAggregationByStatus(transaction.getValidationStatus(),
 							receivedTime.getYear(), receivedTime.getMonthOfYear(),
-							receivedTime.getDayOfMonth(), receivedTime.getHourOfDay(), 1);
+							receivedTime.getDayOfMonth(), receivedTime.getHourOfDay(), 1,
+							transaction.getAmountPoints());
 				});
 
 		CassandraStreamingJavaUtil
@@ -46,7 +48,8 @@ public class ReceivedTimeTransactionAggregationByStatusBuilder
 								Pair.of(month.F.cammelCase(), month.F.underscore()),
 								Pair.of(day.F.cammelCase(), day.F.underscore()),
 								Pair.of(hour.F.cammelCase(), hour.F.underscore()),
-								Pair.of(transactionCount.F.cammelCase(), transactionCount.F.underscore())))
+								Pair.of(transactionCount.F.cammelCase(), transactionCount.F.underscore()),
+								Pair.of(amountPointsUnscaled.F.cammelCase(), amountPointsUnscaled.F.underscore())))
 				.saveToCassandra();
 		transactionAggregationByStatusStream.print(1);
 

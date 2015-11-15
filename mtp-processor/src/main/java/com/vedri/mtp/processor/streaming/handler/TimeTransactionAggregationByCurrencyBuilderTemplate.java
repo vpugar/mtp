@@ -44,7 +44,9 @@ public abstract class TimeTransactionAggregationByCurrencyBuilderTemplate
 								Pair.of(day.F.cammelCase(), day.F.underscore()),
 								Pair.of(hour.F.cammelCase(), hour.F.underscore()),
 								Pair.of(transactionCountFrom.F.cammelCase(), transactionCountFrom.F.underscore()),
-								Pair.of(transactionCountTo.F.cammelCase(), transactionCountTo.F.underscore())))
+								Pair.of(amountFromUnscaled.F.cammelCase(), amountFromUnscaled.F.underscore()),
+								Pair.of(transactionCountTo.F.cammelCase(), transactionCountTo.F.underscore()),
+								Pair.of(amountToUnscaled.F.cammelCase(), amountToUnscaled.F.underscore())))
 				.saveToCassandra();
 		stream.print(1);
 

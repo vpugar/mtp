@@ -9,6 +9,8 @@ import com.google.common.collect.Sets;
 import com.vedri.mtp.core.transaction.Transaction;
 import com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByCurrency;
 
+import java.math.BigDecimal;
+
 public class PlacedTimeTransactionAggregationByCurrencyBuilder
 		extends TimeTransactionAggregationByCurrencyBuilderTemplate {
 
@@ -24,10 +26,10 @@ public class PlacedTimeTransactionAggregationByCurrencyBuilder
 			return Sets.newHashSet(
 					new TransactionAggregationByCurrency(transaction.getCurrencyFrom(),
 							time.getYear(), time.getMonthOfYear(), time.getDayOfMonth(), time.getHourOfDay(),
-							1, 0),
+							1, 0, transaction.getAmountSell(), BigDecimal.ZERO),
 					new TransactionAggregationByCurrency(transaction.getCurrencyTo(),
 							time.getYear(), time.getMonthOfYear(), time.getDayOfMonth(), time.getHourOfDay(),
-							0, 1));
+							0, 1, BigDecimal.ZERO, transaction.getAmountBuy()));
 		};
 	}
 }

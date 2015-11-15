@@ -22,7 +22,7 @@ public class PlacedTimeTransactionAggregationByCountryBuilder
 			final DateTime time = transaction.getPlacedTime();
 			return new TransactionAggregationByCountry(transaction.getOriginatingCountry(),
 					time.getYear(), time.getMonthOfYear(),
-					time.getDayOfMonth(), time.getHourOfDay(), 1);
+					time.getDayOfMonth(), time.getHourOfDay(), 1, transaction.getAmountPoints());
 		};
 	}
 

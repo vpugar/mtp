@@ -1,5 +1,7 @@
 package com.vedri.mtp.consumption.http.akka;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,9 @@ import com.vedri.mtp.core.support.akka.AkkaConfiguration;
 import com.vedri.mtp.core.support.http.AkkaHttpClient1;
 import com.vedri.mtp.core.support.spring.AbstractApplication;
 
+/**
+ * Application that makes one request to mtp-consumption application.
+ */
 @Slf4j
 public class TransactionHttpClient extends AbstractApplication {
 

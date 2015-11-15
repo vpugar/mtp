@@ -3,6 +3,7 @@ package com.vedri.mtp.processor.transaction;
 import java.math.BigDecimal;
 import java.util.Set;
 
+import com.vedri.mtp.core.MtpConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,11 +40,9 @@ public class TransactionValidator {
 	}
 
 	private boolean checkAmountSanity(Transaction transaction) {
-		final double amountBuy = transaction.getAmountBuy().doubleValue();
-		final double amountSell = transaction.getAmountSell().doubleValue();
-		transaction.getAmountBuy().multiply(transaction.getRate());
-		final double amountBuy2 = amountSell * transaction.getRate().doubleValue();
-		return amountBuy2 + 0.00001 >= amountBuy && amountBuy2 - 0.00001 <= amountBuy;
+		final BigDecimal amountBuy2 = transaction.getAmountSell().multiply(transaction.getRate());
+		return amountBuy2.setScale(MtpConstants.CURRENCY_SCALE, MtpConstants.CURRENCY_ROUNDING)
+				.equals(transaction.getAmountBuy());
 	}
 
 	private TransactionValidationStatus checkOriginatingCountry(Transaction transaction) {

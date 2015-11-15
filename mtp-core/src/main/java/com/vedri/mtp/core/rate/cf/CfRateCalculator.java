@@ -5,20 +5,23 @@ import java.util.HashMap;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectReader;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.google.common.collect.Maps;
 import com.vedri.mtp.core.rate.NoRateException;
 import com.vedri.mtp.core.rate.Rate;
 import com.vedri.mtp.core.rate.RateCalculator;
 import com.vedri.mtp.core.support.http.HttpComponentsHttpClient;
 
+/**
+ * CF implementation of currency calculator based on https://app.currencyfair.com/api/fleece.
+ */
 @Service
 @Slf4j
 public class CfRateCalculator implements RateCalculator {

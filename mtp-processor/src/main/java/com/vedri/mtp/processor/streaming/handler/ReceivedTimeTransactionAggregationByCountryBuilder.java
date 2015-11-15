@@ -22,7 +22,7 @@ public class ReceivedTimeTransactionAggregationByCountryBuilder
 			final DateTime time = transaction.getReceivedTime();
 			return new TransactionAggregationByCountry(transaction.getOriginatingCountry(),
 					time.getYear(), time.getMonthOfYear(),
-					time.getDayOfMonth(), time.getHourOfDay(), 1);
+					time.getDayOfMonth(), time.getHourOfDay(), 1, transaction.getAmountPoints());
 		};
 	}
 

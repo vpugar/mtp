@@ -21,7 +21,7 @@ public class PlacedTimeTransactionAggregationByUserBuilder extends TimeTransacti
 			final DateTime time = transaction.getPlacedTime();
 			return new TransactionAggregationByUser(transaction.getUserId(),
 					time.getYear(), time.getMonthOfYear(),
-					time.getDayOfMonth(), time.getHourOfDay(), 1);
+					time.getDayOfMonth(), time.getHourOfDay(), 1, transaction.getAmountPoints());
 		};
 	}
 }

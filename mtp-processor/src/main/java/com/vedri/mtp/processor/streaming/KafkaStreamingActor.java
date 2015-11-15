@@ -2,6 +2,7 @@ package com.vedri.mtp.processor.streaming;
 
 import java.util.Map;
 
+import com.vedri.mtp.core.rate.RateCalculator;
 import kafka.serializer.Decoder;
 
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
@@ -41,6 +42,7 @@ public class KafkaStreamingActor extends AbstractActor {
 
 	private final Decoder<Transaction> decoder;
 	private final TransactionValidator transactionValidator;
+	private final RateCalculator rateCalculator;
 	private final JavaStreamingContext streamingContext;
 
 	protected final PartialFunction<Object, BoxedUnit> receive = ReceiveBuilder
@@ -49,13 +51,15 @@ public class KafkaStreamingActor extends AbstractActor {
 
 	@Autowired
 	public KafkaStreamingActor(final ProcessorProperties processorProperties,
-			final JavaStreamingContext streamingContext,
-			@Qualifier("transactionKryoDecoder") final Decoder<Transaction> decoder,
-			final TransactionValidator transactionValidator) {
+							   final JavaStreamingContext streamingContext,
+							   @Qualifier("transactionKryoDecoder") final Decoder<Transaction> decoder,
+							   final TransactionValidator transactionValidator,
+							   @Qualifier("cachingRateCalculator") final RateCalculator rateCalculator) {
 
 		this.processorProperties = processorProperties;
 		this.decoder = decoder;
 		this.transactionValidator = transactionValidator;
+		this.rateCalculator = rateCalculator;
 		this.streamingContext = streamingContext;
 
 		receive(receive);
@@ -78,7 +82,7 @@ public class KafkaStreamingActor extends AbstractActor {
 				new CreateStreamBuilder(kafkaServer.getTopic().getName(), streamingContext, kafkaParams),
 				decoder);
 		final ValidateTransactionBuilder validateTransactionBuilder = new ValidateTransactionBuilder(
-				createTransactionBuilder, transactionValidator);
+				createTransactionBuilder, transactionValidator, rateCalculator);
 
 		new StoreTransactionStatusBuilder(validateTransactionBuilder, cassandra.getKeyspace()).build();
 

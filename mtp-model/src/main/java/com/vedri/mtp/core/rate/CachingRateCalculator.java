@@ -1,10 +1,14 @@
 package com.vedri.mtp.core.rate;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
+import com.vedri.mtp.core.MtpConstants;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,15 @@ import org.springframework.stereotype.Service;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import com.vedri.mtp.core.rate.dao.RateDao;
 
+/**
+ * Caching implementation of rate calculator. It loads rate in next order with fallback to next step:
+ * <ul>
+ * <li>from Cassandra DB</li>
+ * <li>from sourceRateCalculator implementation</li>
+ * <li>randomly generates rate</li>
+ * </ul>
+ * It stores resolved rate in Cassandra DB and in memory for next use.
+ */
 @Service
 @Slf4j
 public class CachingRateCalculator implements RateCalculator {
@@ -21,6 +34,8 @@ public class CachingRateCalculator implements RateCalculator {
 	private final RateCalculator sourceRateCalculator;
 	private final Random random = new Random(System.currentTimeMillis());
 	private boolean useRandomResultsForRate = true;
+	private boolean useSourceRateCalculator = false;
+	private final DecimalFormat decimalFormat;
 
 	private final Map<Rate.Key, Rate> simpleCache = new ConcurrentLinkedHashMap.Builder<Rate.Key, Rate>()
 			.initialCapacity(500)
@@ -30,6 +45,16 @@ public class CachingRateCalculator implements RateCalculator {
 	public CachingRateCalculator(RateDao rateDao, RateCalculator sourceRateCalculator) {
 		this.rateDao = rateDao;
 		this.sourceRateCalculator = sourceRateCalculator;
+		decimalFormat = new DecimalFormat(MtpConstants.RATE_FORMAT, MtpConstants.DEFAULT_FORMAT_SYMBOLS);
+		decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+	}
+
+	public void setUseRandomResultsForRate(boolean useRandomResultsForRate) {
+		this.useRandomResultsForRate = useRandomResultsForRate;
+	}
+
+	public void setUseSourceRateCalculator(boolean useSourceRateCalculator) {
+		this.useSourceRateCalculator = useSourceRateCalculator;
 	}
 
 	@Override
@@ -42,7 +67,7 @@ public class CachingRateCalculator implements RateCalculator {
 			putInCache(rate);
 		}
 
-		if (rate == null) {
+		if (useSourceRateCalculator && rate == null) {
 			try {
 				rate = sourceRateCalculator.sellRate(key);
 				storeInDaoAndCache(rate);
@@ -59,7 +84,8 @@ public class CachingRateCalculator implements RateCalculator {
 
 		if (useRandomResultsForRate && rate == null) {
 			log.warn("Using random rate for example purposes");
-			final BigDecimal rateValue = new BigDecimal(random.nextDouble(), new MathContext(4));
+			final double num = random.nextDouble() * 100;
+			final BigDecimal rateValue = new BigDecimal(decimalFormat.format(num));
 			rate = new Rate(key, rateValue, rateValue.add(BigDecimal.ONE));
 			storeInDaoAndCache(rate);
 		}

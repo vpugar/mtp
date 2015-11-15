@@ -1,12 +1,15 @@
 package com.vedri.mtp.core.transaction.aggregation;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import com.vedri.mtp.core.MtpConstants;
 import com.vedri.mtp.core.support.cassandra.ColumnUtils;
 
 @NoArgsConstructor
@@ -17,19 +20,49 @@ public class TransactionAggregationByCurrency extends TimeAggregation implements
 
 	private String currency;
 	private long transactionCountFrom;
+	private BigDecimal amountFrom;
 	private long transactionCountTo;
+	private BigDecimal amountTo;
 
 	public TransactionAggregationByCurrency(String currency, int year, int month, int day, int hour,
-			long transactionCountFrom, long transactionCountTo) {
+			long transactionCountFrom, long transactionCountTo, BigDecimal amountFrom, BigDecimal amountTo) {
 		super(new YearToHourTime(year, month, day, hour));
 		this.currency = currency;
 		this.transactionCountFrom = transactionCountFrom;
 		this.transactionCountTo = transactionCountTo;
+		this.amountFrom = amountFrom;
+		this.amountTo = amountTo;
+	}
+
+	public TransactionAggregationByCurrency(String currency, int year, int month, int day, int hour,
+			long transactionCountFrom, long transactionCountTo, long amountFromUnscaled, long amountToUnscaled) {
+		super(new YearToHourTime(year, month, day, hour));
+		this.currency = currency;
+		this.transactionCountFrom = transactionCountFrom;
+		this.transactionCountTo = transactionCountTo;
+		this.setAmountFromUnscaled(amountFromUnscaled);
+		this.setAmountToUnscaled(amountToUnscaled);
 	}
 
 	public enum Fields {
-		currency, transactionCountFrom, transactionCountTo;
+		currency, transactionCountFrom, amountFromUnscaled, transactionCountTo, amountToUnscaled;
 
 		public final ColumnUtils.Field<Fields> F = ColumnUtils.createField(this);
+	}
+
+	public long getAmountFromUnscaled() {
+		return amountFrom.unscaledValue().longValue();
+	}
+
+	public void setAmountFromUnscaled(long value) {
+		this.amountFrom = new BigDecimal(BigInteger.valueOf(value), MtpConstants.CURRENCY_POINTS_SCALE);
+	}
+
+	public long getAmountToUnscaled() {
+		return amountTo.unscaledValue().longValue();
+	}
+
+	public void setAmountToUnscaled(long value) {
+		this.amountTo = new BigDecimal(BigInteger.valueOf(value), MtpConstants.CURRENCY_POINTS_SCALE);
 	}
 }

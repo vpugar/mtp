@@ -78,7 +78,7 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 
 	private final Transaction resultTransaction = new Transaction(
 			"p1", "t1", "134256", "EUR", "GBP", new BigDecimal("1000"), new BigDecimal("747.10"),
-			new BigDecimal("0.7471"), new DateTime(2015, 1, 24, 10, 27, 44, DateTimeZone.UTC),
+			new BigDecimal("1000"), new BigDecimal("0.7471"), new DateTime(2015, 1, 24, 10, 27, 44, DateTimeZone.UTC),
 			"FR", new DateTime(), "n1", TransactionValidationStatus.OK);
 
 	@BeforeClass

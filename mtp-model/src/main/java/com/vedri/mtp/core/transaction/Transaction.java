@@ -2,13 +2,16 @@ package com.vedri.mtp.core.transaction;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vedri.mtp.core.support.cassandra.ColumnUtils;
-import com.vedri.mtp.core.transaction.aggregation.TransactionValidationStatus;
 import lombok.*;
 
 import org.joda.time.DateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vedri.mtp.core.MtpConstants;
+import com.vedri.mtp.core.support.cassandra.ColumnUtils;
+import com.vedri.mtp.core.transaction.aggregation.TransactionValidationStatus;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,6 +30,7 @@ public class Transaction implements Serializable, Cloneable {
 	private String currencyTo;
 	private BigDecimal amountSell;
 	private BigDecimal amountBuy;
+	private BigDecimal amountPoints;
 	private BigDecimal rate;
 	@JsonProperty("timePlaced")
 	private DateTime placedTime;
@@ -38,8 +42,7 @@ public class Transaction implements Serializable, Cloneable {
 	private TransactionValidationStatus validationStatus;
 
 	public enum Fields {
-		partition, transactionId, userId, currencyFrom, currencyTo, amountSell, amountBuy, rate, placedTime,
-		originatingCountry, receivedTime, nodeName, validationStatus;
+		partition, transactionId, userId, currencyFrom, currencyTo, amountSell, amountBuy, amountPoints, rate, placedTime, originatingCountry, receivedTime, nodeName, validationStatus;
 
 		public final ColumnUtils.Field<Fields> F = ColumnUtils.createField(this);
 	}
@@ -47,10 +50,6 @@ public class Transaction implements Serializable, Cloneable {
 	public Transaction(final String partition, final String transactionId) {
 		this.partition = partition;
 		this.transactionId = transactionId;
-	}
-
-	public Transaction(final String[] data) {
-
 	}
 
 	public Transaction(final String userId, final String currencyFrom, final String currencyTo,
@@ -64,6 +63,14 @@ public class Transaction implements Serializable, Cloneable {
 		this.rate = rate;
 		this.placedTime = placedTime;
 		this.originatingCountry = originatingCountry;
+	}
+
+	public long getAmountPointsUnscaled() {
+		return amountPoints.unscaledValue().longValue();
+	}
+
+	public void setAmountPointsUnscaled(long value) {
+		this.amountPoints = new BigDecimal(BigInteger.valueOf(value), MtpConstants.CURRENCY_POINTS_SCALE);
 	}
 
 	@Override

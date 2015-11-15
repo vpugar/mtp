@@ -31,7 +31,7 @@ public abstract class ClusterAwareHandler extends ClusterAwareWatcher {
 					.match(IllegalStateException.class, e -> SupervisorStrategy.restart())
 					.match(TimeoutException.class, e -> SupervisorStrategy.escalate())
 					.match(Exception.class, e -> {
-						throw new Exception();
+						throw e;
 					})
 					.build());
 
