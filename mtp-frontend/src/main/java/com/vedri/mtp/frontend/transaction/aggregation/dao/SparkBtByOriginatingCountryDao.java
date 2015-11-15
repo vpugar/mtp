@@ -1,5 +1,6 @@
 package com.vedri.mtp.frontend.transaction.aggregation.dao;
 
+import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByCountry.Fields.amountPointsUnscaled;
 import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByCountry.Fields.transactionCount;
 
 import org.apache.spark.FutureAction;
@@ -43,7 +44,8 @@ public class SparkBtByOriginatingCountryDao {
 						originatingCountry, yearToHourTime.getYear(), yearToHourTime.getMonth(),
 						yearToHourTime.getDay(), yearToHourTime.getHour())
 				.map(row -> new TransactionAggregationByCountry(
-						originatingCountry, yearToHourTime, row.getLong(transactionCount.F.underscore())))
+						originatingCountry, yearToHourTime, row.getLong(transactionCount.F.underscore()),
+						row.getLong(amountPointsUnscaled.F.underscore())))
 				.rdd();
 
 		final FutureAction<Seq<TransactionAggregationByCountry>> futureAction = RDD

@@ -12,9 +12,14 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan(basePackages = {"com.vedri.mtp.frontend.config", "com.vedri.mtp.frontend.support",
-        "com.vedri.mtp.frontend.user", "com.vedri.mtp.frontend.web", "com.vedri.mtp.core.transaction",
-        "com.vedri.mtp.core.country"
+@ComponentScan(basePackages = {
+        "com.vedri.mtp.core.transaction",
+        "com.vedri.mtp.core.country",
+        "com.vedri.mtp.frontend.config",
+        "com.vedri.mtp.frontend.support",
+        "com.vedri.mtp.frontend.user",
+        "com.vedri.mtp.frontend.web",
+        "com.vedri.mtp.frontend.transaction"
 })
 @EnableAutoConfiguration(exclude = { MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class,
         CassandraDataAutoConfiguration.class, CassandraRepositoriesAutoConfiguration.class})

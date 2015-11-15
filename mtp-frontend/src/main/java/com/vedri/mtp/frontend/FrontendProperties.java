@@ -81,7 +81,7 @@ public class FrontendProperties {
 	public static class Swagger {
 		private String title = "MTP API";
 		private String description = "MTP API documentation";
-		private String version = "0.0.1";
+		private String version = "0.2.0";
 		private String termsOfServiceUrl;
 		private String contact;
 		private String license;
