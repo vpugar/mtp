@@ -10,6 +10,4 @@ public interface CountryManager {
 	Set<Country> getCountriesFromCurrency(String currency);
 
 	List<Country> getCountries();
-
-	List<String> getCurrencies();
 }

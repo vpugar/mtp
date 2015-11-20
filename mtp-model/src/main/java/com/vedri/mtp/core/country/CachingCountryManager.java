@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import scala.Tuple2;
 
 import com.vedri.mtp.core.country.dao.CountryDao;
+import com.vedri.mtp.core.currency.Currency;
 
 @Service
 @Slf4j
@@ -25,9 +26,8 @@ public class CachingCountryManager implements CountryManager {
 	private final CountryDao countryDao;
 
 	private volatile List<Country> countries = Collections.emptyList();
-	private volatile List<String> currencies = Collections.emptyList();
 	private volatile Map<String, Country> cca2ToCountry = Collections.emptyMap();
-	private volatile Map<String, Set<Country>> currencyToCountry = Collections.emptyMap();
+	private volatile Map<Currency, Set<Country>> currencyToCountry = Collections.emptyMap();
 
 	@Autowired
 	public CachingCountryManager(CountryDao countryDao) {
@@ -37,26 +37,21 @@ public class CachingCountryManager implements CountryManager {
 	@PostConstruct
 	public void init() {
 
-		log.debug("Loading countries and currencies");
+		log.debug("Loading countries");
 
 		countries = countryDao.loadAll();
 		cca2ToCountry = countries
 				.stream()
 				.collect(Collectors.<Country, String, Country> toMap(Country::getCca2, country -> country));
-		final Stream<Tuple2<String, Country>> currencyAndCountryStream = countries
+		final Stream<Tuple2<Currency, Country>> currencyAndCountryStream = countries
 				.stream()
 				.flatMap(country -> country.getCurrencies().stream().map(currency -> new Tuple2<>(currency, country)));
 		currencyToCountry = currencyAndCountryStream
 				.collect(/* group by currency */ Collectors.groupingBy(Tuple2::_1,
 						/* map collector: set of tuples to set of countries */
 						Collectors.mapping(Tuple2::_2, Collectors.toSet())));
-		currencies = countries
-				.stream()
-				.flatMap(country -> country.getCurrencies().stream())
-				.distinct()
-				.collect(Collectors.toList());
 
-		log.info("Loaded {} countries and {} currencies", countries.size(), currencies.size());
+		log.info("Loaded {} countries", countries.size());
 	}
 
 	public Country getCountryFromCca2(String cca2) {
@@ -70,11 +65,6 @@ public class CachingCountryManager implements CountryManager {
 	@Override
 	public List<Country> getCountries() {
 		return countries;
-	}
-
-	@Override
-	public List<String> getCurrencies() {
-		return currencies;
 	}
 
 }

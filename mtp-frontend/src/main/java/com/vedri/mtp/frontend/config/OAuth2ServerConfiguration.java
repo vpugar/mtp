@@ -1,6 +1,7 @@
 package com.vedri.mtp.frontend.config;
 
 import com.vedri.mtp.frontend.FrontendProperties;
+import com.vedri.mtp.frontend.MtpFrontendConstants;
 import com.vedri.mtp.frontend.web.security.AjaxLogoutSuccessHandler;
 import com.vedri.mtp.frontend.web.security.AuthoritiesConstants;
 import com.vedri.mtp.frontend.web.security.Http401UnauthorizedEntryPoint;
@@ -54,8 +55,8 @@ public class OAuth2ServerConfiguration {
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/api/logs/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/api/**").authenticated()
-                .antMatchers("/websocket/tracker").hasAuthority(AuthoritiesConstants.ADMIN)
-                .antMatchers("/websocket/**").permitAll()
+                .antMatchers(MtpFrontendConstants.wrapWebsocketPath("mtp")).hasAuthority(AuthoritiesConstants.ADMIN)
+                .antMatchers(MtpFrontendConstants.wrapWebsocketPath("**")).permitAll()
                 .antMatchers("/metrics/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/health/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/trace/**").hasAuthority(AuthoritiesConstants.ADMIN)

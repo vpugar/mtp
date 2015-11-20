@@ -11,6 +11,7 @@ import java.io.Serializable;
 @Setter
 @ToString
 public class YearToHourTime implements Serializable {
+
     private Integer year;
     private Integer month;
     private Integer day;

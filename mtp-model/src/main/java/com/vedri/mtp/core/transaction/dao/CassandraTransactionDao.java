@@ -207,7 +207,7 @@ public class CassandraTransactionDao implements TransactionDao {
 			else {
 				offset += filteredList.size();
 			}
-		} while (offset <= filterOffset && transactions.size() < filterPageSize && rawTransactions.size() != 0);
+		} while (transactionRaw.hasNextPartition() && offset <= filterOffset && transactions.size() < filterPageSize && rawTransactions.size() != 0);
 
 		return transactions;
 	}
@@ -228,7 +228,10 @@ public class CassandraTransactionDao implements TransactionDao {
 		transaction.setCurrencyTo(row.getString(currencyTo.F.underscore()));
 		transaction.setAmountSell(new BigDecimal(row.getString(amountSell.F.underscore())));
 		transaction.setAmountBuy(new BigDecimal(row.getString(amountBuy.F.underscore())));
-		transaction.setAmountPoints(new BigDecimal(row.getString(amountPoints.F.underscore())));
+		final String amountPointsStr = row.getString(Transaction.Fields.amountPoints.F.underscore());
+		if (amountPointsStr != null) {
+			transaction.setAmountPoints(new BigDecimal(amountPointsStr));
+		}
 		transaction.setRate(new BigDecimal(row.getString(rate.F.underscore())));
 		transaction.setPlacedTime(new DateTime(row.getTimestamp(placedTime.F.underscore())));
 		transaction.setOriginatingCountry(row.getString(originatingCountry.F.underscore()));

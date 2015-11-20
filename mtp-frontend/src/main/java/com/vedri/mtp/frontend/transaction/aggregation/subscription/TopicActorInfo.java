@@ -8,6 +8,15 @@ import lombok.Getter;
 @Getter
 public class TopicActorInfo {
 
+	private final String topicDestinationPath;
 	private final Class<? extends AbstractActor> type;
 	private final String name;
+
+	public boolean supportsDestination(String destination) {
+		return topicDestinationPath.startsWith(destination);
+	}
+
+	public String destinationSuffix(String destination) {
+		return destination.replace(topicDestinationPath + "/", "");
+	}
 }

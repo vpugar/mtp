@@ -10,6 +10,7 @@ angular.module('mtpApp')
                     data = angular.fromJson(data);
                     return data;
                 }
-            }
+            },
+            'queryWithFilter': { method: 'GET', isArray: true}
         });
     });

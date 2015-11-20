@@ -5,18 +5,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import com.vedri.mtp.frontend.support.stomp.CallbackSubscriptionRegistry;
+import com.vedri.mtp.frontend.transaction.aggregation.subscription.*;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.messaging.simp.broker.SimpleBrokerMessageHandler;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.messaging.simp.config.SimpleBrokerRegistration;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.socket.WebSocketHandler;
@@ -26,9 +23,8 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
+import com.vedri.mtp.frontend.MtpFrontendConstants;
 import com.vedri.mtp.frontend.web.security.AuthoritiesConstants;
-
-import javax.annotation.PostConstruct;
 
 @Slf4j
 @Configuration
@@ -39,12 +35,13 @@ public class WebsocketConfiguration extends AbstractWebSocketMessageBrokerConfig
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
-		config.enableSimpleBroker("/topic");
+		config.enableSimpleBroker(MtpFrontendConstants.TOPIC_DESTINATION_PREFIX);
 	}
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/websocket/tracker")
+		registry.addEndpoint(
+				MtpFrontendConstants.wrapWebsocketPath("mtp"))
 				.setHandshakeHandler(new DefaultHandshakeHandler() {
 					@Override
 					protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler,

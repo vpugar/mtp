@@ -1,15 +1,16 @@
 package com.vedri.mtp.frontend;
 
-import com.vedri.mtp.processor.support.spark.SparkConfiguration;
+import java.net.InetAddress;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 
 import com.vedri.mtp.core.CoreConfig;
 import com.vedri.mtp.core.support.cassandra.CassandraConfiguration;
 import com.vedri.mtp.core.support.spring.AbstractApplication;
-import org.springframework.core.env.Environment;
-
-import java.net.InetAddress;
+import com.vedri.mtp.processor.support.spark.SparkConfiguration;
 
 @Slf4j
 public class FrontendApplication extends AbstractApplication {
@@ -26,9 +27,11 @@ public class FrontendApplication extends AbstractApplication {
 		log.info("Starting web application");
 		final Environment env = context.getEnvironment();
 
-		log.info("Access URLs:\n----------------------------------------------------------\n\t" +
-						"Local: \t\thttp://127.0.0.1:{}\n\t" +
-						"External: \thttp://{}:{}\n----------------------------------------------------------",
+		log.info("Access URLs:\n" +
+				"----------------------------------------------------------\n" +
+				"\tLocal: \t\thttp://127.0.0.1:{}\n" +
+				"\tExternal: \thttp://{}:{}\n" +
+				"----------------------------------------------------------",
 				env.getProperty("server.port"),
 				InetAddress.getLocalHost().getHostAddress(),
 				env.getProperty("server.port"));

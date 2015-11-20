@@ -4,6 +4,7 @@ angular.module('mtpApp')
     .controller('TransactionDetailController', function ($scope, $rootScope, $stateParams, $state, $translate,
                                                          Transaction, Country) {
 
+        $scope.query = $stateParams.query;
         $scope.transactionId = $stateParams.transactionId;
 
         $scope.load = function () {

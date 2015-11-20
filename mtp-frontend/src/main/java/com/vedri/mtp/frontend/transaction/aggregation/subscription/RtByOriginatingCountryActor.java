@@ -1,66 +1,46 @@
 package com.vedri.mtp.frontend.transaction.aggregation.subscription;
 
-import java.util.concurrent.TimeUnit;
-
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import scala.PartialFunction;
-import scala.concurrent.duration.Duration;
-import scala.runtime.BoxedUnit;
-import akka.actor.AbstractActor;
-import akka.actor.Cancellable;
-import akka.japi.pf.ReceiveBuilder;
-
-import com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByCountry;
-import com.vedri.mtp.core.transaction.aggregation.YearToHourTime;
-import com.vedri.mtp.frontend.transaction.aggregation.dao.SparkRtByOriginatingCountryDao;
+import com.vedri.mtp.core.country.Country;
+import com.vedri.mtp.core.country.CountryManager;
+import com.vedri.mtp.frontend.transaction.aggregation.dao.SparkAggregationByOriginatingCountryDao;
 import com.vedri.mtp.frontend.web.websocket.transaction.WebsocketSender;
 
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class RtByOriginatingCountryActor extends AbstractActor {
+public class RtByOriginatingCountryActor extends AggregationByOriginatingCountryActor {
 
 	public static final String NAME = "rtByOriginatingCountryActor";
 
-	private final WebsocketSender websocketSender;
-	private final SparkRtByOriginatingCountryDao sparkRtByOriginatingCountryDao;
-
-	private final Cancellable tick = getContext().system().scheduler().schedule(
-			Duration.create(500, TimeUnit.MILLISECONDS),
-			Duration.create(10, TimeUnit.SECONDS),
-			self(), new PeriodicTick(), getContext().dispatcher(), null);
-
-	protected final PartialFunction<Object, BoxedUnit> receive = ReceiveBuilder
-			.match(PeriodicTick.class, this::receive)
-			.match(TransactionAggregationByCountry.class, this::receive)
-			.build();
+	private Country country;
 
 	@Autowired
 	public RtByOriginatingCountryActor(WebsocketSender websocketSender,
-			SparkRtByOriginatingCountryDao sparkRtByOriginatingCountryDao) {
-		this.websocketSender = websocketSender;
-		this.sparkRtByOriginatingCountryDao = sparkRtByOriginatingCountryDao;
-
-		receive(receive);
+			@Qualifier("rtAggregationByOriginatingCountryDao") SparkAggregationByOriginatingCountryDao sparkAggregationByOriginatingCountryDao,
+			CountryManager countryManager) {
+		super(websocketSender, sparkAggregationByOriginatingCountryDao, countryManager);
+		receive(topicSubscriptionReceieve);
 	}
 
 	@Override
-	public void postStop() {
-		if (!tick.isCancelled()) {
-			tick.cancel();
-		}
-	}
-
 	public void receive(PeriodicTick periodicTick) {
-		sparkRtByOriginatingCountryDao.load("HR", new YearToHourTime(new DateTime()), self());
+		load(country);
 	}
 
-	public void receive(TransactionAggregationByCountry data) {
-		websocketSender.send(NAME, data);
+	@Override
+	protected String getName() {
+		return NAME;
+	}
+
+	@Override
+	protected void receive(TopicActorSubscriptionInfo topicActorSubscriptionInfo) {
+		this.country = countryManager.getCountryFromCca2((String) topicActorSubscriptionInfo.getFilter());
+		getContext().become(receive);
 	}
 
 }

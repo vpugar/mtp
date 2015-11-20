@@ -25,6 +25,6 @@ angular.module('mtpApp')
                 },
                 onExit: function(Tracker) {
                     Tracker.unsubscribe();
-                },
+                }
             });
     });

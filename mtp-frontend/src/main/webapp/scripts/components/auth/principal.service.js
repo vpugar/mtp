@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('mtpApp')
-    .factory('Principal', function Principal($q, Account, Tracker) {
+    .factory('Principal', function Principal($q, Account, Websocket, Tracker) {
         var _identity,
             _authenticated = false;
 
@@ -61,7 +61,7 @@ angular.module('mtpApp')
                         _identity = account.data;
                         _authenticated = true;
                         deferred.resolve(_identity);
-                        Tracker.connect();
+                        Websocket.connect(Tracker.sendActivity);
                     })
                     .catch(function() {
                         _identity = null;

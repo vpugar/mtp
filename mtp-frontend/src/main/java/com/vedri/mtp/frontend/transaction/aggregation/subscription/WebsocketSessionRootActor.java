@@ -1,5 +1,7 @@
 package com.vedri.mtp.frontend.transaction.aggregation.subscription;
 
+import static com.vedri.mtp.frontend.MtpFrontendConstants.wrapTopicDestinationPath;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +15,9 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.japi.pf.ReceiveBuilder;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.vedri.mtp.core.support.akka.SpringExtension;
-import com.vedri.mtp.frontend.support.stomp.CallbackSubscriptionRegistry;
-import com.vedri.mtp.frontend.support.stomp.DestinationListener;
-import com.vedri.mtp.frontend.support.stomp.NewDestinationEvent;
-import com.vedri.mtp.frontend.support.stomp.NoSessionsForDestinationEvent;
+import com.vedri.mtp.frontend.support.stomp.*;
 
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -31,13 +30,20 @@ public class WebsocketSessionRootActor extends AbstractActor implements Destinat
 	private final CallbackSubscriptionRegistry callbackSubscriptionRegistry;
 
 	protected final PartialFunction<Object, BoxedUnit> receive = ReceiveBuilder
-			.match(NoSessionsForDestinationEvent.class, this::receive)
-			.match(NewDestinationEvent.class, this::receive)
+			.match(StompDestinationEvent.class, this::receive)
 			.build();
 
-	private ImmutableMap<String, TopicActorInfo> mapTopicToActorInfo = new ImmutableMap.Builder<String, TopicActorInfo>()
-			.put("/topic/tracker",
-					new TopicActorInfo(RtByOriginatingCountryActor.class, RtByOriginatingCountryActor.NAME))
+	private ImmutableList<TopicActorInfo> mapTopicToActorInfo = new ImmutableList.Builder<TopicActorInfo>()
+			.add(new TopicActorInfo(wrapTopicDestinationPath(PtByCurrencyActor.NAME), PtByCurrencyActor.class,
+					PtByCurrencyActor.NAME))
+			.add(new TopicActorInfo(wrapTopicDestinationPath(RtByCurrencyActor.NAME), RtByCurrencyActor.class,
+					RtByCurrencyActor.NAME))
+			.add(new TopicActorInfo(wrapTopicDestinationPath(PtByOriginatingCountryActor.NAME),
+					PtByOriginatingCountryActor.class, PtByOriginatingCountryActor.NAME))
+			.add(new TopicActorInfo(wrapTopicDestinationPath(RtByOriginatingCountryActor.NAME),
+					RtByOriginatingCountryActor.class, RtByOriginatingCountryActor.NAME))
+			.add(new TopicActorInfo(wrapTopicDestinationPath(RtByStatusActor.NAME), RtByStatusActor.class,
+					RtByStatusActor.NAME))
 			.build();
 
 	@Autowired
@@ -47,12 +53,16 @@ public class WebsocketSessionRootActor extends AbstractActor implements Destinat
 		this.callbackSubscriptionRegistry = callbackSubscriptionRegistry;
 		this.callbackSubscriptionRegistry.setListener(Optional.of(this));
 
+		mapTopicToActorInfo.forEach(info -> {
+			getContext().actorOf(springExt.props(WebsocketPeriodicActor.NAME), info.getName());
+		});
+
 		receive(receive);
 	}
 
 	@Override
-	public void onEvent(NoSessionsForDestinationEvent noSessionsForDestinationEvent) {
-		self().tell(noSessionsForDestinationEvent, null);
+	public void onEvent(DeleteDestinationEvent deleteDestinationEvent) {
+		self().tell(deleteDestinationEvent, null);
 	}
 
 	@Override
@@ -60,25 +70,21 @@ public class WebsocketSessionRootActor extends AbstractActor implements Destinat
 		self().tell(newDestinationEvent, null);
 	}
 
-	private void receive(NoSessionsForDestinationEvent noSessionsForDestinationEvent) {
-		final String destination = noSessionsForDestinationEvent.getDestination();
-		final TopicActorInfo topicActorInfo = mapTopicToActorInfo.get(destination);
+	private void receive(StompDestinationEvent newDestinationEvent) {
+		final String destination = newDestinationEvent.getDestination();
+		final TopicActorInfo topicActorInfo = searchTopicActorInfo(destination);
 		if (topicActorInfo != null) {
 			final ActorRef child = getContext().getChild(topicActorInfo.getName());
-			if (child != null) {
-				getContext().stop(child);
-			}
+			child.forward(newDestinationEvent, context());
 		}
 	}
 
-	private void receive(NewDestinationEvent newDestinationEvent) {
-		final String destination = newDestinationEvent.getDestination();
-		final TopicActorInfo topicActorInfo = mapTopicToActorInfo.get(destination);
-		if (topicActorInfo != null) {
-			final ActorRef child = getContext().getChild(topicActorInfo.getName());
-			if (child == null) {
-				getContext().actorOf(springExt.props(topicActorInfo.getName()), topicActorInfo.getName());
+	private TopicActorInfo searchTopicActorInfo(String destination) {
+		for (TopicActorInfo topicActorInfo : mapTopicToActorInfo) {
+			if (topicActorInfo.supportsDestination(destination)) {
+				return topicActorInfo;
 			}
 		}
+		return null;
 	}
 }

@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
+import com.vedri.mtp.frontend.MtpFrontendConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -34,8 +35,8 @@ public class ActivityService implements ApplicationListener<SessionDisconnectEve
 		this.messagingTemplate = messagingTemplate;
 	}
 
-	@SubscribeMapping("/topic/activity")
-	@SendTo("/topic/tracker")
+	@SubscribeMapping(MtpFrontendConstants.TOPIC_DESTINATION_PREFIX + "/activity")
+	@SendTo(MtpFrontendConstants.TOPIC_DESTINATION_PREFIX + "/tracker")
 	public ActivityDTO sendActivity(@Payload ActivityDTO activityDTO, StompHeaderAccessor stompHeaderAccessor,
 			Principal principal) {
 		activityDTO.setUserLogin(SecurityUtils.getCurrentUserLogin());
@@ -54,6 +55,6 @@ public class ActivityService implements ApplicationListener<SessionDisconnectEve
 		ActivityDTO activityDTO = new ActivityDTO();
 		activityDTO.setSessionId(event.getSessionId());
 		activityDTO.setPage("logout");
-		messagingTemplate.convertAndSend("/topic/tracker", activityDTO);
+		messagingTemplate.convertAndSend(MtpFrontendConstants.wrapTopicDestinationPath("tracker"), activityDTO);
 	}
 }

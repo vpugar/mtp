@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import org.joda.time.DateTime;
@@ -65,6 +66,7 @@ public class Transaction implements Serializable, Cloneable {
 		this.originatingCountry = originatingCountry;
 	}
 
+	@JsonIgnore
 	public long getAmountPointsUnscaled() {
 		return amountPoints.unscaledValue().longValue();
 	}

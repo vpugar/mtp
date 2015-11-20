@@ -1,11 +1,12 @@
 package com.vedri.mtp.frontend.support.stomp;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import lombok.Setter;
 
 import org.springframework.messaging.Message;
-import org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
@@ -24,13 +25,40 @@ public class CallbackSubscriptionRegistry extends DefaultSubscriptionRegistry {
 	}
 
 	@Override
+	protected void removeSubscriptionInternal(String sessionId, String subsId, Message<?> message) {
+		SessionSubscriptionInfo info = this.subscriptionRegistry.getSubscriptions(sessionId);
+		if (info != null) {
+			String destination = info.removeSubscription(subsId);
+			if (destination != null) {
+				super.removeSubscriptionInternal(sessionId, subsId, message);
+
+				findSubscriptionsInternal(destination, message);
+			}
+		}
+	}
+
+	@Override
+	public void unregisterAllSubscriptions(String sessionId) {
+		SessionSubscriptionInfo info = this.subscriptionRegistry.getSubscriptions(sessionId);
+		if (info != null) {
+			final Set<String> destinations = new HashSet<>(info.getDestinations());
+
+			super.unregisterAllSubscriptions(sessionId);
+
+			for (String destination : destinations) {
+				findSubscriptionsInternal(destination, null);
+			}
+		}
+	}
+
+	@Override
 	protected MultiValueMap<String, String> findSubscriptionsInternal(String destination, Message<?> message) {
 
 		final MultiValueMap<String, String> result = super.findSubscriptionsInternal(destination, message);
 
 		if (result.isEmpty()) {
             listener.ifPresent(destinationListener ->
-                    destinationListener.onEvent(new NoSessionsForDestinationEvent(destination)));
+                    destinationListener.onEvent(new DeleteDestinationEvent(destination)));
 		}
 
 		return result;

@@ -2,7 +2,7 @@
 
     <h2><span translate="mtpApp.transaction.home.title">Transactions</span></h2>
 
-    <form name="searchForm" role="form" novalidate show-validation>
+    <form name="searchForm" role="form" novalidate show-validation ng-submit="search(query, 1)">
         <div class="row">
             <div class="col-md-4">
                 <label translate="mtpApp.transaction.timeReceivedFrom" for="field_from_date">Received From</label>
@@ -51,8 +51,12 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label translate="mtpApp.transaction.originatingCountry" for="field_originatingCountry">Originating Country</label>
-                    <input type="text" class="form-control" name="field_originatingCountry" id="field_originatingCountry"
-                           ng-model="query.originatingCountry" ng-maxlength="100"/>
+                    <tags-input ng-model="query.originatingCountryObject" display-property="officialName" key-property="cca2" id="field_originatingCountry"
+                                add-from-autocomplete-only="true" max-tags="1"
+                                placeholder="{{'mtpApp.transaction.originatingCountry' | translate}}">
+                        <auto-complete source="loadCountries($query)" display-property="officialName" min-length="1" max-results="10"
+                                       select-first-match="false"></auto-complete>
+                    </tags-input>
                 </div>
             </div>
         </div>
@@ -60,19 +64,27 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label translate="mtpApp.transaction.currencyFrom" for="field_currencyFrom">Currency From</label>
-                    <input type="text" class="form-control" name="field_currencyFrom" id="field_currencyFrom"
-                           ng-model="query.currencyFrom" ng-maxlength="100"/>
+                    <tags-input ng-model="query.currencyFromObject" display-property="code" key-property="code" id="field_currencyFrom"
+                                add-from-autocomplete-only="true" max-tags="1"
+                                placeholder="{{'mtpApp.transaction.currencyFrom' | translate}}">
+                        <auto-complete source="loadCurrencies($query)" display-property="code" min-length="1" max-results="10"
+                                       select-first-match="false"></auto-complete>
+                    </tags-input>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label translate="mtpApp.transaction.currencyTo" for="field_currencyTo">Currency To</label>
-                    <input type="text" class="form-control" name="field_currencyTo" id="field_currencyTo"
-                           ng-model="query.currencyTo" ng-maxlength="100"/>
+                    <tags-input ng-model="query.currencyToObject" display-property="code" key-property="code" id="field_currencyTo"
+                                add-from-autocomplete-only="true" max-tags="1"
+                                placeholder="{{'mtpApp.transaction.currencyTo' | translate}}">
+                        <auto-complete source="loadCurrencies($query)" display-property="code" min-length="1" max-results="10"
+                                       select-first-match="false"></auto-complete>
+                    </tags-input>
                 </div>
             </div>
         </div>
-        <button type="button" class="btn btn-default" ng-click="search(query, 1)">
+        <button type="submit" class="btn btn-default" ng-disabled="!searchForm.$valid">
             <span class="glyphicon glyphicon-search"></span>&nbsp;<span
                 translate="entity.action.search">Search</span>
         </button>
@@ -80,7 +92,7 @@
     </form>
 
     <div class="table-responsive">
-        <table class="table table-striped auto">
+        <table class="table table-striped auto" ng-hide="loading">
             <thead>
             <tr>
                 <th translate="mtpApp.transaction.id">Transaction ID</th>
@@ -98,7 +110,7 @@
             <tbody>
             <tr ng-repeat="transaction in transactions">
                 <td>
-                    <a ui-sref="transaction.detail({transactionId: transaction.transactionId})">{{transaction.transactionId}}</a>
+                    <a ui-sref="transaction.detail({transactionId: transaction.transactionId, query: query})">{{transaction.transactionId}}</a>
                 </td>
                 <td>{{transaction.receivedTime | datetime}}</td>
                 <td>{{transaction.timePlaced | datetime}}</td>
@@ -111,7 +123,7 @@
                 <td>{{transaction.originatingCountry}}</td>
                 <td class="text-right">
                     <button type="submit"
-                            ui-sref="transaction.detail({transactionId: transaction.transactionId})"
+                            ui-sref="transaction.detail({transactionId: transaction.transactionId, query: query})"
                             class="btn btn-info btn-sm">
                         <span class="glyphicon glyphicon-eye-open"></span>&nbsp;<span translate="entity.action.view"> View</span>
                     </button>

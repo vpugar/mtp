@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Random;
 
 import com.vedri.mtp.core.MtpConstants;
+import com.vedri.mtp.core.currency.Currency;
+import com.vedri.mtp.core.currency.CurrencyManager;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.springframework.context.ApplicationContext;
@@ -84,6 +86,7 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 	private Random random = new Random(System.currentTimeMillis());
 
 	private CountryManager countryManager;
+	private CurrencyManager currencyManager;
 	private ObjectMapper transactionObjectMapper;
 	private RateCalculator rateCalculator;
 	private final DecimalFormat decimalFormat2;
@@ -106,18 +109,18 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 	protected String doCreateRequest() throws Exception {
 
 		final List<Country> countries = countryManager.getCountries();
-		final List<String> currencies = countryManager.getCurrencies();
+		final List<Currency> currencies = currencyManager.getCurrencies();
 
-		final String currencyFrom = currencies.get(random.nextInt(currencies.size()));
-		final String currencyTo = currencies.get(random.nextInt(currencies.size()));
-		final Rate rate = rateCalculator.sellRate(currencyFrom, currencyTo, new LocalDate());
+		final Currency currencyFrom = currencies.get(random.nextInt(currencies.size()));
+		final Currency currencyTo = currencies.get(random.nextInt(currencies.size()));
+		final Rate rate = rateCalculator.sellRate(currencyFrom.getCode(), currencyTo.getCode(), new LocalDate());
 		final BigDecimal amountSell = new BigDecimal(decimalFormat2.format(random.nextDouble() * 10000));
 		final Country country = countries.get(random.nextInt(countries.size()));
 
 		Map<String, Object> data = Maps.newHashMap();
 		data.put("userId", String.valueOf(random.nextInt(1000)));
-		data.put("currencyFrom", currencyFrom);
-		data.put("currencyTo", currencyTo);
+		data.put("currencyFrom", currencyFrom.getCode());
+		data.put("currencyTo", currencyTo.getCode());
 		data.put("amountSell", amountSell);
 		data.put("amountBuy", new BigDecimal(decimalFormat2.format(rate.getCfRate().multiply(amountSell))));
 		data.put("rate", rate.getCfRate());
@@ -150,6 +153,7 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 
 		transactionObjectMapper = context.getBean("transactionObjectMapper", ObjectMapper.class);
 		countryManager = context.getBean(CountryManager.class);
+		currencyManager = context.getBean(CurrencyManager.class);
 		rateCalculator = context.getBean("cachingRateCalculator", RateCalculator.class);
 
 		super.doStart(context);

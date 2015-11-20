@@ -1,5 +1,6 @@
 package com.vedri.mtp.frontend.config;
 
+import com.vedri.mtp.frontend.MtpFrontendConstants;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
@@ -16,8 +17,8 @@ public class WebsocketSecurityConfiguration extends AbstractSecurityWebSocketMes
 				// message types other than MESSAGE and SUBSCRIBE
 				.nullDestMatcher().authenticated()
 				// matches any destination that starts with /rooms/
-				.simpDestMatchers("/topic/tracker").hasAuthority(AuthoritiesConstants.ADMIN)
-				.simpDestMatchers("/topic/**").authenticated()
+				.simpDestMatchers(MtpFrontendConstants.wrapTopicDestinationPath("**")).hasAuthority(AuthoritiesConstants.ADMIN)
+				.simpDestMatchers(MtpFrontendConstants.wrapTopicDestinationPath("**")).authenticated()
 				// (i.e. cannot send messages directly to /topic/, /queue/)
 				// (i.e. cannot subscribe to /topic/messages/* to get messages sent to
 				// /topic/messages-user<id>)

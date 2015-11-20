@@ -21,6 +21,20 @@ angular.module('mtpApp')
                         $translatePartialLoader.addPart('transaction');
                         $translatePartialLoader.addPart('global');
                         return $translate.refresh();
+                    }],
+                    defaultQuery: [function() {
+
+                        var now = new Date();
+                        var yesterday = new Date();
+                        yesterday.setDate(now.getDate() - 1);
+
+                        var defaultQuery = {
+                            per_page: 20,
+                            page: 1,
+                            timeReceivedTo: yesterday,
+                            timeReceivedFrom: now
+                        };
+                        return defaultQuery;
                     }]
                 }
             })
