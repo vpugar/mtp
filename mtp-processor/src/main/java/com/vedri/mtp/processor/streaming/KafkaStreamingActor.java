@@ -86,11 +86,11 @@ public class KafkaStreamingActor extends AbstractActor {
 
 		new StoreTransactionStatusBuilder(validateTransactionBuilder, cassandra.getKeyspace()).build();
 
+		new ReceivedTimeTransactionAggregationByStatusBuilder(validateTransactionBuilder, cassandra.getKeyspace())
+				.build();
+
 		final FilterOkTransactionStatusBuilder filterOkTransactionStatusBuilder = new FilterOkTransactionStatusBuilder(
 				validateTransactionBuilder);
-
-		new ReceivedTimeTransactionAggregationByStatusBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
-				.build();
 
 		new ReceivedTimeTransactionAggregationByCountryBuilder(filterOkTransactionStatusBuilder,
 				cassandra.getKeyspace()).build();

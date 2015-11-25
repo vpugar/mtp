@@ -14,6 +14,8 @@ public class FilterOkTransactionStatusBuilder
 
 	@Override
 	protected JavaDStream<Transaction> doBuild(JavaDStream<Transaction> input) {
-		return input.filter(transaction -> transaction.getValidationStatus() == TransactionValidationStatus.OK);
+		final JavaDStream<Transaction> stream =
+				input.filter(transaction -> transaction.getValidationStatus() == TransactionValidationStatus.OK);
+		return stream.cache();
 	}
 }
