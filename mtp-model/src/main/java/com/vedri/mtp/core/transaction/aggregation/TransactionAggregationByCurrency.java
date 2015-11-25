@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -50,6 +51,7 @@ public class TransactionAggregationByCurrency extends TimeAggregation implements
 		public final ColumnUtils.Field<Fields> F = ColumnUtils.createField(this);
 	}
 
+	@JsonIgnore
 	public long getAmountFromUnscaled() {
 		return amountFrom.unscaledValue().longValue();
 	}
@@ -58,6 +60,7 @@ public class TransactionAggregationByCurrency extends TimeAggregation implements
 		this.amountFrom = new BigDecimal(BigInteger.valueOf(value), MtpConstants.CURRENCY_POINTS_SCALE);
 	}
 
+	@JsonIgnore
 	public long getAmountToUnscaled() {
 		return amountTo.unscaledValue().longValue();
 	}

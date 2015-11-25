@@ -1,5 +1,7 @@
 package com.vedri.mtp.core;
 
+import org.joda.time.DateTimeZone;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -27,4 +29,7 @@ public interface MtpConstants {
 	String CURRENCY_FORMAT = "#.##";
 	String RATE_FORMAT = "#.####";
 	DecimalFormatSymbols DEFAULT_FORMAT_SYMBOLS = DecimalFormatSymbols.getInstance(Locale.ENGLISH);
+
+	// date
+	DateTimeZone DEFAULT_TIME_ZONE = DateTimeZone.UTC;
 }

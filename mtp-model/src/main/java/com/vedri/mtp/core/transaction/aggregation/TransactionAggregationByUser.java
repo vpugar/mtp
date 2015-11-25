@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vedri.mtp.core.MtpConstants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,6 +45,7 @@ public class TransactionAggregationByUser extends TimeAggregation implements Ser
 		public final ColumnUtils.Field<Fields> F = ColumnUtils.createField(this);
 	}
 
+	@JsonIgnore
 	public long getAmountPointsUnscaled() {
 		return amountPoints.unscaledValue().longValue();
 	}
