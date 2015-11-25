@@ -1,13 +1,11 @@
 package com.vedri.mtp.frontend.transaction.aggregation.subscription;
 
-import akka.japi.pf.ReceiveBuilder;
-import com.vedri.mtp.core.transaction.aggregation.TransactionValidationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.vedri.mtp.core.country.CountryManager;
+import com.vedri.mtp.core.transaction.aggregation.TransactionValidationStatus;
 import com.vedri.mtp.frontend.transaction.aggregation.dao.SparkAggregationByStatusDao;
 import com.vedri.mtp.frontend.web.websocket.transaction.WebsocketSender;
 

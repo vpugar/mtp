@@ -1,0 +1,21 @@
+{
+  "mtpApp": {
+    "transactions-by-status": {
+      "title": "Transactions by Status",
+      "validationStatus": "Validation Status",
+      "date": "Date",
+      "count": "Count",
+      "points": "Points",
+      "hour-counts": "Counts in Hour",
+      "hour-points": "Points in Hour",
+      "validationStatusMap": {
+        "OK": "OK",
+        "InvalidAmount": "Invalid amount",
+        "InvalidRate": "Invalid rate",
+        "InvalidCountry": "Invalid country",
+        "InvalidFromCurrency": "Invalid 'from' currency",
+        "InvalidToCurrency": "Invalid 'to' currency"
+      }
+    }
+  }
+}

@@ -13,6 +13,8 @@ import scala.runtime.BoxedUnit;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Cancellable;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import akka.japi.pf.ReceiveBuilder;
 
 import com.vedri.mtp.core.support.akka.SpringExtension;
@@ -25,6 +27,8 @@ public class WebsocketPeriodicActor extends AbstractActor {
 
 	public static final String NAME = "websocketPeriodicActor";
 	public static final String ALL = "all";
+
+	private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
 	private final PartialFunction<Object, BoxedUnit> receive = ReceiveBuilder
 			.match(PeriodicTick.class, this::receive)
@@ -52,6 +56,7 @@ public class WebsocketPeriodicActor extends AbstractActor {
 		}
 	}
 
+	// TODO configuration
 	private void receive(TopicActorInfo topicActorInfo) {
 		this.topicActorInfo = topicActorInfo;
 		context().become(receive);
@@ -62,7 +67,13 @@ public class WebsocketPeriodicActor extends AbstractActor {
 	}
 
 	protected void receive(PeriodicTick periodicTick) {
-		getContext().getChildren().forEach(actorRef -> actorRef.tell(periodicTick, self()));
+		final Iterable<ActorRef> children = getContext().getChildren();
+		final int[] i = { 0 };
+		children.forEach(actorRef -> {
+			actorRef.tell(periodicTick, self());
+			i[0]++;
+		});
+		log.debug("Sent {} ticks for {}", i[0], self().path().name());
 	}
 
 	protected void receive(NewDestinationEvent newDestinationEvent) {
@@ -71,10 +82,10 @@ public class WebsocketPeriodicActor extends AbstractActor {
 		final String topicSuffix = topicActorInfo.destinationSuffix(destination);
 
 		if (topicSuffix.equals(ALL)) {
-			fetchActor(topicSuffix);
+			fetchActor(topicSuffix, topicActorInfo.getAllName());
 		}
 		else {
-			// TODO
+			fetchActor(topicSuffix, topicActorInfo.getName());
 		}
 	}
 
@@ -82,22 +93,26 @@ public class WebsocketPeriodicActor extends AbstractActor {
 
 		final String destination = deleteDestinationEvent.getDestination();
 		final String topicSuffix = topicActorInfo.destinationSuffix(destination);
+		ActorRef child = getContext().getChild(topicSuffix);
 
 		if (topicSuffix.equals(ALL)) {
-			ActorRef child = getContext().getChild(topicSuffix);
 			if (child != null) {
 				getContext().stop(child);
+				log.debug("Stopped actor {}", child);
 			}
 		}
 		else {
-			// TODO
+			getContext().stop(child);
+			log.debug("Stopped actor {}", child);
 		}
 	}
 
-	private ActorRef fetchActor(String topicSuffix) {
+	private ActorRef fetchActor(String topicSuffix, String beanName) {
 		ActorRef child = getContext().getChild(topicSuffix);
 		if (child == null) {
-			child = getContext().actorOf(springExt.props(topicActorInfo.getName()), topicActorInfo.getName());
+			child = getContext().actorOf(springExt.props(beanName), topicSuffix);
+			child.tell(new TopicActorSubscriptionInfo(topicSuffix), self());
+			log.debug("Started actor {}", child);
 		}
 		return child;
 	}

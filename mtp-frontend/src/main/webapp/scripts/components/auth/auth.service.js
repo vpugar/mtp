@@ -60,6 +60,13 @@ angular.module('mtpApp')
                                 // now, send them to the signin state so they can log in
                                 $state.go('login');
                             }
+                        } else if (!isAuthenticated &&
+                            $rootScope.toState.name !== 'login' && $rootScope.toState.name !== 'register') {
+
+                            $rootScope.previousStateName = $rootScope.toState;
+                            $rootScope.previousStateNameParams = $rootScope.toStateParams;
+
+                            $state.go('login');
                         }
                     });
             },

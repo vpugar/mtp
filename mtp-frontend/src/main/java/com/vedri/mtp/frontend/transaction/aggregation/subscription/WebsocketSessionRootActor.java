@@ -13,6 +13,8 @@ import scala.PartialFunction;
 import scala.runtime.BoxedUnit;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import akka.japi.pf.ReceiveBuilder;
 
 import com.google.common.collect.ImmutableList;
@@ -25,6 +27,8 @@ public class WebsocketSessionRootActor extends AbstractActor implements Destinat
 
 	public static final String NAME = "websocketSessionRootActor";
 
+	private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+
 	private final SpringExtension.SpringExt springExt;
 
 	private final CallbackSubscriptionRegistry callbackSubscriptionRegistry;
@@ -34,16 +38,20 @@ public class WebsocketSessionRootActor extends AbstractActor implements Destinat
 			.build();
 
 	private ImmutableList<TopicActorInfo> mapTopicToActorInfo = new ImmutableList.Builder<TopicActorInfo>()
-			.add(new TopicActorInfo(wrapTopicDestinationPath(PtByCurrencyActor.NAME), PtByCurrencyActor.class,
-					PtByCurrencyActor.NAME))
-			.add(new TopicActorInfo(wrapTopicDestinationPath(RtByCurrencyActor.NAME), RtByCurrencyActor.class,
-					RtByCurrencyActor.NAME))
+			.add(new TopicActorInfo(wrapTopicDestinationPath(PtByCurrencyActor.NAME),
+					PtByCurrencyActor.NAME, PtByAllCurrenciesActor.NAME))
+			.add(new TopicActorInfo(wrapTopicDestinationPath(RtByCurrencyActor.NAME),
+					RtByCurrencyActor.NAME, RtByAllCurrenciesActor.NAME))
 			.add(new TopicActorInfo(wrapTopicDestinationPath(PtByOriginatingCountryActor.NAME),
-					PtByOriginatingCountryActor.class, PtByOriginatingCountryActor.NAME))
+					PtByOriginatingCountryActor.NAME, PtByAllOriginatingCountriesActor.NAME))
 			.add(new TopicActorInfo(wrapTopicDestinationPath(RtByOriginatingCountryActor.NAME),
-					RtByOriginatingCountryActor.class, RtByOriginatingCountryActor.NAME))
-			.add(new TopicActorInfo(wrapTopicDestinationPath(RtByStatusActor.NAME), RtByStatusActor.class,
-					RtByStatusActor.NAME))
+					RtByOriginatingCountryActor.NAME, RtByAllOriginatingCountriesActor.NAME))
+			.add(new TopicActorInfo(wrapTopicDestinationPath(RtByUserActor.NAME),
+					RtByUserActor.NAME, null))
+			.add(new TopicActorInfo(wrapTopicDestinationPath(PtByUserActor.NAME),
+					PtByUserActor.NAME, null))
+			.add(new TopicActorInfo(wrapTopicDestinationPath(RtByStatusActor.NAME),
+					RtByStatusActor.NAME, RtByAllStatusesActor.NAME))
 			.build();
 
 	@Autowired
@@ -54,7 +62,9 @@ public class WebsocketSessionRootActor extends AbstractActor implements Destinat
 		this.callbackSubscriptionRegistry.setListener(Optional.of(this));
 
 		mapTopicToActorInfo.forEach(info -> {
-			getContext().actorOf(springExt.props(WebsocketPeriodicActor.NAME), info.getName());
+			final ActorRef actorRef = getContext()
+					.actorOf(springExt.props(WebsocketPeriodicActor.NAME), info.getName());
+			actorRef.tell(info, self());
 		});
 
 		receive(receive);
@@ -73,7 +83,10 @@ public class WebsocketSessionRootActor extends AbstractActor implements Destinat
 	private void receive(StompDestinationEvent newDestinationEvent) {
 		final String destination = newDestinationEvent.getDestination();
 		final TopicActorInfo topicActorInfo = searchTopicActorInfo(destination);
+
 		if (topicActorInfo != null) {
+			log.debug("Event {} for {}", newDestinationEvent, topicActorInfo);
+
 			final ActorRef child = getContext().getChild(topicActorInfo.getName());
 			child.forward(newDestinationEvent, context());
 		}

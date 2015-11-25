@@ -118,8 +118,8 @@
                 <td>{{transaction.userId}}</td>
                 <td>{{transaction.currencyFrom}}</td>
                 <td>{{transaction.currencyTo}}</td>
-                <td>{{transaction.amountSell}}</td>
-                <td>{{transaction.rate}}</td>
+                <td>{{transaction.amountSell | number:2}}</td>
+                <td>{{transaction.rate | number:4}}</td>
                 <td>{{transaction.originatingCountry}}</td>
                 <td class="text-right">
                     <button type="submit"

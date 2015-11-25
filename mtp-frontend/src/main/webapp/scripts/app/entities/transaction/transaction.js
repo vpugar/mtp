@@ -22,15 +22,15 @@ angular.module('mtpApp')
                         $translatePartialLoader.addPart('global');
                         return $translate.refresh();
                     }],
-                    defaultQuery: [function() {
+                    defaultQuery: ['TableConsts', function(TableConsts) {
 
                         var now = new Date();
                         var yesterday = new Date();
                         yesterday.setDate(now.getDate() - 1);
 
                         var defaultQuery = {
-                            per_page: 20,
-                            page: 1,
+                            per_page: TableConsts.PerPage,
+                            page: TableConsts.Page,
                             timeReceivedTo: yesterday,
                             timeReceivedFrom: now
                         };

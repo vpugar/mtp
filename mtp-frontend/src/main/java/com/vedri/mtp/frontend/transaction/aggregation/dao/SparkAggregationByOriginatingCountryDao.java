@@ -47,7 +47,7 @@ public class SparkAggregationByOriginatingCountryDao {
 		final RDD<TransactionAggregationByCountry> rdd = CassandraStreamingJavaUtil
 				.javaFunctions(streamingContext)
 				.cassandraTable(cassandra.getKeyspace(), tableName)
-				.where(query, queryArgs)
+				.where(query, queryArgs.toArray())
 				.map(row -> new TransactionAggregationByCountry(
 						originatingCountry, row.getInt(year.F.underscore()), row.getInt(month.F.underscore()),
 						row.getInt(day.F.underscore()), row.getInt(hour.F.underscore()),

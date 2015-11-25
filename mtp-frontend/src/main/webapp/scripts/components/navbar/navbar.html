@@ -28,8 +28,10 @@
                         </span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li ui-sref-active="transaction"><a ui-sref="transaction" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-wrench"></span>
+                        <li><a ui-sref="transaction" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-transfer"></span>
                             &#xA0;<span translate="global.menu.entities.transactions">Transactions</span></a></li>
+                        <li><a ui-sref="transactions-by-status" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-stats"></span>
+                            &#xA0;<span translate="global.menu.entities.transactions-by-status">Transactions by status</span></a></li>
                     </ul>
                 </li>
                 <li ng-class="{active: $state.includes('account')}" class="dropdown pointer">

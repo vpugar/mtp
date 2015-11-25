@@ -6,7 +6,8 @@
             "home": "Home",
             "entities": {
                 "main": "Entities",
-                "transactions": "Transactions"
+                "transactions": "Transactions",
+                "transactions-by-status": "Transactions by Status"
             },
             "account": {
                 "main": "Account",

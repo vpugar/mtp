@@ -20,4 +20,8 @@ public class WebsocketSender {
 	public void send(String topic, Object data) {
 		template.convertAndSend(topic, data);
 	}
+
+	public void sendToUser(String user, String topic, Object data) {
+		template.convertAndSendToUser(user, topic, data);
+	}
 }

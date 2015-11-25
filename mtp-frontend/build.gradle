@@ -64,6 +64,11 @@ buildscript {
     }
 }
 
+configurations {
+    compile.exclude module: 'javax.servlet-api'
+    compile.exclude module: 'javax.servlet'
+}
+
 dependencies {
 
     compile(

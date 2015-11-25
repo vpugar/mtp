@@ -77,6 +77,8 @@
     <logger name="springfox" level="WARN"/>
     <logger name="sun.rmi.transport" level="WARN"/>
     <logger name="com.datastax.driver" level="INFO"/>
+
+    <logger name="akka.cluster" level="INFO" />
     <logger name="akka.cluster.ClusterHeartbeatSender" level="INFO"/>
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
