@@ -4,6 +4,6 @@ angular.module('mtpApp')
 
 .constant('ENV', 'dev')
 
-.constant('VERSION', '0.2.0')
+.constant('VERSION', '0.3.0')
 
 ;
