@@ -59,7 +59,7 @@ public class CachingCountryManager implements CountryManager {
 	}
 
 	public Set<Country> getCountriesFromCurrency(String country) {
-		return currencyToCountry.get(country);
+		return currencyToCountry.get(new Currency(country));
 	}
 
 	@Override
