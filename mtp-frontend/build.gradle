@@ -2,7 +2,6 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 apply plugin: 'war'
 apply plugin: 'application'
-defaultTasks 'bootRun'
 apply plugin: 'spring-boot'
 apply plugin: 'com.moowork.node'
 
@@ -35,6 +34,10 @@ jar {
 
 applicationDistribution.from("src/main/conf/") {
     into "conf"
+}
+
+applicationDistribution.from("src/main/webapp/") {
+    into "webapp"
 }
 
 applicationDefaultJvmArgs = ["-Dspring.config.location=classpath:spring-application.yml"]

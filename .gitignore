@@ -67,3 +67,9 @@ gradle-app.setting
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 
+# Node
+mtp-frontend/.tmp
+mtp-frontend/node_modules
+mtp-frontend/npm-debug.log
+mtp-frontend/src/main/webapp/bower_components
+mtp-frontend/src/main/webapp/dist
