@@ -21,4 +21,13 @@ dependencies {
             ["org.springframework:spring-context:${springVersion}"],
             ["org.projectlombok:lombok:${lombokVersion}"]
     )
+
+    testCompile files("src/main/cql")
+    testCompile(
+            ["org.cassandraunit:cassandra-unit:${cassandraVersion}"],
+            ["org.kubek2k:springockito-annotations:${springockitoVersion}"],
+            ["org.mockito:mockito-core:${mockitoVersion}"],
+            ["org.testng:testng:${testNgVersion}"],
+            ["org.springframework:spring-test:${springVersion}"]
+    )
 }
