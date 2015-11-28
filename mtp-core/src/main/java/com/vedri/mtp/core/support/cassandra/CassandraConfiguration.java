@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.PreDestroy;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,20 @@ import com.vedri.mtp.core.CoreProperties;
 
 @Configuration
 @Slf4j
+@Getter
 public class CassandraConfiguration {
 
 	@Autowired
 	private CoreProperties.Cassandra cassandra;
 
 	private Cluster cluster;
+
+	public CassandraConfiguration() {
+	}
+
+	public CassandraConfiguration(CoreProperties.Cassandra cassandra) {
+		this.cassandra = cassandra;
+	}
 
 	@PreDestroy
 	public void destroy() {

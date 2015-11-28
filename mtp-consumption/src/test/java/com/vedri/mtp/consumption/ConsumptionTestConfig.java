@@ -19,6 +19,11 @@ public class ConsumptionTestConfig {
     }
 
     @Bean
+    public CoreProperties.Cassandra cassandraProperties() {
+        return consumptionProperties.getCassandra();
+    }
+
+    @Bean
     public CoreProperties.Cluster clusterProperties() {
         return consumptionProperties.getCluster();
     }
