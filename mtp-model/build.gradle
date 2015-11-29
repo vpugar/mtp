@@ -16,10 +16,11 @@ dependencies {
             ["com.fasterxml.jackson.datatype:jackson-datatype-joda:${jacksonVersion}"],
             ["org.hibernate:hibernate-validator:${hibernateValidatorVersion}"],
             ["org.apache.commons:commons-lang3:${commonsLangVersion}"],
+            ["org.projectlombok:lombok:${lombokVersion}"],
             ["org.scala-lang:scala-library:${scalaVersion}"],
+            ["org.slf4j:slf4j-api:${slf4jVersion}"],
             ["org.springframework:spring-beans:${springVersion}"],
-            ["org.springframework:spring-context:${springVersion}"],
-            ["org.projectlombok:lombok:${lombokVersion}"]
+            ["org.springframework:spring-context:${springVersion}"]
     )
 
     testCompile files("src/main/cql")
