@@ -84,9 +84,13 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-default" ng-disabled="!searchForm.$valid">
+        <button type="submit" class="btn btn-info" ng-disabled="!searchForm.$valid">
             <span class="glyphicon glyphicon-search"></span>&nbsp;<span
                 translate="entity.action.search">Search</span>
+        </button>
+        <button type="submit" class="btn btn-default" ng-click="reset()">
+            <span class="glyphicon glyphicon-erase"></span>&nbsp;<span
+                translate="entity.action.reset">Reset</span>
         </button>
 
     </form>

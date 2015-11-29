@@ -3,6 +3,7 @@ package com.vedri.mtp.frontend.web.rest.transaction;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 
 import org.joda.time.DateTime;
@@ -46,6 +47,19 @@ public class TransactionResource {
 			@RequestParam(value = "page", required = false, defaultValue = "0") Integer offset,
 			@RequestParam(value = "per_page", required = false, defaultValue = "20") Integer limit)
 					throws URISyntaxException {
+
+		if (Strings.isNullOrEmpty(userId)) {
+			userId = null;
+		}
+		if (Strings.isNullOrEmpty(currencyFrom)) {
+			currencyFrom = null;
+		}
+		if (Strings.isNullOrEmpty(currencyTo)) {
+			currencyTo = null;
+		}
+		if (Strings.isNullOrEmpty(originatingCountry)) {
+			originatingCountry = null;
+		}
 
 		final List<Transaction> transactions = transactionDao.loadAll(timeReceivedFrom, timeReceivedTo, userId,
 				currencyFrom, currencyTo, originatingCountry, (offset - 1) * limit, limit);

@@ -84,7 +84,8 @@
             "edit": "Edit",
             "save": "Save",
             "view": "View",
-            "search": "Search"
+            "search": "Search",
+            "reset": "Reset"
         },
         "detail": {
             "field": "Field",

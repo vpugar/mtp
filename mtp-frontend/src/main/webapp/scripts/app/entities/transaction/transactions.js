@@ -89,5 +89,9 @@ angular.module('mtpApp')
             return Currency.queryWithFilter({action: 'filter', filter: $query}).$promise;
         };
 
+        $scope.reset = function() {
+            $scope.query = defaultQuery;
+        };
+
         $scope.loadAll();
     });
