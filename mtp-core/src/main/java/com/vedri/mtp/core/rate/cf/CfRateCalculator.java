@@ -29,6 +29,7 @@ public class CfRateCalculator implements RateCalculator {
 	private final ObjectMapper objectMapper;
 	private ObjectReader reader;
 	private HttpComponentsHttpClient httpClient;
+	private boolean externalClient = false;
 
 	@Autowired
 	public CfRateCalculator(ObjectMapper objectMapper) {
@@ -38,13 +39,22 @@ public class CfRateCalculator implements RateCalculator {
 	@PostConstruct
 	public void init() {
 		reader = objectMapper.reader(CfRate.class);
-		httpClient = new HttpComponentsHttpClient();
-		httpClient.init();
+		if (!externalClient) {
+			httpClient = new HttpComponentsHttpClient();
+			httpClient.init();
+		}
 	}
 
 	@PreDestroy
 	public void destroy() throws Exception {
-		httpClient.destroy();
+		if (!externalClient) {
+			httpClient.destroy();
+		}
+	}
+
+	public void setHttpClient(HttpComponentsHttpClient httpClient) {
+		this.httpClient = httpClient;
+		this.externalClient = true;
 	}
 
 	@Override
