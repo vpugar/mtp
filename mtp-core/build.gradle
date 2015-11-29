@@ -24,4 +24,11 @@ dependencies {
             ["com.typesafe.akka:akka-http-experimental_${scalaMajorVersion}:${akkaHttpVersion}"],
             ["com.typesafe.akka:akka-http-jackson-experimental_${scalaMajorVersion}:${akkaHttpVersion}"]
     )
+    testCompile(
+            ["org.cassandraunit:cassandra-unit:${cassandraVersion}"],
+            ["org.kubek2k:springockito-annotations:${springockitoVersion}"],
+            ["org.mockito:mockito-core:${mockitoVersion}"],
+            ["org.testng:testng:${testNgVersion}"],
+            ["org.springframework:spring-test:${springVersion}"]
+    )
 }

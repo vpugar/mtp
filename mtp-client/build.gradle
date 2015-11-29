@@ -28,7 +28,7 @@ applicationDefaultJvmArgs = ["-Dspring.config.location=classpath:spring-applicat
 startScripts {
     doLast {
         unixScript.text = unixScript.text.replace('CLASSPATH=$APP_HOME', 'CLASSPATH=$APP_HOME/conf:$APP_HOME')
-        windowsScript.text = windowsScript.text.replace('CLASSPATH=%APP_HOME%', 'CLASSPATH=%APP_HOME%\\cond;%APP_HOME%')
+        windowsScript.text = windowsScript.text.replace('CLASSPATH=%APP_HOME%', 'CLASSPATH=%APP_HOME%\\conf;%APP_HOME%')
     }
 }
 
