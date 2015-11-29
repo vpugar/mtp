@@ -61,6 +61,7 @@ angular.module('mtpApp')
                                 $state.go('login');
                             }
                         } else if (!isAuthenticated &&
+                            $rootScope.toState.name !== 'home' &&
                             $rootScope.toState.name !== 'login' && $rootScope.toState.name !== 'register') {
 
                             $rootScope.previousStateName = $rootScope.toState;
