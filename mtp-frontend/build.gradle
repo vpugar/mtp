@@ -37,15 +37,15 @@ applicationDistribution.from("src/main/conf/") {
 }
 
 applicationDistribution.from("src/main/webapp/") {
-    into "webapp"
+    into "web/static"
 }
 
 applicationDefaultJvmArgs = ["-Dspring.config.location=classpath:spring-application.yml"]
 
 startScripts {
     doLast {
-        unixScript.text = unixScript.text.replace('CLASSPATH=$APP_HOME', 'CLASSPATH=$APP_HOME/conf:$APP_HOME')
-        windowsScript.text = windowsScript.text.replace('CLASSPATH=%APP_HOME%', 'CLASSPATH=%APP_HOME%\\cond;%APP_HOME%')
+        unixScript.text = unixScript.text.replace('CLASSPATH=$APP_HOME', 'CLASSPATH=$APP_HOME/conf:$APP_HOME/web:$APP_HOME')
+        windowsScript.text = windowsScript.text.replace('CLASSPATH=%APP_HOME%', 'CLASSPATH=%APP_HOME%\\conf;%APP_HOME%\\web;%APP_HOME%')
     }
 }
 
