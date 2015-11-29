@@ -24,6 +24,8 @@ startScripts {
 dependencies {
 
     compile(
+            ["com.esotericsoftware:kryo:${kryoVersion}"],
+            ["io.dropwizard.metrics:metrics-core:${dropwizardMetricsVersion}"],
             ["org.apache.kafka:kafka_${scalaMajorVersion}:${kafkaVersion}"],
             ["org.apache.spark:spark-streaming-kafka_${scalaMajorVersion}:${sparkVersion}"],
             ["org.projectlombok:lombok:${lombokVersion}"],

@@ -75,13 +75,14 @@ configurations {
 dependencies {
 
     compile(
-            ["io.dropwizard.metrics:metrics-core"],
+            ["io.dropwizard.metrics:metrics-core:${dropwizardMetricsVersion}"],
             ["io.dropwizard.metrics:metrics-graphite:${dropwizardMetricsVersion}"],
             ["io.dropwizard.metrics:metrics-healthchecks:${dropwizardMetricsVersion}"],
             ["io.dropwizard.metrics:metrics-jvm:${dropwizardMetricsVersion}"],
             ["io.dropwizard.metrics:metrics-servlet:${dropwizardMetricsVersion}"],
             ["io.dropwizard.metrics:metrics-json:${dropwizardMetricsVersion}"],
             ["com.datastax.spark:spark-cassandra-connector-java_${scalaMajorVersion}:${sparkCassandraConnectorVersion}"],
+            ["com.esotericsoftware:kryo:${kryoVersion}"],
             ["com.fasterxml.jackson.datatype:jackson-datatype-json-org:${jacksonVersionWithJSR310}"],
             ["com.fasterxml.jackson.datatype:jackson-datatype-hppc:${jacksonVersionWithJSR310}"],
             ["com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersionWithJSR310}"],

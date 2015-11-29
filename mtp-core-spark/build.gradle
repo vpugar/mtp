@@ -10,13 +10,23 @@ dependencies {
             ["com.esotericsoftware:kryo-shaded:${kryoVersion}"],
             ["de.javakaffee:kryo-serializers:0.37"],
             ["joda-time:joda-time:${jodaTimeVersion}"],
-            ["org.apache.spark:spark-catalyst_${scalaMajorVersion}:${sparkVersion}"],
-            ["org.apache.spark:spark-core_${scalaMajorVersion}:${sparkVersion}"],
-            ["org.apache.spark:spark-hive_${scalaMajorVersion}:${sparkVersion}"],
-            ["org.apache.spark:spark-sql_${scalaMajorVersion}:${sparkVersion}"],
-            ["org.apache.spark:spark-streaming_${scalaMajorVersion}:${sparkVersion}"],
             ["org.projectlombok:lombok:${lombokVersion}"],
             ["org.springframework.boot:spring-boot-starter:${springBootVersion}"],
             ["com.fasterxml.jackson.module:jackson-module-scala_${scalaMajorVersion}:${jacksonVersion}"]
     )
+    compile("org.apache.spark:spark-core_${scalaMajorVersion}:${sparkVersion}") {
+        exclude group: 'com.esotericsoftware.kryo'
+    }
+    compile("org.apache.spark:spark-catalyst_${scalaMajorVersion}:${sparkVersion}") {
+        exclude group: 'com.esotericsoftware.kryo'
+    }
+    compile("org.apache.spark:spark-hive_${scalaMajorVersion}:${sparkVersion}") {
+        exclude group: 'com.esotericsoftware.kryo'
+    }
+    compile("org.apache.spark:spark-sql_${scalaMajorVersion}:${sparkVersion}") {
+        exclude group: 'com.esotericsoftware.kryo'
+    }
+    compile("org.apache.spark:spark-streaming_${scalaMajorVersion}:${sparkVersion}") {
+        exclude group: 'com.esotericsoftware.kryo'
+    }
 }

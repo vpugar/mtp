@@ -44,6 +44,8 @@ allprojects {
         all*.exclude group: "log4j", module: "log4j"
         all*.exclude group: "log4j", module: "apache-log4j-extras"
         all*.exclude group: "org.slf4j", module: "slf4j-log4j12"
+        all*.exclude group: 'com.esotericsoftware.kryo'
+        all*.exclude group: 'com.codahale.metrics'
     }
 
     test {
@@ -108,13 +110,13 @@ project(':mtp-processor') {
     dependencies {
         compile project(':mtp-core')
         compile project(':mtp-core-kafka')
-        compile project(':mtp-core-spark')
+        compile (project(':mtp-core-spark'))
     }
 }
 
 project(':mtp-frontend') {
     dependencies {
         compile project(':mtp-core')
-        compile project(':mtp-core-spark')
+        compile (project(':mtp-core-spark'))
     }
 }
