@@ -55,7 +55,7 @@ public class TransactionValidator {
 		else {
 			final Set<Country> fromCurrency = countryManager.getCountriesFromCurrency(transaction.getCurrencyFrom());
 
-			if (fromCurrency == null) {
+			if (fromCurrency.size() == 0) {
 				return TransactionValidationStatus.InvalidFromCurrency;
 			}
 			// TODO check if this is valid check
@@ -65,7 +65,7 @@ public class TransactionValidator {
 
 			final Set<Country> toCurrency = countryManager.getCountriesFromCurrency(transaction.getCurrencyTo());
 
-			if (toCurrency == null) {
+			if (toCurrency.size() == 0) {
 				return TransactionValidationStatus.InvalidToCurrency;
 			}
 		}
