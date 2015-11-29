@@ -58,8 +58,12 @@ public class CachingCountryManager implements CountryManager {
 		return cca2ToCountry.get(cca2);
 	}
 
-	public Set<Country> getCountriesFromCurrency(String country) {
-		return currencyToCountry.get(new Currency(country));
+	public Set<Country> getCountriesFromCurrency(String currency) {
+		Set<Country> countries = currencyToCountry.get(new Currency(currency));
+		if (countries == null) {
+			countries = Collections.emptySet();
+		}
+		return countries;
 	}
 
 	@Override
