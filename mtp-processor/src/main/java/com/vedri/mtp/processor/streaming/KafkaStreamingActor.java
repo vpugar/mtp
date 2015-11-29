@@ -52,7 +52,7 @@ public class KafkaStreamingActor extends AbstractActor {
 	@Autowired
 	public KafkaStreamingActor(final ProcessorProperties processorProperties,
 							   final JavaStreamingContext streamingContext,
-							   @Qualifier("transactionKryoDecoder") final Decoder<Transaction> decoder,
+							   @Qualifier("transactionJacksonDecoder") final Decoder<Transaction> decoder,
 							   final TransactionValidator transactionValidator,
 							   @Qualifier("cachingRateCalculator") final RateCalculator rateCalculator) {
 

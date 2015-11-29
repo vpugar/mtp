@@ -41,11 +41,11 @@ public class KafkaProducerActor<D, K> extends AbstractActor {
 	protected final PartialFunction<Object, BoxedUnit> receive = ReceiveBuilder
 			.match(KafkaMessageEnvelope.class, this::doSend)
 			.build();
-
 	@Autowired
 	public KafkaProducerActor(ConsumptionProperties consumptionProperties,
 			@Qualifier("transactionKryoEncoder") kafka.serializer.Encoder<D> encoder) {
 		this.consumptionProperties = consumptionProperties;
+		// encoder is used in actor so no need to worry about thread safety
 		this.encoder = encoder;
 		receive(receive);
 	}
