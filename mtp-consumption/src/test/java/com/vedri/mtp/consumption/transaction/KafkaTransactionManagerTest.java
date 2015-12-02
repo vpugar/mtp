@@ -5,13 +5,9 @@ import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
 
-import akka.actor.ScalaActorRef;
-import com.vedri.mtp.consumption.support.akka.TestActorRef;
 import org.joda.time.DateTime;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -23,6 +19,7 @@ import org.testng.annotations.Test;
 import akka.actor.ActorRef;
 
 import com.vedri.mtp.consumption.ConsumptionTestConfig;
+import com.vedri.mtp.consumption.support.akka.TestActorRef;
 import com.vedri.mtp.consumption.support.cassandra.EmbeddedCassandraConfiguration;
 import com.vedri.mtp.consumption.support.kafka.KafkaMessageEnvelope;
 import com.vedri.mtp.core.CoreConfig;
