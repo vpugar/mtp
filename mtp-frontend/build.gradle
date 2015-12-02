@@ -124,6 +124,11 @@ dependencies {
     compile("io.springfox:springfox-swagger2:${springfoxVersion}") {
         exclude module: 'mapstruct'
     }
+
     testCompile(
+            ["org.kubek2k:springockito-annotations:${springockitoVersion}"],
+            ["org.mockito:mockito-core:${mockitoVersion}"],
+            ["org.testng:testng:${testNgVersion}"],
+            ["org.springframework:spring-test:${springVersion}"]
     )
 }
