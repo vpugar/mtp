@@ -7,7 +7,7 @@ angular.module('mtpApp')
                 parent: 'entity',
                 url: '/transactions-by-status',
                 data: {
-                    roles: ['ROLE_ADMIN'],
+                    roles: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_DEMO'],
                     pageTitle: 'mtp.transactions-by-status.home.title'
                 },
                 views: {

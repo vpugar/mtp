@@ -6,12 +6,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.vedri.mtp.frontend.user.UserManager;
+import com.vedri.mtp.frontend.web.security.AuthoritiesConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import com.codahale.metrics.annotation.Timed;
@@ -116,6 +118,7 @@ public class AccountResource {
 	 */
 	@RequestMapping(value = "/account/change_password", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
+	@Secured({AuthoritiesConstants.ADMIN, AuthoritiesConstants.USER})
 	public ResponseEntity<?> changePassword(@RequestBody String password) {
 		if (!checkPasswordLength(password)) {
 			return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);

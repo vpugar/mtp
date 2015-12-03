@@ -7,7 +7,7 @@ angular.module('mtpApp')
                 parent: 'entity',
                 url: '/transactions',
                 data: {
-                    roles: ['ROLE_ADMIN'],
+                    roles: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_DEMO'],
                     pageTitle: 'mtp.transaction.home.title'
                 },
                 views: {
@@ -42,7 +42,7 @@ angular.module('mtpApp')
                 parent: 'transaction',
                 url: '/:transactionId',
                 data: {
-                    roles: ['ROLE_ADMIN'],
+                    roles: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_DEMO'],
                     pageTitle: 'mtp.transaction.detail.title'
                 },
                 views: {

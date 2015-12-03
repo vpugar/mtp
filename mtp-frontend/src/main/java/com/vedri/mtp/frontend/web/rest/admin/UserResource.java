@@ -112,6 +112,7 @@ public class UserResource {
 	 */
 	@RequestMapping(value = "/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
+	@Secured(AuthoritiesConstants.ADMIN)
 	public ResponseEntity<List<ManagedUserDTO>> getAllUsers()
 			throws URISyntaxException {
 		List<User> users = cassandraUserDao.findAll();
@@ -126,6 +127,7 @@ public class UserResource {
 	 */
 	@RequestMapping(value = "/users/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
+	@Secured(AuthoritiesConstants.ADMIN)
 	public ResponseEntity<ManagedUserDTO> getUser(@PathVariable String login) {
 		log.debug("REST request to get User : {}", login);
 		return userManager.getUserWithAuthoritiesByLogin(login)

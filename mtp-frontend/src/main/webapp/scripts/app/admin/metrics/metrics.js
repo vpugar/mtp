@@ -7,7 +7,7 @@ angular.module('mtpApp')
                 parent: 'admin',
                 url: '/metrics',
                 data: {
-                    authorities: ['ROLE_ADMIN'],
+                    authorities: ['ROLE_ADMIN', 'ROLE_DEMO'],
                     pageTitle: 'metrics.title'
                 },
                 views: {

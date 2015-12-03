@@ -22,3 +22,10 @@ VALUES('4','user','$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K'
 
 INSERT INTO user_by_login (login, id)
 VALUES('user','4');
+
+INSERT INTO user (id, login, password , firstname, lastname ,email ,activated ,lang_key, activation_key, authorities)
+VALUES('5','demo','$2a$10$qgAmnVC7HhzD36WK30N6d.kor5I.vSA0eVMXeb2/5IWHEkBKe3txW','','Demo','demo@localhost',true,'en','', {'ROLE_DEMO'});
+
+INSERT INTO user_by_login (login, id)
+VALUES('demo','5');
+
