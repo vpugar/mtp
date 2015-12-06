@@ -1,13 +1,8 @@
 package com.vedri.mtp.consumption.transaction;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.math.BigDecimal;
 
 import org.joda.time.DateTime;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -17,9 +12,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.testkit.TestKit;
 
 import com.vedri.mtp.consumption.ConsumptionTestConfig;
-import com.vedri.mtp.consumption.support.akka.TestActorRef;
 import com.vedri.mtp.consumption.support.cassandra.EmbeddedCassandraConfiguration;
 import com.vedri.mtp.consumption.support.kafka.KafkaMessageEnvelope;
 import com.vedri.mtp.core.CoreConfig;
@@ -32,6 +28,7 @@ import com.vedri.mtp.core.transaction.dao.CassandraTransactionDao;
 		TransactionValidator.class, CassandraTransactionDao.class
 })
 @TestPropertySource(properties = {
+		"mtp.consumption.kafkaClient.topicName=mtp.transaction",
 		"mtp.consumption.cluster.nodeName=test0",
 		"mtp.consumption.cassandra.hosts=localhost",
 		"mtp.consumption.cassandra.port=9142",
@@ -42,10 +39,18 @@ public class KafkaTransactionManagerTest extends AbstractTestNGSpringContextTest
 	@Autowired
 	private TransactionManager transactionManager;
 
-	private ActorRef actorRef = Mockito.mock(TestActorRef.class);
+	// @Autowired
+	// private ActorSystem actorSystem;
+
+	private TestKit testKit;
+
+	private ActorRef actorRef;
 
 	@BeforeClass
 	public void initMocks() {
+		ActorSystem actorSystem = ActorSystem.create("test");
+		testKit = new TestKit(actorSystem);
+		actorRef = testKit.testActor();
 		transactionManager.start(actorRef);
 	}
 
@@ -81,13 +86,11 @@ public class KafkaTransactionManagerTest extends AbstractTestNGSpringContextTest
 		Assert.assertEquals(getTransactionResult.getTransactionId(), addTransactionResult.getTransactionId());
 		Assert.assertEquals(getTransactionResult.getUserId(), addTransactionResult.getUserId());
 
-		ArgumentCaptor<KafkaMessageEnvelope> commandCaptor = ArgumentCaptor.forClass(KafkaMessageEnvelope.class);
-		verify(actorRef, times(1)).tell(commandCaptor, null);
-		final KafkaMessageEnvelope envelope = commandCaptor.getValue();
+		final KafkaMessageEnvelope envelope = testKit.expectMsgClass(KafkaMessageEnvelope.class);
 		Assert.assertNotNull(envelope);
 		Assert.assertNotNull(envelope.getKey());
-		Assert.assertNotNull(envelope.getTopic());
 		Assert.assertNotNull(envelope.getMessage());
+		Assert.assertNotNull(envelope.getTopic());
 	}
 
 	// TODO test validation and strange numbers

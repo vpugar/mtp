@@ -46,6 +46,7 @@ allprojects {
         all*.exclude group: "org.slf4j", module: "slf4j-log4j12"
         all*.exclude group: 'com.esotericsoftware.kryo'
         all*.exclude group: 'com.codahale.metrics'
+        all*.exclude module: 'netty-all'
     }
 
     test {

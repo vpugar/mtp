@@ -2,6 +2,7 @@ package com.vedri.mtp.consumption.support.cassandra;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
+import com.vedri.mtp.core.CoreProperties;
 import org.cassandraunit.CQLDataLoader;
 import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,9 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class EmbeddedCassandraSupport {
+
+    @Autowired
+    private CoreProperties.Cassandra cassandra;
 
     @Autowired
     private EmbeddedCassandra embeddedCassandra;
@@ -24,10 +28,11 @@ public class EmbeddedCassandraSupport {
         session = cluster.connect();
         CQLDataLoader dataLoader = new CQLDataLoader(session);
 
-        ClassPathCQLDataSet dataSet1 = new ClassPathCQLDataSet(cqlKeyspaceScript, session.getLoggedKeyspace());
-        dataLoader.load(dataSet1);
+        // remove this, already created by CQLDataLoader
+//        ClassPathCQLDataSet dataSet1 = new ClassPathCQLDataSet(cqlKeyspaceScript, cassandra.getKeyspace());
+//        dataLoader.load(dataSet1);
 
-        ClassPathCQLDataSet dataSet2 = new ClassPathCQLDataSet(cqlTableScript, session.getLoggedKeyspace());
+        ClassPathCQLDataSet dataSet2 = new ClassPathCQLDataSet(cqlTableScript, cassandra.getKeyspace());
         dataLoader.load(dataSet2);
     }
 

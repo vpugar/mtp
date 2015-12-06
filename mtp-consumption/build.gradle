@@ -48,6 +48,7 @@ dependencies {
             ["org.kubek2k:springockito-annotations:${springockitoVersion}"],
             ["org.mockito:mockito-core:${mockitoVersion}"],
             ["org.testng:testng:${testNgVersion}"],
-            ["org.springframework:spring-test:${springVersion}"]
+            ["org.springframework:spring-test:${springVersion}"],
+            ["com.typesafe.akka:akka-testkit_${scalaMajorVersion}:${akkaVersion}"]
     )
 }

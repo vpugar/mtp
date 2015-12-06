@@ -1,5 +1,10 @@
 # MTP (My Test Project)
 
+## Wiki
+* [Description](https://github.com/vpugar/mtp/wiki)
+* [Build and Installation](https://github.com/vpugar/mtp/wiki/Build-and-Installation) 
+* [Status](https://github.com/vpugar/mtp/wiki/Status)
+
 ## Components
 * mtp-client - Akka HTTP client, sends HTTP requests to the mtp-consumption 
 * mtp-consumption - Akka HTTP server, receives requests from mtp-consumption and sends data over Kafka Client to the mtp-processor   
@@ -29,6 +34,3 @@
 * Bootstrap 3.3.5
 * AngularJS 1.4.5
 * ...
-
-## Wiki
-[Wiki with status](https://github.com/vpugar/mtp/wiki)

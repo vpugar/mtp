@@ -9,7 +9,7 @@ public interface TransactionManager {
 
     void start(final ActorRef consumerActorRef);
 
-    Transaction addTransaction(final Transaction transaction) throws ValidationFailedException, Exception;
+    Transaction addTransaction(final Transaction transaction) throws ValidationFailedException;
 
     Transaction getTransaction(final String transactionId);
 

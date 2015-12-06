@@ -4,6 +4,8 @@ jar {
     }
 }
 
+sourceSets.main.resources { srcDirs = ["src/main/cql"] }
+
 dependencies {
 
     compile(

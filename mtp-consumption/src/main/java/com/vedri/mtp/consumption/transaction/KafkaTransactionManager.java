@@ -44,7 +44,7 @@ public class KafkaTransactionManager implements TransactionManager {
 	}
 
 	@Override
-	public Transaction addTransaction(final Transaction transaction) throws ValidationFailedException, Exception {
+	public Transaction addTransaction(final Transaction transaction) throws ValidationFailedException {
 
 		transaction.setReceivedTime(new DateTime());
 		transaction.setNodeName(clusterInfo.getNodeName());

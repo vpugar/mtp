@@ -10,7 +10,7 @@ import javax.annotation.PreDestroy;
 public class EmbeddedCassandra {
 
 	private String cassandraYamlFile = EmbeddedCassandraServerHelper.DEFAULT_CASSANDRA_YML_FILE;
-	private String tmpDir = EmbeddedCassandraServerHelper.DEFAULT_TMP_DIR;
+	private String tmpDir = "build/embeddedCassandra";
 
     @PostConstruct
 	public void start() throws Exception {
