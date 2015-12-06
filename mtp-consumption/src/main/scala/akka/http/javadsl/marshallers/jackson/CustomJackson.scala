@@ -32,7 +32,7 @@ object CustomJackson {
           .forContentTypes(`application/json`)
           .map { jsonString ⇒
             try {
-              val reader = objectMapper.reader(clazz)
+              val reader = objectMapper.readerFor(clazz)
               clazz.cast(reader.readValue(jsonString))
             } catch {
               case e: Exception => throw new IllegalArgumentException(e.getMessage, e);
