@@ -14,7 +14,7 @@ public class EmbeddedCassandra {
 
     @PostConstruct
 	public void start() throws Exception {
-		EmbeddedCassandraServerHelper.startEmbeddedCassandra(cassandraYamlFile, tmpDir);
+		EmbeddedCassandraServerHelper.startEmbeddedCassandra(cassandraYamlFile, tmpDir, 60000);
 	}
 
     @PreDestroy
