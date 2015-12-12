@@ -5,6 +5,7 @@ import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationB
 import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByStatus.Fields.transactionCount;
 import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByStatus.Fields.validationStatus;
 
+import com.vedri.mtp.core.MtpConstants;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.joda.time.DateTime;
@@ -31,7 +32,9 @@ public class ReceivedTimeTransactionAggregationByStatusBuilder
 		// save status stats
 		final JavaDStream<TransactionAggregationByStatus> transactionAggregationByStatusStream = transactionWithStatusStream
 				.map(transaction -> {
-					final DateTime receivedTime = transaction.getReceivedTime();
+					final DateTime receivedTime = transaction
+							.getReceivedTime()
+							.withZone(MtpConstants.DEFAULT_TIME_ZONE);
 					return new TransactionAggregationByStatus(transaction.getValidationStatus(),
 							receivedTime.getYear(), receivedTime.getMonthOfYear(),
 							receivedTime.getDayOfMonth(), receivedTime.getHourOfDay(), 1,

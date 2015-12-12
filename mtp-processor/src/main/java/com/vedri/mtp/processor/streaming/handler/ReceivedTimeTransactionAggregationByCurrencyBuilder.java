@@ -1,5 +1,6 @@
 package com.vedri.mtp.processor.streaming.handler;
 
+import com.vedri.mtp.core.MtpConstants;
 import com.vedri.mtp.core.transaction.TableName;
 import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.streaming.api.java.JavaDStream;
@@ -22,7 +23,9 @@ public class ReceivedTimeTransactionAggregationByCurrencyBuilder
 	@Override
 	protected FlatMapFunction<Transaction, TransactionAggregationByCurrency> mapFunction() {
 		return transaction -> {
-			final DateTime time = transaction.getReceivedTime();
+			final DateTime time = transaction
+					.getReceivedTime()
+					.withZone(MtpConstants.DEFAULT_TIME_ZONE);
 			return Sets.newHashSet(
 					new TransactionAggregationByCurrency(transaction.getCurrencyFrom(),
 							time.getYear(), time.getMonthOfYear(), time.getDayOfMonth(), time.getHourOfDay(),

@@ -1,5 +1,6 @@
 package com.vedri.mtp.processor.streaming.handler;
 
+import com.vedri.mtp.core.MtpConstants;
 import com.vedri.mtp.core.transaction.TableName;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.streaming.api.java.JavaDStream;
@@ -19,7 +20,7 @@ public class PlacedTimeTransactionAggregationByCountryBuilder
 	@Override
 	protected Function<Transaction, TransactionAggregationByCountry> mapFunction() {
 		return transaction -> {
-			final DateTime time = transaction.getPlacedTime();
+			final DateTime time = transaction.getPlacedTime().withZone(MtpConstants.DEFAULT_TIME_ZONE);
 			return new TransactionAggregationByCountry(transaction.getOriginatingCountry(),
 					time.getYear(), time.getMonthOfYear(),
 					time.getDayOfMonth(), time.getHourOfDay(), 1, transaction.getAmountPoints());

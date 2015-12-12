@@ -61,7 +61,7 @@ public class ProcessorRootActor extends ClusterAwareHandler {
 	@Override
 	public PartialFunction<Object, BoxedUnit> initializedReceive() {
 		return ReceiveBuilder
-				// TODO add forwarding for live requests
+				// FIXME add forwarding for live requests
 				.match(AkkaTask.GracefulShutdown.class, message -> gracefulShutdown(sender()))
 				.build();
 	}
