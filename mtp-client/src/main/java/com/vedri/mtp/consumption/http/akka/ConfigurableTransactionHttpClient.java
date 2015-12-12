@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.vedri.mtp.core.rate.CachingRateCalculator;
+import com.vedri.mtp.core.rate.cf.CfRateCalculator;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.springframework.context.ApplicationContext;
@@ -79,6 +81,9 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 
 		@Parameter(required = false, names = { "-u", "--url" })
 		private String url = "http://localhost:9090/transactions";
+
+		@Parameter(required = false, names = { "-u", "--url" })
+		private String cfUrl = "http://localhost:8080/test/rates";
 	}
 
 	private Args argsConf;
@@ -87,7 +92,7 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 	private CountryManager countryManager;
 	private CurrencyManager currencyManager;
 	private ObjectMapper transactionObjectMapper;
-	private RateCalculator rateCalculator;
+	private CachingRateCalculator rateCalculator;
 	private final DecimalFormat decimalFormat2;
 
 	public ConfigurableTransactionHttpClient() {
@@ -150,10 +155,16 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 	@Override
 	protected void doStart(ApplicationContext context) throws Exception {
 
+		final CfRateCalculator cfRateCalculator = context.getBean(CfRateCalculator.class);
+		cfRateCalculator.setServiceUrl(argsConf.cfUrl);
+
 		transactionObjectMapper = context.getBean("transactionObjectMapper", ObjectMapper.class);
 		countryManager = context.getBean(CountryManager.class);
 		currencyManager = context.getBean(CurrencyManager.class);
-		rateCalculator = context.getBean("cachingRateCalculator", RateCalculator.class);
+		rateCalculator = context.getBean(CachingRateCalculator.class);
+
+		rateCalculator.setUseRandomResultsForRate(false);
+		rateCalculator.setUseSourceRateCalculator(true);
 
 		super.doStart(context);
 	}
