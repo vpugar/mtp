@@ -16,6 +16,7 @@ public class ProcessorProperties {
     private final CoreProperties.Cluster cluster = new CoreProperties.Cluster();
     private final CoreProperties.Akka akka = new CoreProperties.Akka();
     private final CoreProperties.Cassandra cassandra = new CoreProperties.Cassandra();
+    private final CoreProperties.CfRate cfRate = new CoreProperties.CfRate();
 
     @Getter
     @Setter

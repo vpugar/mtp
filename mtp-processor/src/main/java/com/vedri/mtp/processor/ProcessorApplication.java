@@ -1,5 +1,6 @@
 package com.vedri.mtp.processor;
 
+import com.vedri.mtp.core.rate.cf.CfRateCalculator;
 import com.vedri.mtp.core.support.cassandra.CassandraConfiguration;
 import com.vedri.mtp.core.support.json.JacksonConfiguration;
 import com.vedri.mtp.core.support.kyro.KryoConfiguration;
@@ -23,6 +24,10 @@ public class ProcessorApplication extends AbstractApplication {
 	@Override
 	protected void doStart(ApplicationContext context) throws Exception {
 
+		final CfRateCalculator cfRateCalculator = context.getBean(CfRateCalculator.class);
+		final ProcessorProperties processorProperties = context.getBean(ProcessorProperties.class);
+
+		cfRateCalculator.setServiceUrl(processorProperties.getCfRate().getServiceUrl());
 	}
 
 	public static void main(String[] args) throws Exception {

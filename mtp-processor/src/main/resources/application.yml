@@ -29,6 +29,8 @@ mtp:
         replicationFactor: 1
     zookeeper:
       connect: localhost:2181
+    cfRate:
+      serviceUrl: http://localhost:8080/test/rates
 
 #      hosts: localhost
 #      ingest-rate: 1s
