@@ -3,6 +3,7 @@ package com.vedri.mtp.core.support.json;
 import java.io.IOException;
 import java.util.TimeZone;
 
+import com.vedri.mtp.core.MtpConstants;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -36,7 +37,7 @@ public class CustomDateDateTimeDeserializer extends StdScalarDeserializer<DateTi
 			throws IOException, JsonProcessingException {
 		JsonToken t = jp.getCurrentToken();
 		TimeZone tz = ctxt.getTimeZone();
-		DateTimeZone dtz = (tz == null) ? DateTimeZone.UTC : DateTimeZone.forTimeZone(tz);
+		DateTimeZone dtz = (tz == null) ? MtpConstants.DEFAULT_TIME_ZONE : DateTimeZone.forTimeZone(tz);
 
 		if (t == JsonToken.VALUE_NUMBER_INT) {
 			return new DateTime(jp.getLongValue(), dtz);
