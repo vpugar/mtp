@@ -9,12 +9,19 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 import scala.runtime.BoxedUnit;
 import akka.actor.ActorSystem;
 import akka.http.javadsl.marshallers.jackson.CustomJackson;
+import akka.http.javadsl.model.HttpHeader;
+import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 import akka.http.javadsl.model.Uri;
 import akka.http.javadsl.model.headers.Location;
@@ -23,13 +30,20 @@ import akka.http.javadsl.server.HttpApp;
 import akka.http.javadsl.server.Route;
 import akka.http.javadsl.server.values.PathMatcher;
 import akka.http.scaladsl.Http;
+import akka.japi.Option;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vedri.mtp.consumption.MtpConsumptionConstants;
 import com.vedri.mtp.consumption.transaction.ValidationFailedException;
 import com.vedri.mtp.core.transaction.Transaction;
 
 @Slf4j
 class MtpHttpApp extends HttpApp {
+
+	private static final DateTimeFormatter TIME_ZONE_FORMATTER = new DateTimeFormatterBuilder()
+			.appendPattern("Z")
+			.toFormatter()
+			.withOffsetParsed();
 
 	private final AkkaHttpServer akkaHttpServer;
 	private final ActorSystem akkaSystem;
@@ -64,7 +78,7 @@ class MtpHttpApp extends HttpApp {
 		}
 	}
 
-	// TODO Unsupported Media Type
+	// FIXME Unsupported Media Type
 	@Override
 	public Route createRoute() {
 
@@ -78,7 +92,19 @@ class MtpHttpApp extends HttpApp {
 		final Route postRoute = post(handleWith1(entityAs(CustomJackson.jsonAs(objectMapper, Transaction.class)),
 				(ctx, transaction) -> {
 					try {
-						Transaction added = akkaHttpServer.doAddTransaction(transaction);
+
+						final Transaction added = akkaHttpServer.doAddTransaction(transaction);
+
+						final HttpRequest request = ctx.request();
+						final Option<HttpHeader> header = request
+								.getHeader(MtpConsumptionConstants.HTTP_HEADER_TIME_OFFSET);
+						if (header.isDefined()) {
+							final HttpHeader httpHeader = header.get();
+							final DateTime dateTime = TIME_ZONE_FORMATTER.parseDateTime(httpHeader.value());
+							transaction.setPlacedTime(
+									transaction.getPlacedTime().withZoneRetainFields(dateTime.getZone()));
+						}
+
 						return ctx.complete(HttpResponse
 								.create()
 								.withStatus(CREATED)

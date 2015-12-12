@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.vedri.mtp.core.MtpConstants;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.kubek2k.springockito.annotations.ReplaceWithMock;
@@ -32,6 +33,7 @@ import com.beust.jcommander.internal.Lists;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import com.vedri.mtp.consumption.ConsumptionTestConfig;
+import com.vedri.mtp.consumption.MtpConsumptionConstants;
 import com.vedri.mtp.consumption.transaction.TransactionManager;
 import com.vedri.mtp.consumption.transaction.ValidationFailedException;
 import com.vedri.mtp.core.CoreConfig;
@@ -60,6 +62,41 @@ import com.vedri.mtp.core.transaction.aggregation.TransactionValidationStatus;
 })
 public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 
+	private static final class TimeOffset extends akka.http.scaladsl.model.headers.CustomHeader {
+
+		private final String value;
+
+		private TimeOffset(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String value() {
+			return value;
+		}
+
+		@Override
+		public String name() {
+			return MtpConsumptionConstants.HTTP_HEADER_TIME_OFFSET;
+		}
+
+		@Override
+		public String lowercaseName() {
+			return MtpConsumptionConstants.HTTP_HEADER_TIME_OFFSET.toLowerCase();
+		}
+	};
+
+	private static final String REQUEST = "{\n" +
+			"     \"userId\": \"134256\",\n" +
+			"     \"currencyFrom\": \"EUR\",\n" +
+			"     \"currencyTo\": \"GBP\",\n" +
+			"     \"amountSell\": 1000,\n" +
+			"     \"amountBuy\": 747.10,\n" +
+			"     \"rate\": 0.7471,\n" +
+			"     \"timePlaced\" : \"24JAN15 10:27:44\",\n" +
+			"     \"originatingCountry\": \"FR\"\n" +
+			"}";
+
 	@ReplaceWithMock
 	@Autowired
 	TransactionManager transactionManager;
@@ -78,7 +115,20 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 
 	private final Transaction resultTransaction = new Transaction(
 			"p1", "t1", "134256", "EUR", "GBP", new BigDecimal("1000"), new BigDecimal("747.10"),
-			new BigDecimal("1000"), new BigDecimal("0.7471"), new DateTime(2015, 1, 24, 10, 27, 44, DateTimeZone.UTC),
+			new BigDecimal("1000"), new BigDecimal("0.7471"), new DateTime(2015, 1, 24, 10, 27, 44,
+			MtpConstants.DEFAULT_TIME_ZONE),
+			"FR", new DateTime(), "n1", TransactionValidationStatus.OK);
+
+	private final Transaction resultTransactionWithOffsetMinus2 = new Transaction(
+			"p1", "t1", "134256", "EUR", "GBP", new BigDecimal("1000"), new BigDecimal("747.10"),
+			new BigDecimal("1000"), new BigDecimal("0.7471"),
+			new DateTime(2015, 1, 24, 10, 27, 44, DateTimeZone.forOffsetHours(-2)),
+			"FR", new DateTime(), "n1", TransactionValidationStatus.OK);
+
+	private final Transaction resultTransactionWithOffsetPlus3 = new Transaction(
+			"p1", "t1", "134256", "EUR", "GBP", new BigDecimal("1000"), new BigDecimal("747.10"),
+			new BigDecimal("1000"), new BigDecimal("0.7471"),
+			new DateTime(2015, 1, 24, 10, 27, 44, DateTimeZone.forOffsetHours(3)),
 			"FR", new DateTime(), "n1", TransactionValidationStatus.OK);
 
 	@BeforeClass
@@ -105,25 +155,27 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 	@Test
 	public void basicTest() throws Exception {
 
-		final String request = "{\n" +
-				"     \"userId\": \"134256\",\n" +
-				"     \"currencyFrom\": \"EUR\",\n" +
-				"     \"currencyTo\": \"GBP\",\n" +
-				"     \"amountSell\": 1000,\n" +
-				"     \"amountBuy\": 747.10,\n" +
-				"     \"rate\": 0.7471,\n" +
-				"     \"timePlaced\" : \"24JAN15 10:27:44\",\n" +
-				"     \"originatingCountry\": \"FR\"\n" +
-				"}";
-
 		doPrepareFlow(resultTransaction, null);
 
 		final ContentType contentType = ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8);
-		final HttpResponse response = doRequest(contentType, request);
+		final HttpResponse response = doRequest(contentType, REQUEST);
 		assertEquals(response.status(), StatusCodes.CREATED, "not created");
 
 		final Transaction result = checkFlowAndGetResult();
 		checkTransaction(result, resultTransaction);
+	}
+
+	@Test
+	public void basicTestWithZoneOffset() throws Exception {
+
+		doPrepareFlow(resultTransaction, null);
+
+		final ContentType contentType = ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8);
+		final HttpResponse response = doRequest(contentType, REQUEST, new TimeOffset("-02:00"));
+		assertEquals(response.status(), StatusCodes.CREATED, "not created");
+
+		final Transaction result = checkFlowAndGetResult();
+		checkTransaction(result, resultTransactionWithOffsetMinus2);
 	}
 
 	@DataProvider(name = "transactionData1")
@@ -161,14 +213,14 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 		{
 			testData.add(new Object[] {
 					"main", transactionData,
-					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8),
+					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), null,
 					StatusCodes.CREATED, resultTransaction, null });
 		}
 
 		{
 			testData.add(new Object[] {
 					"application/octet_stream content type", transactionData,
-					ContentType.create(MediaTypes.APPLICATION_OCTET_STREAM),
+					ContentType.create(MediaTypes.APPLICATION_OCTET_STREAM), null,
 					StatusCodes.CREATED, resultTransaction,
 					null });
 		}
@@ -176,7 +228,7 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 		{
 			testData.add(new Object[] {
 					"text/plain content type", transactionData,
-					ContentType.create(MediaTypes.TEXT_PLAIN, HttpCharsets.UTF_8),
+					ContentType.create(MediaTypes.TEXT_PLAIN, HttpCharsets.UTF_8), null,
 					StatusCodes.CREATED,
 					resultTransaction,
 					null });
@@ -185,7 +237,7 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 		{
 			testData.add(new Object[] {
 					"text/plain content type", transactionData,
-					ContentType.create(MediaTypes.TEXT_PLAIN, HttpCharsets.US_ASCII),
+					ContentType.create(MediaTypes.TEXT_PLAIN, HttpCharsets.US_ASCII), null,
 					StatusCodes.CREATED,
 					resultTransaction,
 					null });
@@ -193,8 +245,50 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 
 		{
 			testData.add(new Object[] {
-					"null content type", transactionData, null, StatusCodes.CREATED, resultTransaction,
+					"zone offset +03:00", transactionData,
+					ContentType.create(MediaTypes.TEXT_PLAIN, HttpCharsets.US_ASCII), "+03:00",
+					StatusCodes.CREATED,
+					resultTransactionWithOffsetPlus3,
 					null });
+		}
+
+		{
+			testData.add(new Object[] {
+					"zone offset -02:00", transactionData,
+					ContentType.create(MediaTypes.TEXT_PLAIN, HttpCharsets.US_ASCII), "-02:00",
+					StatusCodes.CREATED,
+					resultTransactionWithOffsetMinus2,
+					null });
+		}
+
+		{
+			testData.add(new Object[] {
+					"zone offset -02", transactionData,
+					ContentType.create(MediaTypes.TEXT_PLAIN, HttpCharsets.US_ASCII), "-02",
+					StatusCodes.CREATED,
+					resultTransactionWithOffsetMinus2,
+					null });
+		}
+
+		{
+			testData.add(new Object[] {
+					"zone offset -2", transactionData,
+					ContentType.create(MediaTypes.TEXT_PLAIN, HttpCharsets.US_ASCII), "-2",
+					StatusCodes.BAD_REQUEST,
+					null, null });
+		}
+
+		{
+			testData.add(new Object[] {
+					"null content type", transactionData, null, null, StatusCodes.CREATED, resultTransaction,
+					null });
+		}
+
+		{
+			testData.add(new Object[] {
+					"time offset wrong format", transactionData,
+					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), "xxyyzz",
+					StatusCodes.BAD_REQUEST, null, null });
 		}
 
 		{
@@ -203,7 +297,7 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 			transactionDataClone.put("timePlaced", "240115 10:27:44");
 			testData.add(new Object[] {
 					"timePlaced wrong format", transactionDataClone,
-					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8),
+					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), null,
 					StatusCodes.BAD_REQUEST,
 					null, null });
 		}
@@ -214,7 +308,7 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 			transactionDataClone.remove("userId");
 			testData.add(new Object[] {
 					"no userId", transactionDataClone,
-					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), StatusCodes.BAD_REQUEST,
+					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), null, StatusCodes.BAD_REQUEST,
 					null, new ValidationFailedException("no userId") });
 		}
 
@@ -224,7 +318,7 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 			transactionDataClone.remove("currencyFrom");
 			testData.add(new Object[] {
 					"no currencyFrom", transactionDataClone,
-					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), StatusCodes.BAD_REQUEST,
+					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), null, StatusCodes.BAD_REQUEST,
 					null, new ValidationFailedException("no currencyFrom") });
 		}
 
@@ -234,7 +328,7 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 			transactionDataClone.remove("currencyTo");
 			testData.add(new Object[] {
 					"no currencyTo", transactionDataClone,
-					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), StatusCodes.BAD_REQUEST,
+					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), null, StatusCodes.BAD_REQUEST,
 					null, new ValidationFailedException("no currencyTo") });
 		}
 
@@ -244,7 +338,7 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 			transactionDataClone.remove("amountSell");
 			testData.add(new Object[] {
 					"no amountSell", transactionDataClone,
-					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), StatusCodes.BAD_REQUEST,
+					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), null, StatusCodes.BAD_REQUEST,
 					null, new ValidationFailedException("no amountSell") });
 		}
 
@@ -254,7 +348,7 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 			transactionDataClone.remove("amountBuy");
 			testData.add(new Object[] {
 					"no amountBuy", transactionDataClone,
-					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), StatusCodes.BAD_REQUEST,
+					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), null, StatusCodes.BAD_REQUEST,
 					null, new ValidationFailedException("no amountBuy") });
 		}
 
@@ -264,7 +358,7 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 			transactionDataClone.remove("rate");
 			testData.add(new Object[] {
 					"no rate", transactionDataClone,
-					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), StatusCodes.BAD_REQUEST,
+					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), null, StatusCodes.BAD_REQUEST,
 					null, new ValidationFailedException("no rate") });
 		}
 
@@ -274,7 +368,7 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 			transactionDataClone.remove("timePlaced");
 			testData.add(new Object[] {
 					"no timePlaced", transactionDataClone,
-					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), StatusCodes.BAD_REQUEST,
+					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), null, StatusCodes.BAD_REQUEST,
 					null, new ValidationFailedException("no timePlaced") });
 		}
 
@@ -284,7 +378,7 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 			transactionDataClone.remove("originatingCountry");
 			testData.add(new Object[] {
 					"no originatingCountry", transactionDataClone,
-					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), StatusCodes.BAD_REQUEST,
+					ContentType.create(MediaTypes.APPLICATION_JSON, HttpCharsets.UTF_8), null, StatusCodes.BAD_REQUEST,
 					null, new ValidationFailedException("no originatingCountry") });
 		}
 
@@ -292,12 +386,14 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 	}
 
 	@Test(dataProvider = "transactionData2")
-	public void transactionDataTest(String desc, Map<String, Object> data, ContentType contentType,
+	public void transactionDataTest(String desc, Map<String, Object> data, ContentType contentType, String timeOffset,
 			StatusCode statusCode, Transaction expectedTransaction, Exception expectedException) throws Exception {
 
 		doPrepareFlow(expectedTransaction, expectedException);
 
-		final HttpResponse response = doRequest(contentType, transactionObjectMapper.writeValueAsString(data));
+		final HttpResponse response = timeOffset != null
+				? doRequest(contentType, transactionObjectMapper.writeValueAsString(data), new TimeOffset(timeOffset))
+				: doRequest(contentType, transactionObjectMapper.writeValueAsString(data));
 		assertEquals(response.status(), statusCode, "expected status " + statusCode);
 
 		if (expectedTransaction != null || expectedException != null) {
@@ -323,7 +419,11 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 			assertEquals(actual.getAmountSell(), expected.getAmountSell());
 			assertEquals(actual.getAmountBuy(), expected.getAmountBuy());
 			assertEquals(actual.getRate(), expected.getRate());
+			assertEquals(actual.getPlacedTime().getMillis(),
+					expected.getPlacedTime().getMillis());
 			assertEquals(actual.getPlacedTime(), expected.getPlacedTime());
+			assertEquals(actual.getPlacedTime().withZone(MtpConstants.DEFAULT_TIME_ZONE),
+					expected.getPlacedTime().withZone(MtpConstants.DEFAULT_TIME_ZONE));
 			assertEquals(actual.getOriginatingCountry(), expected.getOriginatingCountry());
 		}
 	}
@@ -339,9 +439,11 @@ public class AkkaHttpServerTest extends AbstractTestNGSpringContextTests {
 		}
 	}
 
-	private HttpResponse doRequest(final ContentType contentType, String request) throws Exception {
-		final Future<HttpResponse> post = httpClient.post("http://localhost:9090/transactions",
-				contentType, request);
+	private HttpResponse doRequest(final ContentType contentType, String request, HttpHeader... headers)
+			throws Exception {
+		final Future<HttpResponse> post = headers != null
+				? httpClient.post("http://localhost:9090/transactions", contentType, request, headers)
+				: httpClient.post("http://localhost:9090/transactions", contentType, request);
 		// objectMapper.writeValueAsString(requestTransaction)
 		return Await.result(post, Duration.apply(10, TimeUnit.SECONDS));
 	}

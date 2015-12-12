@@ -93,5 +93,5 @@ public class KafkaTransactionManagerTest extends AbstractTestNGSpringContextTest
 		Assert.assertNotNull(envelope.getTopic());
 	}
 
-	// TODO test validation and strange numbers
+	// FIXME test validation and strange numbers
 }
