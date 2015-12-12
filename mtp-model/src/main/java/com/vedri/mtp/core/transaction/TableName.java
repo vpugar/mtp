@@ -6,10 +6,14 @@ public interface TableName {
 
     String RT_AGGREGATION_BY_VALIDATION_STATUS = "rt_aggregation_by_validation_status";
     String RT_AGGREGATION_BY_ORIGINATING_COUNTRY = "rt_aggregation_by_originating_country";
+    String RT_DAY_AGGREGATION_BY_ORIGINATING_COUNTRY = "rt_day_aggregation_by_originating_country";
     String RT_AGGREGATION_BY_USER = "rt_aggregation_by_user";
     String RT_AGGREGATION_BY_CURRENCY = "rt_aggregation_by_currency";
+    String RT_DAY_AGGREGATION_BY_CURRENCY = "rt_day_aggregation_by_currency";
 
     String PT_AGGREGATION_BY_ORIGINATING_COUNTRY = "pt_aggregation_by_originating_country";
+    String PT_DAY_AGGREGATION_BY_ORIGINATING_COUNTRY = "pt_day_aggregation_by_originating_country";
     String PT_AGGREGATION_BY_USER = "pt_aggregation_by_user";
     String PT_AGGREGATION_BY_CURRENCY = "pt_aggregation_by_currency";
+    String PT_DAY_AGGREGATION_BY_CURRENCY = "pt_day_aggregation_by_currency";
 }

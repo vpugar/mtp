@@ -58,6 +58,16 @@ CREATE TABLE IF NOT EXISTS rt_aggregation_by_originating_country (
    PRIMARY KEY ((originating_country), year, month, day, hour)
 ) WITH CLUSTERING ORDER BY (year DESC, month DESC, day DESC, hour DESC);
 
+CREATE TABLE IF NOT EXISTS rt_day_aggregation_by_originating_country (
+   year int,
+   month int,
+   day int,
+   originating_country text,
+   transaction_count counter,
+   amount_points_unscaled counter,
+   PRIMARY KEY ((year, month, day), originating_country)
+) WITH CLUSTERING ORDER BY (originating_country ASC);
+
 CREATE TABLE IF NOT EXISTS rt_aggregation_by_user (
    user_id text,
    year int,
@@ -82,6 +92,18 @@ CREATE TABLE IF NOT EXISTS rt_aggregation_by_currency (
    PRIMARY KEY ((currency), year, month, day, hour)
 ) WITH CLUSTERING ORDER BY (year DESC, month DESC, day DESC, hour DESC);
 
+CREATE TABLE IF NOT EXISTS rt_day_aggregation_by_currency (
+   year int,
+   month int,
+   day int,
+   currency text,
+   transaction_count_from counter,
+   amount_from_unscaled counter,
+   transaction_count_to counter,
+   amount_to_unscaled counter,
+   PRIMARY KEY ((year, month, day), currency)
+) WITH CLUSTERING ORDER BY (currency ASC);
+
 CREATE TABLE IF NOT EXISTS pt_aggregation_by_originating_country (
    originating_country text,
    year int,
@@ -92,6 +114,16 @@ CREATE TABLE IF NOT EXISTS pt_aggregation_by_originating_country (
   amount_points_unscaled counter,
    PRIMARY KEY ((originating_country), year, month, day, hour)
 ) WITH CLUSTERING ORDER BY (year DESC, month DESC, day DESC, hour DESC);
+
+CREATE TABLE IF NOT EXISTS pt_day_aggregation_by_originating_country (
+   year int,
+   month int,
+   day int,
+   originating_country text,
+   transaction_count counter,
+  amount_points_unscaled counter,
+   PRIMARY KEY ((year, month, day), originating_country)
+) WITH CLUSTERING ORDER BY (originating_country ASC);
 
 CREATE TABLE IF NOT EXISTS pt_aggregation_by_user (
    user_id text,
@@ -117,6 +149,17 @@ CREATE TABLE IF NOT EXISTS pt_aggregation_by_currency (
    PRIMARY KEY ((currency), year, month, day, hour)
 ) WITH CLUSTERING ORDER BY (year DESC, month DESC, day DESC, hour DESC);
 
+CREATE TABLE IF NOT EXISTS pt_day_aggregation_by_currency (
+   year int,
+   month int,
+   day int,
+   currency text,
+   transaction_count_from counter,
+   amount_from_unscaled counter,
+   transaction_count_to counter,
+   amount_to_unscaled counter,
+   PRIMARY KEY ((year, month, day), currency)
+) WITH CLUSTERING ORDER BY (currency ASC);
 
 -- user
 

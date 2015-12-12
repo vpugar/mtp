@@ -39,7 +39,7 @@ public class StoreTransactionStatusBuilder extends StreamBuilder<JavaDStream<Tra
 						amountPoints.F.underscore(), validationStatus.F.underscore()))
 				.saveToCassandra();
 
-		transactionWithStatusStream.print(1);
+//		transactionWithStatusStream.print(1);
 
 		return null;
 	}

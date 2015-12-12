@@ -51,7 +51,7 @@ public class ProcessorRootActor extends ClusterAwareHandler {
 
 		getContext().become(initializedReceive().orElse(receive));
 
-		log.info("Starting processing");
+		actorLog.info("Starting processing");
 
 		// FIXME streamingContext.checkpoint(processorProperties.getSpark().getCheckpointDir());
 		streamingContext.checkpoint(null);

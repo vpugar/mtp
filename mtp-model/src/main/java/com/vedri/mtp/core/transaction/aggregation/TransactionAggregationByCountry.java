@@ -24,12 +24,12 @@ public class TransactionAggregationByCountry extends TimeAggregation implements 
 	private BigDecimal amountPoints;
 
 	public TransactionAggregationByCountry(String originatingCountry,
-			int year, int month, int day, int hour, long transactionCount, BigDecimal amountPoints) {
+			Integer year, Integer month, Integer day, Integer hour, long transactionCount, BigDecimal amountPoints) {
 		this(originatingCountry, new YearToHourTime(year, month, day, hour), transactionCount, amountPoints);
 	}
 
 	public TransactionAggregationByCountry(String originatingCountry,
-			int year, int month, int day, int hour, long transactionCount, long amountPointsUnscaled) {
+		   Integer year, Integer month, Integer day, Integer hour, long transactionCount, long amountPointsUnscaled) {
 		super(new YearToHourTime(year, month, day, hour));
 		this.originatingCountry = originatingCountry;
 		this.transactionCount = transactionCount;

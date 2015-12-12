@@ -2,7 +2,6 @@ package com.vedri.mtp.processor.streaming;
 
 import java.util.Map;
 
-import com.vedri.mtp.core.rate.RateCalculator;
 import kafka.serializer.Decoder;
 
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
@@ -21,6 +20,7 @@ import akka.event.LoggingAdapter;
 import akka.japi.pf.ReceiveBuilder;
 
 import com.vedri.mtp.core.CoreProperties;
+import com.vedri.mtp.core.rate.RateCalculator;
 import com.vedri.mtp.core.support.akka.LifecycleMessage;
 import com.vedri.mtp.core.transaction.Transaction;
 import com.vedri.mtp.processor.ProcessorProperties;
@@ -51,10 +51,10 @@ public class KafkaStreamingActor extends AbstractActor {
 
 	@Autowired
 	public KafkaStreamingActor(final ProcessorProperties processorProperties,
-							   final JavaStreamingContext streamingContext,
-							   @Qualifier("transactionKryoDecoder") final Decoder<Transaction> decoder,
-							   final TransactionValidator transactionValidator,
-							   @Qualifier("cachingRateCalculator") final RateCalculator rateCalculator) {
+			final JavaStreamingContext streamingContext,
+			@Qualifier("transactionKryoDecoder") final Decoder<Transaction> decoder,
+			final TransactionValidator transactionValidator,
+			@Qualifier("cachingRateCalculator") final RateCalculator rateCalculator) {
 
 		this.processorProperties = processorProperties;
 		this.decoder = decoder;
@@ -94,14 +94,22 @@ public class KafkaStreamingActor extends AbstractActor {
 
 		new ReceivedTimeTransactionAggregationByCountryBuilder(filterOkTransactionStatusBuilder,
 				cassandra.getKeyspace()).build();
+		new ReceivedDayTransactionAggregationByCountryBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
+				.build();
 		new ReceivedTimeTransactionAggregationByCurrencyBuilder(filterOkTransactionStatusBuilder,
+				cassandra.getKeyspace()).build();
+		new ReceivedDayTransactionAggregationByCurrencyBuilder(filterOkTransactionStatusBuilder,
 				cassandra.getKeyspace()).build();
 		new ReceivedTimeTransactionAggregationByUserBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
 				.build();
 
 		new PlacedTimeTransactionAggregationByCountryBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
 				.build();
+		new PlacedDayTransactionAggregationByCountryBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
+				.build();
 		new PlacedTimeTransactionAggregationByCurrencyBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
+				.build();
+		new PlacedDayTransactionAggregationByCurrencyBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
 				.build();
 		new PlacedTimeTransactionAggregationByUserBuilder(filterOkTransactionStatusBuilder, cassandra.getKeyspace())
 				.build();

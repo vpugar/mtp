@@ -2,6 +2,7 @@ package com.vedri.mtp.core.transaction.aggregation.dao;
 
 import java.util.List;
 
+import com.google.common.base.Strings;
 import com.vedri.mtp.core.transaction.aggregation.YearToHourTime;
 
 public class YearToHourTimeUtil {
@@ -30,6 +31,10 @@ public class YearToHourTimeUtil {
 		if (yearToHourTime.getHour() != null) {
 			stringBuilder.append(HOUR_PART);
 			args.add(yearToHourTime.getHour());
+		}
+
+		if (Strings.isNullOrEmpty(prefixQuery) && stringBuilder.length() > 4) {
+			stringBuilder.delete(0, 4);
 		}
 
         return stringBuilder.toString();

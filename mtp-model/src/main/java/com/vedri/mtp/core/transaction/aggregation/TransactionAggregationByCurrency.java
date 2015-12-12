@@ -25,7 +25,7 @@ public class TransactionAggregationByCurrency extends TimeAggregation implements
 	private long transactionCountTo;
 	private BigDecimal amountTo;
 
-	public TransactionAggregationByCurrency(String currency, int year, int month, int day, int hour,
+	public TransactionAggregationByCurrency(String currency, Integer year, Integer month, Integer day, Integer hour,
 			long transactionCountFrom, long transactionCountTo, BigDecimal amountFrom, BigDecimal amountTo) {
 		super(new YearToHourTime(year, month, day, hour));
 		this.currency = currency;
@@ -35,7 +35,7 @@ public class TransactionAggregationByCurrency extends TimeAggregation implements
 		this.amountTo = amountTo;
 	}
 
-	public TransactionAggregationByCurrency(String currency, int year, int month, int day, int hour,
+	public TransactionAggregationByCurrency(String currency, Integer year, Integer month, Integer day, Integer hour,
 			long transactionCountFrom, long transactionCountTo, long amountFromUnscaled, long amountToUnscaled) {
 		super(new YearToHourTime(year, month, day, hour));
 		this.currency = currency;
