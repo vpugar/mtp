@@ -14,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan(basePackages = {
         "com.vedri.mtp.core.transaction",
+        "com.vedri.mtp.core.rate",
         "com.vedri.mtp.core.country",
         "com.vedri.mtp.core.currency",
         "com.vedri.mtp.frontend.config",
