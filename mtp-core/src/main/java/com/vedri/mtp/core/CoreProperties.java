@@ -12,6 +12,7 @@ public class CoreProperties {
 	private final Cluster cluster = new Cluster();
 	private final Akka akka = new Akka();
 	private final Cassandra cassandra = new Cassandra();
+	private final CfRate cfRate = new CfRate();
 
 	@Getter
 	@Setter
@@ -34,5 +35,11 @@ public class CoreProperties {
 		private String[] hosts;
 		private int port;
 		private String keyspace;
+	}
+
+	@Getter
+	@Setter
+	public static class CfRate {
+		private String serviceUrl;
 	}
 }

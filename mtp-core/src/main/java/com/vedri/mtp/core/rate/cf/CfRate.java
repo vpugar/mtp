@@ -30,10 +30,19 @@ public class CfRate {
 
 	public Rate toRate() {
 		final Rate rate = new Rate();
-		rate.setKey(new Rate.Key(currencyFrom, currencyTo, new LocalDate()));
+		rate.setKey(new Rate.Key(currencyFrom, currencyTo, LocalDate.now()));
 		rate.setCfRate(new BigDecimal(cfRate));
 		rate.setBankRate(new BigDecimal(bankRate));
 
 		return rate;
+	}
+
+	public static CfRate fromRate(Rate rate) {
+		final CfRate cfRate = new CfRate();
+		cfRate.setCurrencyFrom(rate.getKey().getCurrencyFrom());
+		cfRate.setCurrencyTo(rate.getKey().getCurrencyTo());
+		cfRate.setCfRate(rate.getCfRate().toString());
+		cfRate.setBankRate(rate.getBankRate().toString());
+		return cfRate;
 	}
 }

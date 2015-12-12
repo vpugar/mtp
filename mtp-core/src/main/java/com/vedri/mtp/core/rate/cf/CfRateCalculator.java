@@ -29,11 +29,17 @@ public class CfRateCalculator implements RateCalculator {
 	private final ObjectMapper objectMapper;
 	private ObjectReader reader;
 	private HttpComponentsHttpClient httpClient;
+	private String serviceUrl;
 	private boolean externalClient = false;
 
 	@Autowired
 	public CfRateCalculator(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
+	}
+
+	public void setServiceUrl(String serviceUrl) {
+		this.serviceUrl = serviceUrl;
+		externalClient = true;
 	}
 
 	@PostConstruct
@@ -68,7 +74,7 @@ public class CfRateCalculator implements RateCalculator {
 		map.put("buysell", "SELL");
 
 		try {
-			final String data = httpClient.get("https://app.currencyfair.com/api/fleece", map);
+			final String data = httpClient.get(serviceUrl, map);
 			if (data == null) {
 				throw new NoRateException(key);
 			}
