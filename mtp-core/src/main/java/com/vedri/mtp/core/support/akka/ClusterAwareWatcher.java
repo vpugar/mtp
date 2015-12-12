@@ -19,7 +19,7 @@ public abstract class ClusterAwareWatcher extends AbstractActor {
 
 	private CoreProperties.Akka akka;
 
-	protected final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+	protected final LoggingAdapter actorLog = Logging.getLogger(getContext().system(), this);
 	protected final Cluster cluster;
 
 	protected final PartialFunction<Object, BoxedUnit> receive = ReceiveBuilder
@@ -27,18 +27,18 @@ public abstract class ClusterAwareWatcher extends AbstractActor {
 			.match(ClusterEvent.UnreachableMember.class, message -> memberUnreachable(message.member()))
 			.match(ClusterEvent.MemberRemoved.class,
 					message -> memberRemoved(message.member(), message.previousStatus()))
-			.match(ClusterEvent.MemberEvent.class, message -> log.debug("Member event {}", message))
+			.match(ClusterEvent.MemberEvent.class, message -> actorLog.debug("Member event {}", message))
 			.match(ClusterEvent.ClusterMetricsChanged.class, message -> {
 				if (akka.isLogClusterMetrics()) {
-					log.debug("Cluster metric changed {}", message);
+					actorLog.debug("Cluster metric changed {}", message);
 				}
 			})
 			.match(ClusterEvent.ClusterDomainEvent.class, message -> {
 				if (akka.isLogClusterMetrics()) {
-					log.debug("Cluster event {}", message);
+					actorLog.debug("Cluster event {}", message);
 				}
 			})
-			.matchAny(message -> log.error("Unhandled message in watcher {}", message))
+			.matchAny(message -> actorLog.error("Unhandled message in watcher {}", message))
 			.build();
 
 	@Autowired
@@ -60,14 +60,14 @@ public abstract class ClusterAwareWatcher extends AbstractActor {
 	}
 
 	protected void memberUp(Member member) {
-		log.debug("Member {} joined cluster", member);
+		actorLog.debug("Member {} joined cluster", member);
 	}
 
 	protected void memberUnreachable(Member member) {
-		log.debug("Member {} is unreachable", member);
+		actorLog.debug("Member {} is unreachable", member);
 	}
 
 	protected void memberRemoved(Member member, MemberStatus previuosMemberStatus) {
-		log.debug("Member {} is removed after {}", member, previuosMemberStatus);
+		actorLog.debug("Member {} is removed after {}", member, previuosMemberStatus);
 	}
 }

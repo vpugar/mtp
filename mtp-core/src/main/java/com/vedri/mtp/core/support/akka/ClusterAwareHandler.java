@@ -3,6 +3,7 @@ package com.vedri.mtp.core.support.akka;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import scala.PartialFunction;
@@ -22,16 +23,24 @@ import akka.pattern.Patterns;
 import com.google.common.collect.Iterables;
 import com.vedri.mtp.core.CoreProperties;
 
+@Slf4j
 public abstract class ClusterAwareHandler extends ClusterAwareWatcher {
 
 	public final static SupervisorStrategy STRATEGY = new OneForOneStrategy(10, Duration.apply(1, TimeUnit.MINUTES),
 			DeciderBuilder
 					.match(ActorInitializationException.class, e -> SupervisorStrategy.stop())
-					.match(IllegalArgumentException.class, e -> SupervisorStrategy.stop())
-					.match(IllegalStateException.class, e -> SupervisorStrategy.restart())
+					.match(IllegalArgumentException.class, e -> {
+						log.error(e.getMessage(), e);
+						return SupervisorStrategy.stop();
+					})
+					.match(IllegalStateException.class, e -> {
+						log.error(e.getMessage(), e);
+						return SupervisorStrategy.restart();
+					})
 					.match(TimeoutException.class, e -> SupervisorStrategy.escalate())
 					.match(Exception.class, e -> {
-						throw e;
+						log.error(e.getMessage(), e);
+						return SupervisorStrategy.restart();
 					})
 					.build());
 
@@ -54,17 +63,17 @@ public abstract class ClusterAwareHandler extends ClusterAwareWatcher {
 	@Override
 	public void preStart() throws Exception {
 		super.preStart();
-		log.info("Starting at {}", cluster.selfAddress());
+		actorLog.info("Starting at {}", cluster.selfAddress());
 	}
 
 	@Override
 	public void postStop() throws Exception {
 		super.postStop();
-		log.info("Stopping at {}", cluster.selfAddress());
+		actorLog.info("Stopping at {}", cluster.selfAddress());
 	}
 
 	protected void doInitialize() {
-		log.info("Node is initializing");
+		actorLog.info("Node is initializing");
 		getContext().system().eventStream().publish(new LifecycleMessage.NodeInitialized());
 	}
 
@@ -77,7 +86,7 @@ public abstract class ClusterAwareHandler extends ClusterAwareWatcher {
 
 		final Future status = Futures.sequence((Iterable) futureIterable, getContext().dispatcher());
 		listener.tell(status, self());
-		log.info("Graceful shutdown completed.");
+		actorLog.info("Graceful shutdown completed.");
 	}
 
 	protected scala.concurrent.Future<Boolean> shutdown(ActorRef child) {
@@ -85,7 +94,7 @@ public abstract class ClusterAwareHandler extends ClusterAwareWatcher {
 			return Patterns.gracefulStop(child, Duration.apply(5, TimeUnit.SECONDS));
 		}
 		catch (Exception e) {
-			log.error("Error shutting down {}, cause {}", child.path(), e.getMessage());
+			actorLog.error("Error shutting down {}, cause {}", child.path(), e.getMessage());
 			return Futures.<Boolean> successful(true);
 		}
 
