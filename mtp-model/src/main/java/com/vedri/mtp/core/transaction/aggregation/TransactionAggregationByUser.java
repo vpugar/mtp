@@ -16,7 +16,7 @@ import com.vedri.mtp.core.support.cassandra.ColumnUtils;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 public class TransactionAggregationByUser extends TimeAggregation implements Serializable {
 
 	private String userId;
