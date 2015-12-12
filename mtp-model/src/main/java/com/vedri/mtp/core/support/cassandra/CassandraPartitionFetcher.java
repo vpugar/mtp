@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import com.vedri.mtp.core.MtpConstants;
 
 public class CassandraPartitionFetcher {
 
@@ -41,8 +41,8 @@ public class CassandraPartitionFetcher {
 		this.indexByValue = indexByValue;
 
 		if (from == null || to == null) {
-			from = new DateTime(DateTimeZone.UTC);
-			to = new DateTime(DateTimeZone.UTC).minusHours(1);
+			from = new DateTime(MtpConstants.DEFAULT_TIME_ZONE);
+			to = new DateTime(MtpConstants.DEFAULT_TIME_ZONE).minusHours(1);
 		}
 
 		this.fetchSize = fetchSize;
@@ -140,11 +140,11 @@ public class CassandraPartitionFetcher {
 	}
 
 	public boolean hasNextPartition() {
-        final float compareResult = Math.signum(currentPartition.compareTo(terminalPartition));
-        
-        return partitionMoveCount < MAX_PARTITION_MOVE_COUNT
-                && (compareResult == okPartitionDiff || compareResult == 0);
-    }
+		final float compareResult = Math.signum(currentPartition.compareTo(terminalPartition));
+
+		return partitionMoveCount < MAX_PARTITION_MOVE_COUNT
+				&& (compareResult == okPartitionDiff || compareResult == 0);
+	}
 
 	private void moveToNextPartition() {
 		partitionMoveCount++;
