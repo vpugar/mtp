@@ -31,8 +31,8 @@ public class TransactionAggregationByCurrency extends TimeAggregation implements
 		this.currency = currency;
 		this.transactionCountFrom = transactionCountFrom;
 		this.transactionCountTo = transactionCountTo;
-		this.amountFrom = amountFrom;
-		this.amountTo = amountTo;
+		this.amountFrom = amountFrom.setScale(MtpConstants.CURRENCY_SCALE, MtpConstants.CURRENCY_ROUNDING);
+		this.amountTo = amountTo.setScale(MtpConstants.CURRENCY_SCALE, MtpConstants.CURRENCY_ROUNDING);
 	}
 
 	public TransactionAggregationByCurrency(String currency, Integer year, Integer month, Integer day, Integer hour,
@@ -57,7 +57,7 @@ public class TransactionAggregationByCurrency extends TimeAggregation implements
 	}
 
 	public void setAmountFromUnscaled(long value) {
-		this.amountFrom = new BigDecimal(BigInteger.valueOf(value), MtpConstants.CURRENCY_POINTS_SCALE);
+		this.amountFrom = new BigDecimal(BigInteger.valueOf(value), MtpConstants.CURRENCY_SCALE);
 	}
 
 	@JsonIgnore
@@ -66,6 +66,6 @@ public class TransactionAggregationByCurrency extends TimeAggregation implements
 	}
 
 	public void setAmountToUnscaled(long value) {
-		this.amountTo = new BigDecimal(BigInteger.valueOf(value), MtpConstants.CURRENCY_POINTS_SCALE);
+		this.amountTo = new BigDecimal(BigInteger.valueOf(value), MtpConstants.CURRENCY_SCALE);
 	}
 }
