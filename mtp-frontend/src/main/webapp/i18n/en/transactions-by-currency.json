@@ -9,12 +9,12 @@
         "title": "Transactions by Currency (received time)",
         "date": "Received date"
       },
-      "title2": "Transactions count in current hour",
+      "title2": "Transactions count for current day",
       "currency": "Currency",
       "transactionCountFrom": "Count from",
-      "amountFrom": "Points from",
+      "amountFrom": "Amount from",
       "transactionCountTo": "Count to",
-      "amountTo": "Points to",
+      "amountTo": "Amount to",
       "hour-counts": "Count in Hour",
       "hour-points": "Points in Hour"
     }

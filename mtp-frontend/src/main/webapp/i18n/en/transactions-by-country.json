@@ -9,7 +9,7 @@
         "title": "Transactions by Country (received time)",
         "date": "Received date"
       },
-      "title2": "Transactions count in current hour",
+      "title2": "Transactions count for current day",
       "country": "Country",
       "count": "Count",
       "points": "Points",
