@@ -121,14 +121,22 @@ public class CassandraPartitionFetcher {
 
 			}
 			else if (result.size() < fetchSize) {
-				moveToNextPartition();
-				lastToken = null;
 
 				if (bindWithPrevious) {
-					resultRows.addAll(result.subList(0, Math.min(result.size(), fetchSize - resultRows.size())));
+					final int length = Math.min(result.size(), fetchSize - resultRows.size());
+					resultRows.addAll(result.subList(0, length));
+
+					if (length == result.size()) {
+						moveToNextPartition();
+						lastToken = null;
+					} else {
+						lastToken = resultRows.get(resultRows.size() - 1).getUUID(indexByValue);
+					}
 				}
 				else {
 					resultRows = result;
+					moveToNextPartition();
+					lastToken = null;
 				}
 
 				bindWithPrevious = true;

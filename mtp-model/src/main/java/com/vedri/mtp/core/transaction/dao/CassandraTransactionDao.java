@@ -193,6 +193,7 @@ public class CassandraTransactionDao implements TransactionDao {
 					int subListOffset = filterOffset - offset;
 					transactions = filteredList.subList(
 							subListOffset, Math.min(filteredList.size(), subListOffset + filterPageSize));
+					offset += subListOffset;
 
 					if (transactions.size() < filterPageSize) {
 						fetchRest = true;
