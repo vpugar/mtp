@@ -1,5 +1,6 @@
 package com.vedri.mtp.frontend.transaction.aggregation.subscription;
 
+import com.vedri.mtp.frontend.MtpFrontendConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -21,6 +22,6 @@ public class RtByUserActor extends AggregationByUserActor {
 
 	@Override
 	protected String getName() {
-		return NAME;
+		return MtpFrontendConstants.wrapTopicDestinationPath(NAME +  "/" + subscriptionInfo.getFilter());
 	}
 }

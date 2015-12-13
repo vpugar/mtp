@@ -21,7 +21,7 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="">
                         <span>
                             <span class="glyphicon glyphicon-th-list"></span>
-                            <span class="hidden-sm" translate="global.menu.entities.main">
+                            <span class="hidden-sm" translate="global.menu.entities-by-received-time.main">
                                 Entities
                             </span>
                             <b class="caret"></b>
@@ -29,9 +29,30 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a ui-sref="transaction" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-transfer"></span>
-                            &#xA0;<span translate="global.menu.entities.transactions">Transactions</span></a></li>
-                        <li><a ui-sref="transactions-by-status" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-stats"></span>
-                            &#xA0;<span translate="global.menu.entities.transactions-by-status">Transactions by status</span></a></li>
+                            &#xA0;<span translate="global.menu.entities-by-received-time.transactions">Transactions</span></a></li>
+                        <li><a ui-sref="rt-transactions-by-status" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-stats"></span>
+                            &#xA0;<span translate="global.menu.entities-by-received-time.transactions-by-status">Transactions by status</span></a></li>
+                        <li><a ui-sref="rt-transactions-by-country" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-stats"></span>
+                            &#xA0;<span translate="global.menu.entities-by-received-time.transactions-by-country">Transactions by country</span></a></li>
+                        <li><a ui-sref="rt-transactions-by-currency" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-stats"></span>
+                            &#xA0;<span translate="global.menu.entities-by-received-time.transactions-by-currency">Transactions by currency</span></a></li>
+                    </ul>
+                </li>
+                <li ui-sref-active="active" ng-switch-when="true" class="dropdown pointer">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="">
+                        <span>
+                            <span class="glyphicon glyphicon-th-list"></span>
+                            <span class="hidden-sm" translate="global.menu.entities-by-placed-time.main">
+                                Entities
+                            </span>
+                            <b class="caret"></b>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a ui-sref="pt-transactions-by-country" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-stats"></span>
+                            &#xA0;<span translate="global.menu.entities-by-placed-time.transactions-by-country">Transactions by country</span></a></li>
+                        <li><a ui-sref="pt-transactions-by-currency" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-stats"></span>
+                            &#xA0;<span translate="global.menu.entities-by-placed-time.transactions-by-currency">Transactions by currency</span></a></li>
                     </ul>
                 </li>
                 <li ng-class="{active: $state.includes('account')}" class="dropdown pointer">

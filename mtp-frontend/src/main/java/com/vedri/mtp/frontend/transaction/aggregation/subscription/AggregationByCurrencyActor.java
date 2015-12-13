@@ -2,6 +2,8 @@ package com.vedri.mtp.frontend.transaction.aggregation.subscription;
 
 import org.joda.time.DateTime;
 
+import akka.actor.ActorRef;
+
 import com.vedri.mtp.core.currency.Currency;
 import com.vedri.mtp.core.currency.CurrencyManager;
 import com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByCurrency;
@@ -23,8 +25,15 @@ public abstract class AggregationByCurrencyActor
 		this.currencyManager = currencyManager;
 	}
 
-	protected void load(Currency currency) {
-		sparkAggregationByCurrencyDao.load(currency, new YearToHourTime(new DateTime()), self());
+	protected void load(ActorRef requester, Currency currency) {
+		sparkAggregationByCurrencyDao.load(currency, new YearToHourTime(new DateTime()), requester);
+	}
+
+	protected void loadAll(ActorRef requester) {
+		final YearToHourTime yearToDayTime = new YearToHourTime(DateTime.now());
+		yearToDayTime.setHour(null);
+		sparkAggregationByCurrencyDao.loadAll(currencyManager.getCurrencies().size(),
+				yearToDayTime, requester);
 	}
 
 }

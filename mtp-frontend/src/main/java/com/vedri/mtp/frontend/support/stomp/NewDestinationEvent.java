@@ -6,7 +6,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class NewDestinationEvent extends StompDestinationEvent {
 
-    public NewDestinationEvent(String destination) {
-        super(destination);
+    public NewDestinationEvent(final String destination, final String user) {
+        super(destination, user);
     }
 }

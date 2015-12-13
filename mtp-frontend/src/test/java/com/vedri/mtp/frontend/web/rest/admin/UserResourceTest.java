@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-// TODO
+// FIXME
 public class UserResourceTest extends AbstractTestNGSpringContextTests {
 
 //    @Autowired

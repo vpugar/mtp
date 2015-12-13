@@ -56,7 +56,7 @@ public class WebsocketPeriodicActor extends AbstractActor {
 		}
 	}
 
-	// TODO configuration
+	// FIXME configuration
 	private void receive(TopicActorInfo topicActorInfo) {
 		this.topicActorInfo = topicActorInfo;
 		context().become(receive);
@@ -81,29 +81,32 @@ public class WebsocketPeriodicActor extends AbstractActor {
 		final String destination = newDestinationEvent.getDestination();
 		final String topicSuffix = topicActorInfo.destinationSuffix(destination);
 
+		ActorRef actorRef;
 		if (topicSuffix.equals(ALL)) {
-			fetchActor(topicSuffix, topicActorInfo.getAllName());
+			actorRef = fetchActor(topicSuffix, topicActorInfo.getAllName());
 		}
 		else {
-			fetchActor(topicSuffix, topicActorInfo.getName());
+			actorRef = fetchActor(topicSuffix, topicActorInfo.getName());
 		}
+		actorRef.forward(newDestinationEvent, context());
 	}
 
 	protected void receive(DeleteDestinationEvent deleteDestinationEvent) {
 
 		final String destination = deleteDestinationEvent.getDestination();
-		final String topicSuffix = topicActorInfo.destinationSuffix(destination);
+		String topicSuffix = topicActorInfo.destinationSuffix(destination);
 		ActorRef child = getContext().getChild(topicSuffix);
 
-		if (topicSuffix.equals(ALL)) {
-			if (child != null) {
-				getContext().stop(child);
-				log.debug("Stopped actor {}", child);
-			}
+		if (topicSuffix.equals(ALL) && child != null) {
+			getContext().stop(child);
+			log.info("Stopped actor {}", child);
+		}
+		else if (child != null) {
+			getContext().stop(child);
+			log.info("Stopped actor {}", child);
 		}
 		else {
-			getContext().stop(child);
-			log.debug("Stopped actor {}", child);
+			log.warning("Unhandled delete {}", deleteDestinationEvent);
 		}
 	}
 
@@ -112,7 +115,7 @@ public class WebsocketPeriodicActor extends AbstractActor {
 		if (child == null) {
 			child = getContext().actorOf(springExt.props(beanName), topicSuffix);
 			child.tell(new TopicActorSubscriptionInfo(topicSuffix), self());
-			log.debug("Started actor {}", child);
+			log.info("Started actor {}", child);
 		}
 		return child;
 	}

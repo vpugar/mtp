@@ -19,28 +19,32 @@ public class TransactionAggregationConfiguration {
 	@Bean
 	public SparkAggregationByCurrencyDao rtAggregationByCurrencyDao(
 			JavaStreamingContext streamingContext, CoreProperties.Cassandra cassandra, ActorSystem actorSystem) {
-		return new SparkAggregationByCurrencyDao(TableName.RT_AGGREGATION_BY_CURRENCY,
+		return new SparkAggregationByCurrencyDao(
+				TableName.RT_AGGREGATION_BY_CURRENCY, TableName.RT_DAY_AGGREGATION_BY_CURRENCY,
 				streamingContext, cassandra, actorSystem);
 	}
 
 	@Bean
 	public SparkAggregationByCurrencyDao ptAggregationByCurrencyDao(
 			JavaStreamingContext streamingContext, CoreProperties.Cassandra cassandra, ActorSystem actorSystem) {
-		return new SparkAggregationByCurrencyDao(TableName.PT_AGGREGATION_BY_CURRENCY,
+		return new SparkAggregationByCurrencyDao(
+				TableName.PT_AGGREGATION_BY_CURRENCY, TableName.PT_DAY_AGGREGATION_BY_CURRENCY,
 				streamingContext, cassandra, actorSystem);
 	}
 
 	@Bean
 	public SparkAggregationByOriginatingCountryDao rtAggregationByOriginatingCountryDao(
 			JavaStreamingContext streamingContext, CoreProperties.Cassandra cassandra, ActorSystem actorSystem) {
-		return new SparkAggregationByOriginatingCountryDao(TableName.RT_AGGREGATION_BY_ORIGINATING_COUNTRY,
+		return new SparkAggregationByOriginatingCountryDao(
+				TableName.RT_AGGREGATION_BY_ORIGINATING_COUNTRY, TableName.RT_DAY_AGGREGATION_BY_ORIGINATING_COUNTRY,
 				streamingContext, cassandra, actorSystem);
 	}
 
 	@Bean
 	public SparkAggregationByOriginatingCountryDao ptAggregationByOriginatingCountryDao(
 			JavaStreamingContext streamingContext, CoreProperties.Cassandra cassandra, ActorSystem actorSystem) {
-		return new SparkAggregationByOriginatingCountryDao(TableName.PT_AGGREGATION_BY_ORIGINATING_COUNTRY,
+		return new SparkAggregationByOriginatingCountryDao(
+				TableName.PT_AGGREGATION_BY_ORIGINATING_COUNTRY, TableName.PT_DAY_AGGREGATION_BY_ORIGINATING_COUNTRY,
 				streamingContext, cassandra, actorSystem);
 	}
 

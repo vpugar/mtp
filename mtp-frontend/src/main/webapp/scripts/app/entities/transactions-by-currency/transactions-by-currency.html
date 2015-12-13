@@ -1,0 +1,31 @@
+<div>
+
+    <h2><span translate="mtpApp.transactions-by-currency.{{timeType}}.title">Transactions by Currency</span></h2>
+    <p><span translate="mtpApp.transactions-by-currency.title2">Transactions count in current hour</span></p>
+
+    <div class="table-responsive">
+        <table class="table table-striped auto">
+            <thead>
+            <tr>
+                <th translate="mtpApp.transactions-by-currency.currency">Currency</th>
+                <th translate="mtpApp.transactions-by-currency.{{timeType}}.date">Date</th>
+                <th translate="mtpApp.transactions-by-currency.transactionCountFrom">Count from</th>
+                <th translate="mtpApp.transactions-by-currency.amountFrom">Points from</th>
+                <th translate="mtpApp.transactions-by-currency.transactionCountTo">Count to</th>
+                <th translate="mtpApp.transactions-by-currency.amountTo">Points to</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="row in data">
+                <td>{{row.currency}}</td>
+                <td>{{row.date | date}}</td>
+                <td>{{row.transactionCountFrom | number}}</td>
+                <td>{{row.amountFrom | number:6}}</td>
+                <td>{{row.transactionCountTo | number}}</td>
+                <td>{{row.amountTo | number:6}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

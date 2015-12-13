@@ -6,6 +6,6 @@ import lombok.ToString;
 public class DeleteDestinationEvent extends StompDestinationEvent {
 
 	public DeleteDestinationEvent(String destination) {
-		super(destination);
+		super(destination, null);
 	}
 }

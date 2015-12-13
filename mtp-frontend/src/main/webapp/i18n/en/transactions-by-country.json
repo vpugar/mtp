@@ -1,0 +1,21 @@
+{
+  "mtpApp": {
+    "transactions-by-country": {
+      "placed-time": {
+        "title": "Transactions by Country (time placed)",
+        "date": "Time placed"
+      },
+      "received-time": {
+        "title": "Transactions by Country (received time)",
+        "date": "Received date"
+      },
+      "title2": "Transactions count in current hour",
+      "country": "Country",
+      "count": "Count",
+      "points": "Points",
+      "hour-counts": "Count in Hour",
+      "hour-points": "Points in Hour"
+
+    }
+  }
+}

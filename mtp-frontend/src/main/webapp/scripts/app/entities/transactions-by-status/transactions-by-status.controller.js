@@ -40,7 +40,7 @@ angular.module('mtpApp')
         }, ChartConsts.DefaultChartConfig);
 
         TransactionByStatus.receive().then(null, null, function (data) {
-            data.dateUTC = Date.UTC(data.year, data.month, data.day, data.hour);
+            data.dateUTC = Date.UTC(data.year, data.month - 1, data.day, data.hour);
             data.date = new Date(data.dateUTC);
             data.currentDateUTC = new Date().getTime();
             addChartData(data);

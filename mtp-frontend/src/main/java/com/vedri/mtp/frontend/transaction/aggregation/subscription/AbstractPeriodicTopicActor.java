@@ -1,11 +1,16 @@
 package com.vedri.mtp.frontend.transaction.aggregation.subscription;
 
+import akka.dispatch.OnSuccess;
+import akka.pattern.Patterns;
+import akka.util.Timeout;
+import com.vedri.mtp.frontend.support.stomp.NewDestinationEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import scala.PartialFunction;
 import scala.Predef$;
 import scala.collection.JavaConverters$;
 import scala.collection.Seq;
+import scala.concurrent.Future;
 import scala.runtime.BoxedUnit;
 import akka.actor.AbstractActor;
 import akka.japi.pf.ReceiveBuilder;
@@ -25,10 +30,24 @@ public abstract class AbstractPeriodicTopicActor<A extends TimeAggregation> exte
 	public AbstractPeriodicTopicActor(Class<A> type, WebsocketSender websocketSender) {
 		this.websocketSender = websocketSender;
 		receive = ReceiveBuilder
+				.match(NewDestinationEvent.class, this::receiveNewDestinationEvent)
 				.match(PeriodicTick.class, this::receive)
 				.match(type, this::receive)
 				.match(Seq.class, this::receiveResult)
 				.build();
+	}
+
+	protected void receiveNewDestinationEvent(final NewDestinationEvent event) {
+	}
+
+	protected void doReceiveNewDestinationEvent(final NewDestinationEvent event) {
+		final Future<Object> f = Patterns.ask(self(), new PeriodicTick(true), Timeout.intToTimeout(10000));
+		f.onSuccess(new OnSuccess() {
+			@Override
+			public void onSuccess(Object result) throws Throwable {
+				websocketSender.sendToUser(event.getUser(), getName(), result);
+			}
+		}, context().dispatcher());
 	}
 
 	protected  void receiveResult(Seq<A> p) {

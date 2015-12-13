@@ -1,0 +1,22 @@
+{
+  "mtpApp": {
+    "transactions-by-currency": {
+      "placed-time": {
+        "title": "Transactions by Currency (time placed)",
+        "date": "Time placed"
+      },
+      "received-time": {
+        "title": "Transactions by Currency (received time)",
+        "date": "Received date"
+      },
+      "title2": "Transactions count in current hour",
+      "currency": "Currency",
+      "transactionCountFrom": "Count from",
+      "amountFrom": "Points from",
+      "transactionCountTo": "Count to",
+      "amountTo": "Points to",
+      "hour-counts": "Count in Hour",
+      "hour-points": "Points in Hour"
+    }
+  }
+}

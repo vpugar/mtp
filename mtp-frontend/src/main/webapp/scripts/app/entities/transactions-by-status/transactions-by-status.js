@@ -3,9 +3,9 @@
 angular.module('mtpApp')
     .config(function ($stateProvider) {
         $stateProvider
-            .state('transactions-by-status', {
+            .state('rt-transactions-by-status', {
                 parent: 'entity',
-                url: '/transactions-by-status',
+                url: '/received-time/transactions-by-status',
                 data: {
                     roles: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_DEMO'],
                     pageTitle: 'mtp.transactions-by-status.home.title'

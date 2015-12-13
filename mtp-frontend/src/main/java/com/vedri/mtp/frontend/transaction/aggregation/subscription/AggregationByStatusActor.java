@@ -1,5 +1,6 @@
 package com.vedri.mtp.frontend.transaction.aggregation.subscription;
 
+import akka.actor.ActorRef;
 import org.joda.time.DateTime;
 
 import com.vedri.mtp.core.transaction.aggregation.TransactionAggregationByStatus;
@@ -18,8 +19,12 @@ public abstract class AggregationByStatusActor extends AbstractPeriodicTopicActo
 		this.sparkAggregationByStatusDao = sparkAggregationByStatusDao;
 	}
 
-	protected void loadByStatus(TransactionValidationStatus status) {
-		sparkAggregationByStatusDao.load(status, new YearToHourTime(new DateTime()), self());
+	protected void loadByStatus(ActorRef requester, TransactionValidationStatus status) {
+		sparkAggregationByStatusDao.load(status, new YearToHourTime(new DateTime()), requester);
+	}
+
+	protected void loadByAllStatuses(ActorRef requester) {
+		sparkAggregationByStatusDao.loadAll(new YearToHourTime(new DateTime()), requester);
 	}
 
 }

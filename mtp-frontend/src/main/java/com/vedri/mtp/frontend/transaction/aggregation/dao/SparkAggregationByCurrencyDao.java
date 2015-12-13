@@ -5,6 +5,7 @@ import static com.vedri.mtp.core.transaction.aggregation.TransactionAggregationB
 
 import java.util.ArrayList;
 
+import com.datastax.spark.connector.rdd.ReadConf;
 import org.apache.spark.FutureAction;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
@@ -26,15 +27,17 @@ import com.vedri.mtp.core.transaction.aggregation.dao.YearToHourTimeUtil;
 
 public class SparkAggregationByCurrencyDao {
 
-	private final String tableName;
+	private final String hourTableName;
+	private final String dayTableName;
 	private final JavaStreamingContext streamingContext;
 	private final CoreProperties.Cassandra cassandra;
 	private final ActorSystem actorSystem;
 
-	public SparkAggregationByCurrencyDao(final String tableName,
+	public SparkAggregationByCurrencyDao(final String hourTableName, final String dayTableName,
 			final JavaStreamingContext streamingContext,
 			final CoreProperties.Cassandra cassandra, final ActorSystem actorSystem) {
-		this.tableName = tableName;
+		this.hourTableName = hourTableName;
+		this.dayTableName = dayTableName;
 		this.streamingContext = streamingContext;
 		this.cassandra = cassandra;
 		this.actorSystem = actorSystem;
@@ -47,7 +50,7 @@ public class SparkAggregationByCurrencyDao {
 
 		final RDD<TransactionAggregationByCurrency> rdd = CassandraStreamingJavaUtil
 				.javaFunctions(streamingContext)
-				.cassandraTable(cassandra.getKeyspace(), tableName)
+				.cassandraTable(cassandra.getKeyspace(), hourTableName)
 				.where(query, queryArgs.toArray())
 				.map(row -> new TransactionAggregationByCurrency(
 						currency.getCode(), row.getInt(year.F.underscore()), row.getInt(month.F.underscore()),
@@ -60,6 +63,37 @@ public class SparkAggregationByCurrencyDao {
 
 		final FutureAction<Seq<TransactionAggregationByCurrency>> futureAction = RDD
 				.rddToAsyncRDDActions(rdd, ClassTag$.MODULE$.apply(TransactionAggregationByUser.class))
+				.collectAsync();
+
+		Patterns.pipe(futureAction, actorSystem.dispatcher()).to(requester);
+	}
+
+	public void loadAll(final int totalCount, final YearToHourTime yearToHourTime, final ActorRef requester) {
+
+		final ReadConf readConf = new ReadConf(scala.Option.apply(1), ReadConf.DefaultSplitSizeInMB(), totalCount,
+				ReadConf.DefaultConsistencyLevel(), ReadConf.DefaultReadTaskMetricsEnabled());
+
+		final ArrayList<Object> queryArgs = Lists.newArrayList();
+		final String query = YearToHourTimeUtil.composeQuery(yearToHourTime, "", queryArgs);
+
+		final RDD<TransactionAggregationByCurrency> rdd = CassandraStreamingJavaUtil
+				.javaFunctions(streamingContext)
+				.cassandraTable(cassandra.getKeyspace(), dayTableName)
+				.withReadConf(readConf)
+				.where(query, queryArgs.toArray())
+				.limit((long) totalCount)
+				.map(row -> new TransactionAggregationByCurrency(
+						row.getString(currency.F.underscore()),
+						row.getInt(year.F.underscore()), row.getInt(month.F.underscore()),
+						row.getInt(day.F.underscore()), null,
+						row.getLong(transactionCountFrom.F.underscore()),
+						row.getLong(transactionCountTo.F.underscore()),
+						row.getLong(amountFromUnscaled.F.underscore()),
+						row.getLong(amountToUnscaled.F.underscore())))
+				.rdd();
+
+		final FutureAction<Seq<TransactionAggregationByCurrency>> futureAction = RDD
+				.rddToAsyncRDDActions(rdd, ClassTag$.MODULE$.apply(TransactionAggregationByCurrency.class))
 				.collectAsync();
 
 		Patterns.pipe(futureAction, actorSystem.dispatcher()).to(requester);

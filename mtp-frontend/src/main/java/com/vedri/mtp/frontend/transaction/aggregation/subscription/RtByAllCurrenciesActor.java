@@ -1,15 +1,14 @@
 package com.vedri.mtp.frontend.transaction.aggregation.subscription;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.vedri.mtp.core.currency.Currency;
 import com.vedri.mtp.core.currency.CurrencyManager;
+import com.vedri.mtp.frontend.MtpFrontendConstants;
+import com.vedri.mtp.frontend.support.stomp.NewDestinationEvent;
 import com.vedri.mtp.frontend.transaction.aggregation.dao.SparkAggregationByCurrencyDao;
 import com.vedri.mtp.frontend.web.websocket.transaction.WebsocketSender;
 
@@ -28,14 +27,21 @@ public class RtByAllCurrenciesActor extends AggregationByCurrencyActor {
 	}
 
 	@Override
+	protected void receiveNewDestinationEvent(final NewDestinationEvent event) {
+		doReceiveNewDestinationEvent(event);
+	}
+
+	@Override
 	protected String getName() {
-		return NAME;
+		return MtpFrontendConstants.wrapTopicDestinationPath(RtByCurrencyActor.NAME + "/" + WebsocketPeriodicActor.ALL);
 	}
 
 	public void receive(PeriodicTick periodicTick) {
-		final List<Currency> currencies = currencyManager.getCurrencies();
-		for (Currency currency : currencies) {
-			load(currency);
+		if (periodicTick.isReturnToSender()) {
+			loadAll(sender());
+		}
+		else {
+			loadAll(self());
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.vedri.mtp.frontend.transaction.aggregation.subscription;
 
+import akka.actor.ActorRef;
 import org.joda.time.DateTime;
 
 import com.vedri.mtp.core.country.Country;
@@ -23,8 +24,15 @@ public abstract class AggregationByOriginatingCountryActor
 		this.countryManager = countryManager;
 	}
 
-	protected void load(Country country) {
-		sparkAggregationByOriginatingCountryDao.load(country.getCca2(), new YearToHourTime(new DateTime()), self());
+	protected void load(ActorRef requester, Country country) {
+		sparkAggregationByOriginatingCountryDao.load(country.getCca2(), new YearToHourTime(new DateTime()), requester);
+	}
+
+	protected void loadAll(ActorRef requester) {
+		final YearToHourTime yearToHourTime = new YearToHourTime(new DateTime());
+		yearToHourTime.setHour(null);
+		sparkAggregationByOriginatingCountryDao.loadAll(
+				countryManager.getCountries().size(), yearToHourTime, requester);
 	}
 
 }

@@ -10,5 +10,6 @@ import lombok.ToString;
 public class StompDestinationEvent {
 
 	private final String destination;
+	private final String user;
 
 }

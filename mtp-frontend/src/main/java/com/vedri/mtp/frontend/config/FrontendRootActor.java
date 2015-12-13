@@ -57,7 +57,7 @@ public class FrontendRootActor extends ClusterAwareHandler {
 	protected void doInitialize() {
 		super.doInitialize();
 
-		log.info("Starting consumption");
+		actorLog.info("Starting consumption");
 
 		getContext().become(initializedReceive().orElse(receive));
 	}

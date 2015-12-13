@@ -1,5 +1,6 @@
 package com.vedri.mtp.frontend.transaction.aggregation.subscription;
 
+import com.vedri.mtp.frontend.MtpFrontendConstants;
 import com.vedri.mtp.frontend.transaction.aggregation.dao.SparkAggregationByUserDao;
 import com.vedri.mtp.frontend.web.websocket.transaction.WebsocketSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,6 @@ public class PtByUserActor extends AggregationByUserActor {
 
     @Override
     protected String getName() {
-        return NAME;
+        return MtpFrontendConstants.wrapTopicDestinationPath(NAME +  "/" + subscriptionInfo.getFilter());
     }
 }

@@ -1,12 +1,13 @@
 {
   "mtpApp": {
     "transactions-by-status": {
-      "title": "Transactions by Status",
+      "title": "Transactions by Status (received time)",
+      "title2": "Transactions count in current hour",
       "validationStatus": "Validation Status",
-      "date": "Date",
+      "date": "Received time",
       "count": "Count",
       "points": "Points",
-      "hour-counts": "Counts in Hour",
+      "hour-counts": "Count in Hour",
       "hour-points": "Points in Hour",
       "validationStatusMap": {
         "OK": "OK",

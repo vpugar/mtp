@@ -1,5 +1,6 @@
 package com.vedri.mtp.frontend.transaction.aggregation.subscription;
 
+import com.vedri.mtp.frontend.MtpFrontendConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -29,12 +30,16 @@ public class RtByOriginatingCountryActor extends AggregationByOriginatingCountry
 
 	@Override
 	public void receive(PeriodicTick periodicTick) {
-		load(country);
+		if (periodicTick.isReturnToSender()) {
+			load(sender(), country);
+		} else {
+			load(self(), country);
+		}
 	}
 
 	@Override
 	protected String getName() {
-		return NAME;
+		return MtpFrontendConstants.wrapTopicDestinationPath(NAME +  "/" + country.getCca2());
 	}
 
 	@Override

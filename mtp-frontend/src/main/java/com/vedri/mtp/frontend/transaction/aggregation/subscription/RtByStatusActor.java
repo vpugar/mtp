@@ -1,5 +1,6 @@
 package com.vedri.mtp.frontend.transaction.aggregation.subscription;
 
+import com.vedri.mtp.frontend.MtpFrontendConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -25,11 +26,11 @@ public class RtByStatusActor extends AggregationByStatusActor {
 
 	@Override
 	protected String getName() {
-		return NAME;
+		return MtpFrontendConstants.wrapTopicDestinationPath(NAME +  "/" + subscriptionInfo.getFilter());
 	}
 
 	public void receive(PeriodicTick periodicTick) {
-		loadByStatus(subscriptionInfo.getFilter());
+		loadByStatus(self(), subscriptionInfo.getFilter());
 	}
 
 	@Override

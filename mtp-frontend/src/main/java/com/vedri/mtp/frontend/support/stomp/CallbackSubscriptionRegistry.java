@@ -7,6 +7,7 @@ import java.util.Set;
 import lombok.Setter;
 
 import org.springframework.messaging.Message;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
@@ -21,7 +22,9 @@ public class CallbackSubscriptionRegistry extends DefaultSubscriptionRegistry {
 
 		super.addSubscriptionInternal(sessionId, subsId, destination, message);
 
-        listener.ifPresent(destinationListener -> destinationListener.onEvent(new NewDestinationEvent(destination)));
+		final String username = SimpMessageHeaderAccessor.getUser(message.getHeaders()).getName();
+		listener.ifPresent(destinationListener -> destinationListener.onEvent(
+				new NewDestinationEvent(destination, username)));
 	}
 
 	@Override

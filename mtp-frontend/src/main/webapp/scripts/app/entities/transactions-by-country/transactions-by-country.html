@@ -1,0 +1,27 @@
+<div>
+
+    <h2><span translate="mtpApp.transactions-by-country.{{timeType}}.title">Transactions by Country</span></h2>
+    <p><span translate="mtpApp.transactions-by-country.title2">Transactions count in current hour</span></p>
+
+    <div class="table-responsive">
+        <table class="table table-striped auto">
+            <thead>
+            <tr>
+                <th translate="mtpApp.transactions-by-country.country">Country</th>
+                <th translate="mtpApp.transactions-by-country.{{timeType}}.date">Date</th>
+                <th translate="mtpApp.transactions-by-country.count">Count</th>
+                <th translate="mtpApp.transactions-by-country.points">Points</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="row in data">
+                <td>{{row.originatingCountry}}</td>
+                <td>{{row.date | date}}</td>
+                <td>{{row.transactionCount | number}}</td>
+                <td>{{row.amountPoints | number:6}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
