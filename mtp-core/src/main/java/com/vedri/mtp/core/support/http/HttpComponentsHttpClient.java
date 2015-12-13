@@ -45,6 +45,7 @@ public class HttpComponentsHttpClient {
 		for (Map.Entry<String, String> entry : params.entrySet()) {
 			uriBuilder.addParameter(entry.getKey(), entry.getValue());
 		}
+		httpget.setURI(uriBuilder.build());
 
 		try (CloseableHttpResponse response = httpclient.execute(httpget)) {
 			HttpEntity entity = response.getEntity();
