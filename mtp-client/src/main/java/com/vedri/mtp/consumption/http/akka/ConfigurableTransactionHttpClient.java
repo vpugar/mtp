@@ -82,7 +82,7 @@ public class ConfigurableTransactionHttpClient extends TransactionHttpClient {
 		@Parameter(required = false, names = { "-u", "--url" })
 		private String url = "http://localhost:9090/transactions";
 
-		@Parameter(required = false, names = { "-u", "--url" })
+		@Parameter(required = false, names = { "-c", "--cfUrl" })
 		private String cfUrl = "http://localhost:8080/test/rates";
 	}
 

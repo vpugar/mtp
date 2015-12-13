@@ -12,3 +12,5 @@ mtp:
       advertisedHost: localhost
     zookeeper:
       connect: localhost:2181
+    cfRate:
+      serviceUrl: http://localhost:8080/test/rates
