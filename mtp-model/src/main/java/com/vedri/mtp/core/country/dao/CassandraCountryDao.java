@@ -54,8 +54,9 @@ public class CassandraCountryDao implements CountryDao {
 	}
 
 	private Country mapRowToCountry(final Row row) {
-		return new Country(row.getString(cca2.F.underscore()), row.getString(cca3.F.underscore()),
-				row.getString(commonName.F.underscore()), row.getString(officialName.F.underscore()),
-				row.getSet(currencies.F.underscore(), String.class));
+		final Country country = new Country(row.getString(cca2.F.underscore()), row.getString(cca3.F.underscore()),
+				row.getString(commonName.F.underscore()), row.getString(officialName.F.underscore()));
+		country.setupCurrencies(row.getSet(currencies.F.underscore(), String.class));
+		return country;
 	}
 }

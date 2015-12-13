@@ -3,13 +3,13 @@ package com.vedri.mtp.core.country;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import com.google.common.base.Objects;
 import com.vedri.mtp.core.currency.Currency;
 import com.vedri.mtp.core.support.cassandra.ColumnUtils;
 
-@NoArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -21,12 +21,22 @@ public class Country {
 	private String officialName;
 	private Set<Currency> currencies;
 
-	public Country(String cca2, String cca3, String commonName, String officialName, Set<String> currencies) {
+	public Country() {
+	}
+
+	// fix issue with json synchronization by ignoring constructor in Jackson
+	// issue was with ArrayOutOfBounds in jackson-module-paranamer
+	@JsonIgnore
+	public Country(String cca2, String cca3, String commonName, String officialName) {
 		this.cca2 = cca2;
 		this.cca3 = cca3;
 		this.commonName = commonName;
 		this.officialName = officialName;
+	}
+
+	public Country setupCurrencies(Set<String> currencies) {
 		this.currencies = currencies.stream().map(Currency::new).collect(Collectors.toSet());
+		return this;
 	}
 	
 	public enum Fields {

@@ -32,7 +32,7 @@ public class CountryResource {
 
 	@RequestMapping(value = "/countries/{cca2}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
-	public ResponseEntity<Country> getAll(@PathVariable String cca2)
+	public ResponseEntity<Country> get(@PathVariable String cca2)
 			throws URISyntaxException {
 
 		final Country country = countryManager.getCountryFromCca2(cca2);

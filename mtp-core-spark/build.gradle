@@ -12,7 +12,7 @@ dependencies {
             ["joda-time:joda-time:${jodaTimeVersion}"],
             ["org.projectlombok:lombok:${lombokVersion}"],
             ["org.springframework.boot:spring-boot-starter:${springBootVersion}"],
-            ["com.fasterxml.jackson.module:jackson-module-scala_${scalaMajorVersion}:${jacksonVersion}"]
+            ["com.fasterxml.jackson.module:jackson-module-scala_${scalaMajorVersion}:${jacksonScalaVersion}"]
     )
     compile("org.apache.spark:spark-core_${scalaMajorVersion}:${sparkVersion}") {
         exclude group: 'com.esotericsoftware.kryo'

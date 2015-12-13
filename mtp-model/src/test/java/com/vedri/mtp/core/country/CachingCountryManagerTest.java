@@ -31,11 +31,13 @@ public class CachingCountryManagerTest {
 
 		Mockito.reset(countryDao);
 
-		country1 = new Country("c1", "c11", "name1", "offname1", Sets.newHashSet("cu1", "cu2"));
+		country1 = new Country("c1", "c11", "name1", "offname1");
+		country1.setupCurrencies(Sets.newHashSet("cu1", "cu2"));
 
+		final Country country = new Country("c2", "c22", "name2", "offname2");
+		country.setupCurrencies(Sets.newHashSet("cu2", "cu3"));
 		Mockito.when(countryDao.loadAll())
-				.thenReturn(Lists.newArrayList(
-						country1, new Country("c2", "c22", "name2", "offname2", Sets.newHashSet("cu2", "cu3"))));
+				.thenReturn(Lists.newArrayList(country1, country));
 
 		cachingCountryManager = new CachingCountryManager(countryDao);
 	}

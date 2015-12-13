@@ -32,11 +32,13 @@ public class CacheCurrencyManagerTest {
 
 		Mockito.reset(countryManager);
 
-		country1 = new Country("c1", "c11", "name1", "offname1", Sets.newHashSet("cu1", "cu2"));
+		country1 = new Country("c1", "c11", "name1", "offname1")
+			.setupCurrencies(Sets.newHashSet("cu1", "cu2"));
 
 		Mockito.when(countryManager.getCountries())
 				.thenReturn(Lists.newArrayList(
-						country1, new Country("c2", "c22", "name2", "offname2", Sets.newHashSet("cu2", "cu3"))));
+						country1, new Country("c2", "c22", "name2", "offname2")
+								.setupCurrencies(Sets.newHashSet("cu2", "cu3"))));
 
 		cacheCurrencyManager = new CacheCurrencyManager(countryManager);
 	}
