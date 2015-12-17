@@ -41,6 +41,7 @@ import com.vedri.mtp.core.support.json.TransactionJacksonConfiguration;
  * <li>--repeatCount - number of requests, default 10</li>
  * <li>--pauseMs - pause between each request in ms, default 60000 ms</li>
  * <li>--url - URL of mtp-consumption, default http://localhost:9090/transactions</li>
+ * <li>--cfUrl - URL of currency exchange service, default http://localhost:8080/test/rates</li>
  * </ul>
  * Client application generates:
  * <ul>
