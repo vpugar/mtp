@@ -78,7 +78,6 @@ angular.module('mtpApp')
             return colors[index];
         };
 
-        var count= 0;
         var getStyle = function(feature) {
             var key3 = feature.getId();
             var country = $scope.countries[key3];
