@@ -1,27 +1,60 @@
-<div>
+<link rel="stylesheet" type="text/css" href="/assets/styles/flags32.css"/>
 
-    <h2><span translate="mtpApp.transactions-by-country.{{timeType}}.title">Transactions by Country</span></h2>
-    <p><span translate="mtpApp.transactions-by-country.title2">Transactions count for current day</span></p>
+<h2><span translate="mtpApp.transactions-by-country.{{timeType}}.title">Transactions by Country</span></h2>
+<p>
+    <span translate="mtpApp.transactions-by-country.title2">Transactions count for current day</span>
+</p>
+<p>
+    <span ng-show="numberOfUpdates == 0" translate="mtpApp.transactions-by-country.waiting-data">Waiting data</span>
+        <span ng-hide="numberOfUpdates == 0" translate="mtpApp.transactions-by-country.received-data"
+              translate-values="{ numberOfUpdates: numberOfUpdates }">Received data</span>
+</p>
 
-    <div class="table-responsive">
-        <table class="table table-striped auto">
-            <thead>
-            <tr>
-                <th translate="mtpApp.transactions-by-country.country">Country</th>
-                <th translate="mtpApp.transactions-by-country.{{timeType}}.date">Date</th>
-                <th translate="mtpApp.transactions-by-country.count">Count</th>
-                <th translate="mtpApp.transactions-by-country.points">Points</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="row in data">
-                <td>{{row.originatingCountry}}</td>
-                <td>{{row.date | date}}</td>
-                <td>{{row.transactionCount | number}}</td>
-                <td>{{row.amountPoints | number:6}}</td>
-            </tr>
-            </tbody>
-        </table>
+<div ng-hide="numberOfUpdates == 0">
+    <openlayers ol-defaults="defaults" ol-center="center" height="480px" width="95%">
+        <ol-layer ol-layer-properties="geojson"></ol-layer>
+    </openlayers>
+    <div id="countrybox" class="info country f32">
+        <div ng-show="selectedCountry" class="flag" ng-class="selectedCountry['alpha-2']|lowercase"></div>
+        <div class="infopart">
+            <div>
+                {{ selectedCountry.name || 'No country'}}
+            </div>
+            <div ng-show="selectedData.transactionCount">
+                <span class="label" translate="mtpApp.transactions-by-country.count">Count</span> {{ selectedData.transactionCount }}
+            </div>
+            <div ng-show="selectedData.amountPoints">
+                <span class="label" translate="mtpApp.transactions-by-country.points">Points</span> {{ selectedData.amountPoints }}
+            </div>
+            <div>
+                <span class="label" translate="mtpApp.transactions-by-country.update-date">Update date</span>
+                <span class="label">{{selectedData.currentDateUTC | time}}</span>
+            </div>
+        </div>
     </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped auto">
+        <thead>
+        <tr>
+            <th translate="mtpApp.transactions-by-country.country">Country</th>
+            <th translate="mtpApp.transactions-by-country.update-date">Update date</th>
+            <th translate="mtpApp.transactions-by-country.{{timeType}}.date">Date</th>
+            <th translate="mtpApp.transactions-by-country.count">Count</th>
+            <th translate="mtpApp.transactions-by-country.points">Points</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="(key, row) in data">
+            <td>{{row.originatingCountry}}</td>
+            <td>{{row.currentDateUTC | time}}</td>
+            <td>{{row.date | date}}</td>
+            <td>{{row.transactionCount | number}}</td>
+            <td>{{row.amountPoints | number:6}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 </div>

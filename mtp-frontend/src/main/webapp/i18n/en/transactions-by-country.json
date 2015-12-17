@@ -9,13 +9,15 @@
         "title": "Transactions by Country (received time)",
         "date": "Received date"
       },
-      "title2": "Transactions count for current day",
+      "title2": "Transactions count for current day.",
       "country": "Country",
       "count": "Count",
       "points": "Points",
       "hour-counts": "Count in Hour",
-      "hour-points": "Points in Hour"
-
+      "hour-points": "Points in Hour",
+      "waiting-data": "Waiting data...",
+      "received-data": "Received items count {{numberOfUpdates}}.",
+      "update-date": "Last update date"
     }
   }
 }

@@ -34,7 +34,7 @@ public class RtByAllOriginatingCountriesActor extends AggregationByOriginatingCo
 	@Override
 	public void receive(PeriodicTick periodicTick) {
 		if (periodicTick.isReturnToSender()) {
-
+			loadAll(sender());
 		}
 		else {
 			loadAll(self());
