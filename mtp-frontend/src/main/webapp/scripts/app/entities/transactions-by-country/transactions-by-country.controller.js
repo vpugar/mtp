@@ -89,7 +89,7 @@ angular.module('mtpApp')
                     features[key2] = feature;
                 }
                 var data = $scope.data[key2];
-                text = formatText(key2, data) + (count++);
+                text = formatText(key2, data);
             }
             var style = olHelpers.createStyle({
                 fill: {
