@@ -45,7 +45,7 @@ public class TransactionValidator {
 	private boolean checkAmountSanity(Transaction transaction) {
 		final BigDecimal amountBuy2 = transaction.getAmountSell().multiply(transaction.getRate());
 		final BigDecimal scaledValue = amountBuy2.setScale(MtpConstants.CURRENCY_SCALE, MtpConstants.CURRENCY_ROUNDING);
-		final boolean equals = scaledValue.equals(transaction.getAmountBuy());
+		final boolean equals = scaledValue.compareTo(transaction.getAmountBuy()) == 0;
 		if (!equals) {
 			log.warn("Incorrect rate for {} - amountBuy: {}, calculatedValue: {}",
 					transaction.getTransactionId(), transaction.getAmountBuy(), scaledValue);
