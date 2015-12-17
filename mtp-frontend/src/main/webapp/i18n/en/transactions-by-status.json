@@ -2,7 +2,7 @@
   "mtpApp": {
     "transactions-by-status": {
       "title": "Transactions by Status (received time)",
-      "title2": "Transactions count in current hour",
+      "title2": "Transactions count in current hour.",
       "validationStatus": "Validation Status",
       "date": "Received time",
       "count": "Count",
@@ -16,7 +16,10 @@
         "InvalidCountry": "Invalid country",
         "InvalidFromCurrency": "Invalid 'from' currency",
         "InvalidToCurrency": "Invalid 'to' currency"
-      }
+      },
+      "waiting-data": "Waiting data...",
+      "received-data": "Received items count {{numberOfUpdates}}.",
+      "update-date": "Last update date"
     }
   }
 }

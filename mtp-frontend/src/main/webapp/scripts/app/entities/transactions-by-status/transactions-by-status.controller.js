@@ -5,6 +5,7 @@ angular.module('mtpApp')
                                                             ParseLinks, TransactionByStatus, ValidationStatus,
                                                             ChartConsts) {
         $scope.data = [];
+        $scope.numberOfUpdates = 0;
 
         var validationStatusKeys = _.keys(ValidationStatus);
         var series = _.map(_.range(_.size(ValidationStatus)), function (index) {
@@ -56,10 +57,12 @@ angular.module('mtpApp')
                 if (row.year === data.year && row.month === data.month && row.day === data.day && row.hour === data.hour
                     && row.validationStatus === data.validationStatus) {
                     existing = true;
+                    $scope.numberOfUpdates++;
                     $scope.data[index] = data;
                 }
             }
             if (!existing) {
+                $scope.numberOfUpdates++;
                 $scope.data.push(data);
             }
         }

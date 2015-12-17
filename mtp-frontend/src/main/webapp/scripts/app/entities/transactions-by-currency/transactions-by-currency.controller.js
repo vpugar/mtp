@@ -3,8 +3,9 @@
 angular.module('mtpApp')
     .controller('TransactionsByCurrencyController', function ($scope, $rootScope, $stateParams, $translate,
                                                              ParseLinks, TransactionByCurrency, timeType) {
-        $scope.data = [];
+        $scope.data = {};
         $scope.timeType = timeType;
+        $scope.numberOfUpdates = 0;
 
         TransactionByCurrency.receive().then(null, null, function (data) {
             data.dateUTC = Date.UTC(data.year, data.month - 1, data.day, data.hour);
@@ -15,19 +16,16 @@ angular.module('mtpApp')
         });
 
         function addTableData(data) {
-            var existing = false;
-            for (var index = 0; index < $scope.data.length; index++) {
 
-                var row = $scope.data[index];
+            var key = data.currency;
+            var row = $scope.data[key];
 
-                if (row.year === data.year && row.month === data.month && row.day === data.day && row.hour === data.hour
-                    && row.currency === data.currency) {
-                    existing = true;
-                    $scope.data[index] = data;
-                }
-            }
-            if (!existing) {
-                $scope.data.push(data);
+            if (row && row.transactionCount != data.transactionCount) {
+                $scope.numberOfUpdates++;
+                $scope.data[key] = data;
+            } else {
+                $scope.numberOfUpdates++;
+                $scope.data[key] = data;
             }
         }
     });

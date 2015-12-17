@@ -1,16 +1,26 @@
 <div>
 
     <h2><span translate="mtpApp.transactions-by-status.title">Transactions by Status</span></h2>
-    <p><span translate="mtpApp.transactions-by-status.title2">Transactions count for current day</span></p>
+    <p>
+        <span translate="mtpApp.transactions-by-status.title2">Transactions count for current day</span>
+    </p>
+    <p>
+        <span ng-show="numberOfUpdates == 0" translate="mtpApp.transactions-by-status.waiting-data">Waiting data</span>
+        <span ng-hide="numberOfUpdates == 0" translate="mtpApp.transactions-by-status.received-data"
+              translate-values="{ numberOfUpdates: numberOfUpdates }">Received data</span>
+    </p>
 
-    <highchart id="countByStatusChart" config="countChartConfig"></highchart>
-    <highchart id="pointsByStatusChart" config="pointsChartConfig"></highchart>
+    <div ng-hide="numberOfUpdates == 0">
+        <highchart id="countByStatusChart" config="countChartConfig"></highchart>
+        <highchart id="pointsByStatusChart" config="pointsChartConfig"></highchart>
+    </div>
 
     <div class="table-responsive">
         <table class="table table-striped auto">
             <thead>
             <tr>
                 <th translate="mtpApp.transactions-by-status.validationStatus">Validation Status</th>
+                <th translate="mtpApp.transactions-by-status.update-date">Update date</th>
                 <th translate="mtpApp.transactions-by-status.date">Date</th>
                 <th translate="mtpApp.transactions-by-status.count">Count</th>
                 <th translate="mtpApp.transactions-by-status.points">Points</th>
@@ -19,6 +29,7 @@
             <tbody>
             <tr ng-repeat="row in data">
                 <td>{{('mtpApp.transactions-by-status.validationStatusMap.' + row.validationStatus) | translate}}</td>
+                <td>{{row.currentDateUTC | datetime}}</td>
                 <td>{{row.date | datetime}}</td>
                 <td>{{row.transactionCount | number}}</td>
                 <td>{{row.amountPoints | number:6}}</td>
