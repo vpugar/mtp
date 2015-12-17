@@ -91,6 +91,7 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
 
 		cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/assets/*");
 		cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/scripts/*");
+		cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/maps/*");
 		cachingHttpHeadersFilter.setAsyncSupported(true);
 	}
 
