@@ -7,6 +7,7 @@ angular.module('mtpApp')
         $scope.data = {};
         $scope.timeType = timeType;
         $scope.numberOfUpdates = 0;
+        $scope.countries = {};
         var features = {};
 
         var formatText = function(name, data) {
@@ -35,8 +36,8 @@ angular.module('mtpApp')
                 }
 
                 if (feature) {
-                    //feature.set('text', formatText(key, data));
-                    feature.getGeometry().changed();
+                    feature.set('text', formatText(key, data));
+                    feature.changed();
                 }
             } else {
                 $scope.numberOfUpdates++;
@@ -133,7 +134,6 @@ angular.module('mtpApp')
         // Get the countries data from a JSON
         $http.get("/maps/data/countries.json").success(function(data, status) {
             // Put the countries on an associative array
-            $scope.countries = {};
             for (var i=0; i< data.length; i++) {
                 var country = data[i];
                 $scope.countries[country['alpha-3']] = country;
