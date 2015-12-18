@@ -93,8 +93,6 @@ class MtpHttpApp extends HttpApp {
 				(ctx, transaction) -> {
 					try {
 
-						final Transaction added = akkaHttpServer.doAddTransaction(transaction);
-
 						final HttpRequest request = ctx.request();
 						final Option<HttpHeader> header = request
 								.getHeader(MtpConsumptionConstants.HTTP_HEADER_TIME_OFFSET);
@@ -104,6 +102,8 @@ class MtpHttpApp extends HttpApp {
 							transaction.setPlacedTime(
 									transaction.getPlacedTime().withZoneRetainFields(dateTime.getZone()));
 						}
+
+						final Transaction added = akkaHttpServer.doAddTransaction(transaction);
 
 						return ctx.complete(HttpResponse
 								.create()
