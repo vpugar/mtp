@@ -23,10 +23,16 @@ angular.module('mtpApp')
                         return $translate.refresh();
                     }]
                 },
-                onEnter: function(TransactionByStatus) {
+                onEnter: function (TransactionByStatus) {
+                    Highcharts.setOptions({
+                        global: {
+                            timezoneOffset: 60,
+                            useUTC: false
+                        }
+                    });
                     TransactionByStatus.subscribe();
                 },
-                onExit: function(TransactionByStatus) {
+                onExit: function (TransactionByStatus) {
                     TransactionByStatus.unsubscribe();
                 }
             });
