@@ -85,7 +85,10 @@ public class CachingRateCalculator implements RateCalculator {
 		if (useRandomResultsForRate && rate == null) {
 			log.warn("Using random rate for example purposes");
 			final double num = random.nextDouble() * 100;
-			final BigDecimal rateValue = new BigDecimal(decimalFormat.format(num));
+			BigDecimal rateValue;
+			synchronized (decimalFormat) {
+				rateValue = new BigDecimal(decimalFormat.format(num));
+			}
 			rate = new Rate(key, rateValue, rateValue.add(BigDecimal.ONE));
 			storeInDaoAndCache(rate);
 		}
