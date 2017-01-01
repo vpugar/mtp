@@ -1,0 +1,11 @@
+mtp:
+  consumption:
+    cassandra:
+      hosts: mtp-data
+    kafkaClient:
+      bootstrapServers: mtp-processor:9092
+    httpServer:
+      bindHost: 0.0.0.0
+      publicProtocol: http
+      publicHost: mtp-consumption
+      publicPort: 9090

@@ -1,0 +1,6 @@
+mtp:
+  core:
+    cassandra:
+      hosts: mtp-data
+      port: 9042
+      keyspace: mtp

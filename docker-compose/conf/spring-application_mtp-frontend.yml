@@ -1,0 +1,25 @@
+mtp:
+  frontend:
+    cassandra:
+      hosts: mtp-data
+    spark:
+      master: local[10]
+      cassandraHosts: mtp-data
+      checkpointDir: /tmp/spark-frontend
+
+    security:
+        authentication:
+            oauth:
+                secret: mySecretOAuthSecret
+                tokenValidityInSeconds: 1800
+        rememberme:
+            # security key (this key should be unique for your application, and kept secret)
+            key: ec453265e6cfb1227a45d95d969ba35b002a5ef3
+server:
+  address: mtp-frontend
+  port: 8080
+  #use-forward-headers: true
+  #proxyName: localhost
+  #proxyPort: 80
+  #useIPVHosts=true
+  #tomcat:

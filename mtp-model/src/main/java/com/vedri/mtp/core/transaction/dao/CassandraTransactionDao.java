@@ -85,11 +85,11 @@ public class CassandraTransactionDao implements TransactionDao {
 
 		final long currentTimeMillis = transaction.getReceivedTime().getMillis();
 		final UUID timeUUID = CassandraUtils.createUUIDFromMillis(currentTimeMillis);
-		final String partitionForMinute = CassandraPartitionForHourUtils.getPartitionIdFromMillis(currentTimeMillis);
+		final String partitionForHour = CassandraPartitionForHourUtils.getPartitionIdFromMillis(currentTimeMillis);
 		transaction.setTransactionId(timeUUID.toString());
-		transaction.setPartition(partitionForMinute);
+		transaction.setPartition(partitionForHour);
 
-		bs.setString(partition.F.underscore(), partitionForMinute);
+		bs.setString(partition.F.underscore(), partitionForHour);
 		bs.setUUID(transactionId.F.underscore(), timeUUID);
 		bs.setString(userId.F.underscore(), transaction.getUserId());
 		bs.setString(currencyFrom.F.underscore(), transaction.getCurrencyFrom());

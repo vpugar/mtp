@@ -1,0 +1,66 @@
+version: '2'
+volumes:
+  mtp-data:
+    external: true
+services:
+  mtp-data:
+    image: mtp-data:0.5
+    ports:
+      - 9042:9042
+    expose:
+      - 9042
+    volumes:
+      - mtp-data:/var/lib/cassandra/data
+  mtp-processor:
+    build:
+      args:
+        MTP_MODULE: mtp-processor
+      context: .
+      dockerfile: Dockerfile_mtp-module
+    expose:
+      - 9092
+    depends_on:
+      - "mtp-data"
+  mtp-consumption:
+    build:
+      args:
+        MTP_MODULE: mtp-consumption
+      context: .
+      dockerfile: Dockerfile_mtp-module
+    ports:
+      - 9090:9090
+    expose:
+      - 9090
+    depends_on:
+      - "mtp-data"
+      - "mtp-processor"
+  mtp-frontend:
+    build:
+      args:
+        MTP_MODULE: mtp-frontend
+      context: .
+      dockerfile: Dockerfile_mtp-module
+    environment:
+      - MTP_PORTS=8080
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
+    depends_on:
+      - "mtp-data"
+  mtp-client:
+    build:
+      args:
+        MTP_MODULE: mtp-client
+      context: .
+      dockerfile: Dockerfile_mtp-module
+    command: ["dockerize", "-wait", "tcp://mtp-data:9042", "-wait", "tcp://mtp-frontend:8080", "-timeout", "240s",
+      "/opt/mtp/mtp-client-0.5.0/bin/mtp-client",
+      "--url", "http://mtp-consumption:9090/transactions",
+      "--cfUrl", "http://mtp-frontend:8080/test/rates",
+      "--repeatCount", "100000",
+      "--pauseMs", "25000"]
+    depends_on:
+      - "mtp-data"
+      - "mtp-consumption"
+      - "mtp-frontend"

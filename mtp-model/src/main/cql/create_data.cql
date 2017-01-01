@@ -1,3 +1,4 @@
+use mtp;
 
 INSERT INTO user (id, login, password , firstname, lastname ,email ,activated ,lang_key, activation_key, authorities)
 VALUES('1','system','$2a$10$mE.qmcV0mFU5NcKh73TZx.z4ueI/.bDWbj0T1BYyqP481kGGarKLG','','System','system@localhost',true,'en','', {'ROLE_USER', 'ROLE_ADMIN'});

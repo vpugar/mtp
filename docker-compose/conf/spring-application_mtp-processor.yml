@@ -1,0 +1,16 @@
+mtp:
+  processor:
+    cassandra:
+      hosts: mtp-data
+    spark:
+      master: local[10]
+      cassandraHosts: mtp-data
+      batchInterval: 10000
+      checkpointDir: /tmp
+    kafkaServer:
+      host: mtp-processor
+      advertisedHost: mtp-processor
+    zookeeper:
+      connect: mtp-processor:2181
+    cfRate:
+      serviceUrl: http://mtp-frontend:8080/test/rates
